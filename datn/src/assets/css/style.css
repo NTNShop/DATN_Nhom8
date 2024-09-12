@@ -129,7 +129,7 @@ ol {
 	right: 0;
 	height: 4px;
 	width: 80px;
-	background: #7fad39;
+	background: #cc0000;
 	content: "";
 	margin: 0 auto;
 }
@@ -167,7 +167,7 @@ ol {
 	color: #ffffff;
 	text-transform: uppercase;
 	font-weight: 700;
-	background: #7fad39;
+	background: #cc0000;
 	letter-spacing: 2px;
 }
 
@@ -178,7 +178,7 @@ ol {
 	text-transform: uppercase;
 	display: inline-block;
 	padding: 13px 30px 12px;
-	background: #7fad39;
+	background: #cc0000;
 	border: none;
 }
 
@@ -284,6 +284,41 @@ ol {
 .header__top__left ul li:last-child:after {
 	display: none;
 }
+.category.spad {
+	padding: 60px 0; /* Khoảng cách trên và dưới phần danh mục */
+  }
+  
+  .category__item {
+	background-color: #ffffff; /* Màu nền mặc định cho ô danh mục */
+	border: 1px solid #cc0000; /* Viền đỏ cho ô danh mục */
+	border-radius: 50px; /* Bo tròn 2 đầu của ô */
+	padding: 20px; /* Khoảng cách bên trong ô */
+	text-align: center;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng chuyển đổi */
+  }
+  
+  .category__item h5 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: bold;
+	color: #333; /* Màu chữ */
+  }
+
+  
+  .category__item:hover {
+	background-color: #cc0000; /* Màu nền khi hover vào */
+	color: #fff; /* Màu chữ khi hover vào */
+	transform: translateY(-5px); /* Di chuyển lên khi hover */
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Tăng bóng khi hover */
+  }
+  
+  .category__item img {
+	width: 100%;
+	height: auto;
+	border-radius: 20px; /* Bo góc cho hình ảnh nếu có */
+	margin-bottom: 15px; /* Khoảng cách giữa hình ảnh và tiêu đề */
+  }
+  
 
 .header__top__left ul li i {
 	color: #252525;
@@ -414,11 +449,23 @@ ol {
 .header__logo a {
 	display: inline-block;
 }
-
+/* Thêm vào file CSS của bạn */
+.blog__sidebar__search input {
+	border: 2px solid red; /* Viền đỏ quanh trường nhập liệu */
+	padding: 5px; /* Khoảng cách giữa viền và nội dung */
+	border-radius: 4px; /* Góc bo tròn của viền */
+  }
+  
 .header__menu {
 	padding: 24px 0;
+	
+	height: 60px;
+	text-align: center;
 }
-
+.hero__search {
+	margin-bottom: 0; /* Xóa margin bên dưới */
+  }
+  
 .header__menu ul li {
 	list-style: none;
 	display: inline-block;
@@ -449,7 +496,7 @@ ol {
 }
 
 .header__menu ul li .header__menu__dropdown li:hover>a {
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .header__menu ul li .header__menu__dropdown li a {
@@ -459,9 +506,9 @@ ol {
 	padding: 5px 15px;
 }
 
-.header__menu ul li.active a {
-	color: #7fad39;
-}
+/* .header__menu ul li.active a {
+	color: #cc0000;
+} */
 
 .header__menu ul li:hover .header__menu__dropdown {
 	top: 30px;
@@ -470,12 +517,13 @@ ol {
 }
 
 .header__menu ul li:hover>a {
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .header__menu ul li:last-child {
 	margin-right: 0;
 }
+
 
 .header__menu ul li a {
 	font-size: 14px;
@@ -491,6 +539,7 @@ ol {
 	padding: 5px 0;
 	display: block;
 }
+
 
 .header__cart {
 	text-align: right;
@@ -524,7 +573,7 @@ ol {
 .header__cart ul li a span {
 	height: 13px;
 	width: 13px;
-	background: #7fad39;
+	background: #cc0000;
 	font-size: 10px;
 	color: #ffffff;
 	line-height: 13px;
@@ -587,7 +636,7 @@ ol {
 }
 
 .hero__categories__all {
-	background: #7fad39;
+	background: #cc0000;
 	position: relative;
 	padding: 10px 25px 10px 40px;
 	cursor: pointer;
@@ -614,6 +663,18 @@ ol {
 	font-size: 18px;
 	color: #ffffff;
 }
+.hero__categories ul li a {
+	color: #000; /* Màu chữ mặc định */
+	padding: 10px 15px;
+	display: block; /* Đảm bảo rằng đường link chiếm toàn bộ không gian của danh mục */
+	text-decoration: none; /* Bỏ gạch chân */
+  }
+  
+  /* Khi di chuột vào mục nào thì đổi nền thành màu đỏ */
+  .hero__categories ul li a:hover {
+	background-color: #cc0000; /* Nền đổi thành màu đỏ */
+	color: #fff; /* Màu chữ đổi thành trắng */
+  }
 
 .hero__categories ul {
 	border: 1px solid #ebebeb;
@@ -632,6 +693,29 @@ ol {
 	line-height: 39px;
 	display: block;
 }
+.category-list {
+	max-height: 400px; /* Chiều cao tối đa để hiển thị 6 sản phẩm */
+	overflow-y: auto;  /* Kích hoạt thanh cuộn dọc */
+  }
+  
+  .category-list li {
+	padding: 5px 0; /* Khoảng cách giữa các mục */
+  }
+  
+  .category-list::-webkit-scrollbar {
+	width: 5px; /* Kích thước thanh cuộn */
+  }
+  
+  .category-list::-webkit-scrollbar-thumb {
+	background-color: #888; /* Màu thanh cuộn */
+	border-radius: 3px;
+  }
+  
+  .category-list::-webkit-scrollbar-thumb:hover {
+	background-color: #555; /* Màu thanh cuộn khi hover */
+  }
+  
+  
 
 .hero__search {
 	overflow: hidden;
@@ -700,7 +784,7 @@ ol {
 
 .hero__search__phone__icon {
 	font-size: 18px;
-	color: #7fad39;
+	color: #cc0000;
 	height: 50px;
 	width: 50px;
 	background: #f5f5f5;
@@ -738,7 +822,7 @@ ol {
 	text-transform: uppercase;
 	font-weight: 700;
 	letter-spacing: 4px;
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .hero__text h2 {
@@ -840,7 +924,7 @@ ol {
 	bottom: -2px;
 	width: 100%;
 	height: 2px;
-	background: #7fad39;
+	background: #cc0000;
 	content: "";
 	opacity: 0;
 }
@@ -888,8 +972,8 @@ ol {
 }
 
 .featured__item__pic__hover li:hover a {
-	background: #7fad39;
-	border-color: #7fad39;
+	background: #cc0000;
+	border-color: #cc0000;
 }
 
 .featured__item__pic__hover li:hover a i {
@@ -1324,8 +1408,8 @@ ol {
 }
 
 .product__item__pic__hover li:hover a {
-	background: #7fad39;
-	border-color: #7fad39;
+	background: #cc0000;
+	border-color: #cc0000;
 }
 
 .product__item__pic__hover li:hover a i {
@@ -1523,7 +1607,7 @@ ol {
 }
 
 .filter__option span:hover {
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .product__item {
@@ -1564,8 +1648,8 @@ ol {
 }
 
 .product__item__pic__hover li:hover a {
-	background: #7fad39;
-	border-color: #7fad39;
+	background: #cc0000;
+	border-color: #cc0000;
 }
 
 .product__item__pic__hover li:hover a i {
@@ -1645,8 +1729,8 @@ ol {
 
 .product__pagination a:hover,
 .blog__pagination a:hover {
-	background: #7fad39;
-	border-color: #7fad39;
+	background: #cc0000;
+	border-color: #cc0000;
 	color: #ffffff;
 }
 
@@ -2154,8 +2238,8 @@ ol {
 }
 
 .checkout__input__checkbox label input:checked~.checkmark {
-	background: #7fad39;
-	border-color: #7fad39;
+	background: #cc0000;
+	border-color: #cc0000;
 }
 
 .checkout__input__checkbox label input:checked~.checkmark:after {
@@ -2382,7 +2466,7 @@ ol {
 }
 
 .blog__sidebar__item ul li a:hover {
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .blog__sidebar__search {
@@ -2602,7 +2686,7 @@ ol {
 }
 
 .blog__details__widget .blog__details__social a:hover {
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .blog__details__widget .blog__details__social a:last-child {
@@ -2720,7 +2804,7 @@ ol {
 }
 
 .footer__widget .footer__widget__social a:hover {
-	background: #7fad39;
+	background: #cc0000;
 	color: #ffffff;
 	border-color: #ffffff;
 }
@@ -2758,7 +2842,7 @@ ol {
 
 .contact__widget span {
 	font-size: 36px;
-	color: #7fad39;
+	color: #cc0000;
 }
 
 .contact__widget h4 {
@@ -2797,7 +2881,7 @@ ol {
 
 .map .map-inside i {
 	font-size: 48px;
-	color: #7fad39;
+	color: #cc0000;
 	position: absolute;
 	bottom: -75px;
 	left: 50%;
@@ -3054,7 +3138,7 @@ ol {
 	.humberger__menu__cart ul li a span {
 		height: 13px;
 		width: 13px;
-		background: #7fad39;
+		background: #cc0000;
 		font-size: 10px;
 		color: #ffffff;
 		line-height: 13px;
@@ -3120,7 +3204,7 @@ ol {
 		-webkit-border-radius: 0;
 		border-radius: 0;
 		background: transparent;
-		color: #7fad39;
+		color: #cc0000;
 	}
 	.humberger__menu__wrapper .slicknav_nav .slicknav_row,
 	.humberger__menu__wrapper .slicknav_nav a {
@@ -3312,7 +3396,7 @@ ol {
 	.humberger__menu__cart ul li a span {
 		height: 13px;
 		width: 13px;
-		background: #7fad39;
+		background: #cc0000;
 		font-size: 10px;
 		color: #ffffff;
 		line-height: 13px;
@@ -3378,7 +3462,7 @@ ol {
 		-webkit-border-radius: 0;
 		border-radius: 0;
 		background: transparent;
-		color: #7fad39;
+		color: #cc0000;
 	}
 	.humberger__menu__wrapper .slicknav_nav .slicknav_row,
 	.humberger__menu__wrapper .slicknav_nav a {

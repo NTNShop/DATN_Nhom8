@@ -1,66 +1,65 @@
-import React from 'react';
+import React from "react";
+import banner from "../../../assets/img/hero/banner.jpg";
 
 const Banner = () => {
-    return (
-        <section className="hero">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
-              <div className="hero__categories">
-                <div className="hero__categories__all">
-                  <i className="fa fa-bars"></i>
-                  <span>All departments</span>
-                </div>
-                <ul>
-                  <li><a href="#">Fresh Meat</a></li>
-                  <li><a href="#">Vegetables</a></li>
-                  <li><a href="#">Fruit & Nut Gifts</a></li>
-                  <li><a href="#">Fresh Berries</a></li>
-                  <li><a href="#">Ocean Foods</a></li>
-                  <li><a href="#">Butter & Eggs</a></li>
-                  <li><a href="#">Fastfood</a></li>
-                  <li><a href="#">Fresh Onion</a></li>
-                  <li><a href="#">Papayaya & Crisps</a></li>
-                  <li><a href="#">Oatmeal</a></li>
-                  <li><a href="#">Fresh Bananas</a></li>
-                </ul>
+  return (
+    <section className="hero">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-3">
+            <div className="hero__categories">
+              <div
+                className="hero__categories__all"
+                onClick={() =>
+                  document
+                    .getElementById("categoryList")
+                    .classList.toggle("open")
+                }
+              >
+                <i className="fa fa-bars"></i>
+                <span>Danh mục</span>
               </div>
+              <ul id="categoryList" className="category-list">
+                <li>
+                  <a href="#">Wave</a>
+                </li>
+                <li>
+                  <a href="#">Vario</a>
+                </li>
+                <li>
+                  <a href="#">Vison</a>
+                </li>
+                <li>
+                  <a href="#">Air Black</a>
+                </li>
+                <li>
+                  <a href="#">Click</a>
+                </li>
+                <li>
+                  <a href="#">50 phân khối</a>
+                </li>
+                <li>
+                  <a href="#">110 phân khối</a>
+                </li>
+                <li>
+                  <a href="#">125 phân khối</a>
+                </li>
+                <li>
+                  <a href="#">150 phân khối</a>
+                </li>
+              </ul>
             </div>
-            <div className="col-lg-9">
-              <div className="hero__search">
-                <div className="hero__search__form">
-                  <form action="#">
-                    <div className="hero__search__categories">
-                      All Categories
-                      <span className="arrow_carrot_down"></span>
-                    </div>
-                    <input type="text" placeholder="What do you need?" />
-                    <button type="submit" className="site_btn">SEARCH</button>
-                  </form>
-                </div>
-                <div className="hero__search__phone">
-                  <div className="hero__search__phone__icon">
-                    <i className="fa fa-phone"></i>
-                  </div>
-                  <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
-                  </div>
-                </div>
-              </div>
-              <div className="hero__item" style={{ backgroundImage: 'url(/img/hero/banner.jpg)' }}>
-                <div className="hero__text">
-                  <span>FRUIT FRESH</span>
-                  <h2>Vegetable <br />100% Organic</h2>
-                  <p>Free Pickup and Delivery Available</p>
-                  <a href="#" className="primary_btn">SHOP NOW</a>
-                </div>
-              </div>
+          </div>
+
+          <div className="col-lg-9">
+            <div className="hero__search">
+              <img src={banner} width={"auto"} height={450} alt="Logo" />
             </div>
           </div>
         </div>
-      </section>
-    );
+      </div>
+    </section>
+  );
 };
 
 export default Banner;

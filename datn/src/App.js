@@ -1,6 +1,7 @@
 import React from "react"
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements,  Outlet,  Navigate  } from "react-router-dom";
 import Home from "./component/client/home";
+import Blog from './component/client/blog';
 
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
@@ -24,8 +25,7 @@ function App() {
     createRoutesFromElements(
       <Route>
         <Route path="/" element={<Home />} />
- 
-
+        <Route path="/blog" element={<Blog />} />
       </Route>
     )
   )
