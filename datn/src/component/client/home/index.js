@@ -10,7 +10,7 @@ const Home = () => {
       <Header />
       <Banner />
       {/* Danh mục nằm ở đầu chia làm 4 cột */}
-      <section className="category spad ">
+      <div className="category spad ">
         <div className="container">
           <div className="row">
             <div className="col-lg-3 col-md-6 col-sm-6">
@@ -35,13 +35,13 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
-      {/* Featured Product Section */}
-      <section className="featured spad">
+      </div>
+      {/* Featured Product div */}
+      <div className="featured spad">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="section-title">
+              <div className="div-title">
                 <h2>Sản phẩm nổi bật</h2>
               </div>
             </div>
@@ -423,12 +423,12 @@ const Home = () => {
             {/* Thêm các sản phẩm khác tương tự */}
           </div>
         </div>
-      </section>
-      <section class="from-blog spad">
+      </div>
+      <div class="from-blog spad">
         <div class="container">
           <div class="row">
             <div class="col-lg-12">
-              <div class="section-title from-blog__title">
+              <div class="div-title from-blog__title">
                 <h2>Tin tức nổi bật</h2>
               </div>
             </div>
@@ -508,7 +508,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <Footer />
     </div>

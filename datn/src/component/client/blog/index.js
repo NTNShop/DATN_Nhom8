@@ -9,7 +9,10 @@ const Blog = () => {
   return (
     <>
       <Header />
-      <section className="blog spad">
+      <div className="text-center">
+        <h2>TIN TỨC</h2>
+      </div>
+      <div className="blog spad text-center">
         <div className="container">
           <div className="row">
             <div className="col-lg-4 col-md-5">
@@ -22,8 +25,7 @@ const Blog = () => {
                     </button>
                   </form>
                 </div>
-
-                <div className="blog__sidebar__item">
+                <div className="blog__sidebar__item col-lg-6">
                   <h4>Danh mục</h4>
                   <ul>
                     <li>
@@ -43,6 +45,7 @@ const Blog = () => {
                     </li>
                   </ul>
                 </div>
+
                 <div className="blog__sidebar__item">
                   <h4>Tin tức gần đây</h4>
                   <div className="blog__sidebar__recent">
@@ -274,7 +277,7 @@ const Blog = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       <Footer />
     </>
   );
