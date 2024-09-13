@@ -64,7 +64,7 @@ const Home = () => {
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="/cart">
                         <i className="fa fa-shopping-cart"></i>
                       </a>
                     </li>
@@ -88,9 +88,9 @@ const Home = () => {
                       currency: "VND",
                     }).format(25000000)}
                   </h5>
-                  <button className="btn btn-success ml-2">
+                  <a href="/cart"><button className="btn btn-success ml-2">
                     Thêm vào giỏ hàng
-                  </button>
+                  </button></a>
                 </div>
               </div>
             </div>
@@ -112,7 +112,7 @@ const Home = () => {
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="/cart">
                         <i className="fa fa-shopping-cart"></i>
                       </a>
                     </li>
@@ -136,9 +136,9 @@ const Home = () => {
                       currency: "VND",
                     }).format(29000000)}
                   </h5>
-                  <button className="btn btn-success ml-2">
+                  <a href="/cart"><button className="btn btn-success ml-2">
                     Thêm vào giỏ hàng
-                  </button>
+                  </button></a>
                 </div>
               </div>
             </div>

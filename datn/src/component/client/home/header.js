@@ -40,10 +40,10 @@ const Header = () => {
                       <a href="./shop-details.html">Chi Tiết Cửa Hàng</a>
                     </li>
                     <li>
-                      <a href="./shoping-cart.html">Giỏ Hàng</a>
+                      <a href="./cart">Giỏ Hàng</a>
                     </li>
                     <li>
-                      <a href="./checkout.html">Thanh Toán</a>
+                      <a href="./checkout">Thanh Toán</a>
                     </li>
                     <li>
                       <a href="./blog">Chi Tiết Blog</a>
@@ -71,7 +71,7 @@ const Header = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a href="/cart">
                     <i className="fa fa-shopping-cart"></i> <span>3</span>
                   </a>
                 </li>

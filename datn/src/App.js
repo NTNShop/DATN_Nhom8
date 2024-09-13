@@ -2,7 +2,8 @@ import React from "react"
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements,  Outlet,  Navigate  } from "react-router-dom";
 import Home from "./component/client/home";
 import Blog from './component/client/blog';
-
+import Cart from "./component/client/cart";
+import CheckoutSection from "./component/client/check-out";
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
 import './assets/css/font-awesome.min.css'
@@ -26,6 +27,8 @@ function App() {
       <Route>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutSection />} />
       </Route>
     )
   )
