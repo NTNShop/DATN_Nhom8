@@ -37,6 +37,37 @@ body {
 	-webkit-font-smoothing: antialiased;
 	font-smoothing: antialiased;
 }
+.product__details__pic {
+    position: relative;
+}
+
+.product__details__pic__item {
+    text-align: center;
+}
+
+.product__details__pic__item--large {
+    width: 100%;
+    height: auto;
+}
+
+.product__details__pic__slider {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.product__details__pic__slider img {
+    width: 80px; /* Kích thước nhỏ hơn cho ảnh nhỏ */
+    height: auto;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 2px solid transparent;
+}
+
+.product__details__pic__slider img.active {
+    border-color: #000; /* Nổi bật ảnh đang được chọn */
+}
+
 
 h1,
 h2,

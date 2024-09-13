@@ -31,7 +31,7 @@ const Header = () => {
                   <Link to="/">Trang chủ</Link>
                 </li>
                 <li>
-                  <a href="./shop-grid.html">Cửa Hàng</a>
+                <Link to="/shop">Cửa Hàng</Link>
                 </li>
                 <li>
                   <a href="#">Trang</a>

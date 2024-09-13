@@ -12,6 +12,8 @@ import './assets/css/nice-select.css'
 // import './assets/css/owl.carousel.min.css'
 import './assets/css/slicknav.min.css'
 import './assets/css/style.css'
+import Shop from "./component/client/shop";
+import Detail from "./component/client/shop/detail";
 
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
@@ -29,6 +31,8 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
+        <Route path="/shop" element={<Shop/>}/>
+        <Route path="/detail" element={<Detail/>}/>
       </Route>
     )
   )
