@@ -13,7 +13,7 @@ const listProduct = () => {
         <div className="card">
             <div className="card-body">
                 <h4 className="card-title">List Product</h4>
-                <span><a href='/admin/addProduct' className="btn btn-primary">Add Product</a></span>
+                <span><a href='/admin/product/add' className="btn btn-primary">Add Product</a></span>
                 <div className="table-responsive">
                     <table className="table user-table text-center">
                         <thead>
@@ -37,7 +37,7 @@ const listProduct = () => {
                                 <td>01665202865</td>
                                 <td> 
                                     <div className="d-flex gap-2 justify-content-center">
-                                    <span><a href='/admin/editProduct' className="btn btn-primary">Edit</a></span>
+                                    <span><a href='/admin/product/edit' className="btn btn-primary">Edit</a></span>
                                     <span><button href className="btn btn-danger">Delete</button></span>
                                      </div>
                                 </td>
@@ -51,7 +51,7 @@ const listProduct = () => {
                                 <td>01665202865</td>
                                 <td> 
                                     <div className="d-flex gap-2 justify-content-center">
-                                    <span><a href='/admin/editProduct' className="btn btn-primary">Edit</a></span>
+                                    <span><a href='/admin/product/edit' className="btn btn-primary">Edit</a></span>
                                     <span><button href className="btn btn-danger">Delete</button></span>
                                      </div>
                                 </td>
@@ -65,7 +65,7 @@ const listProduct = () => {
                                 <td>01665202865</td>
                                 <td> 
                                     <div className="d-flex gap-2 justify-content-center">
-                                    <span><a href='/admin/editProduct' className="btn btn-primary">Edit</a></span>
+                                    <span><a href='/admin/product/edit' className="btn btn-primary">Edit</a></span>
                                     <span><button href className="btn btn-danger">Delete</button></span>
                                      </div>
                                 </td>
@@ -79,7 +79,7 @@ const listProduct = () => {
                                 <td>01665202865</td>
                                 <td> 
                                     <div className="d-flex gap-2 justify-content-center">
-                                    <span><a href='/admin/editProduct' className="btn btn-primary">Edit</a></span>
+                                    <span><a href='/admin/product/edit' className="btn btn-primary">Edit</a></span>
                                     <span><button href className="btn btn-danger">Delete</button></span>
                                      </div>
                                 </td>
@@ -93,7 +93,7 @@ const listProduct = () => {
                                 <td>01665202865</td>
                                 <td> 
                                     <div className="d-flex gap-2 justify-content-center">
-                                    <span><a href='/admin/editProduct' className="btn btn-primary">Edit</a></span>
+                                    <span><a href='/admin/product/edit' className="btn btn-primary">Edit</a></span>
                                     <span><button href className="btn btn-danger">Delete</button></span>
                                      </div>
                                 </td>
@@ -107,7 +107,7 @@ const listProduct = () => {
                                 <td>01665202865</td>
                                 <td> 
                                     <div className="d-flex gap-2 justify-content-center">
-                                    <span><a href='/admin/editProduct' className="btn btn-primary">Edit</a></span>
+                                    <span><a href='/admin/product/edit' className="btn btn-primary">Edit</a></span>
                                     <span><button href className="btn btn-danger">Delete</button></span>
                                      </div>
                                 </td>

@@ -1,116 +1,109 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-// import { getCategories, deleteCategory } from '../../../services/categories';
-
 const ListCategory = () => {
-  const [categories, setCategories] = useState([]);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [categoriesPerPage] = useState(5); // Số lượng danh mục mỗi trang
+    
+    return (
+<div class="">
+{/* <!-- Start Page Content --> */}
+<Header />
 
-  useEffect(() => {
-    // const fetchCategories = () => {
-    //   getCategories('http://localhost:3001/api', setCategories, setError);
-    // };
+<div class="row">
+    <div class="col-sm-11" style={{position: "relative", left: "241px"}} >
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">List Categories</h4>
+                <span><a href='/admin/category/add' className="btn btn-primary">Add Categories</a></span>
 
-    // fetchCategories();
-  }, []);
+                <div class="table-responsive ">
+                    <table class="table user-table ">
+                        <thead>
+                            <tr>
+                                <th class="border-top-0">ID</th>
+                                <th class="border-top-0">Name</th>
+                                <th class="border-top-0">Action</th>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>minhtrung</td>
 
-  // Tính toán các danh mục hiển thị cho trang hiện tại
-  const indexOfLastCategory = currentPage * categoriesPerPage;
-  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
-  const currentCategories = categories.slice(indexOfFirstCategory, indexOfLastCategory);
+                                <td> 
+                                    <div className="d-flex gap-2 ">
+                                    <span><a href='/admin/category/edit' className="btn btn-primary">Edit</a></span>
+                                    <span><button href className="btn btn-danger">Delete</button></span>
+                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>minhtrung</td>
 
-  // Tính tổng số trang
-  const totalPages = Math.ceil(categories.length / categoriesPerPage);
+                                <td> 
+                                    <div className="d-flex gap-2 ">
+                                    <span><a href='/admin/category/edit' className="btn btn-primary">Edit</a></span>
+                                    <span><button href className="btn btn-danger">Delete</button></span>
+                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>minhtrung</td>
 
-  return (
-    <div className="">
-      {/* <!-- Bắt đầu nội dung trang --> */}
-      <Header />
-
-      <div className="row">
-        <div className="col-sm-11" style={{ position: "relative", left: "241px" }}>
-          <div className="card">
-            <div className="card-body">
-              <h4 className="card-title">Danh Sách Danh Mục</h4>
-              <span><a href='/admin/addCategory' className="btn btn-primary mb-3">Thêm Danh Mục</a></span>
-
-              <div className="table-responsive">
-                <table className="table user-table">
-                  <thead>
-                    <tr>
-                      <th className="border-top-0">ID</th>
-                      <th className="border-top-0">Tên danh mục</th>
-                      <th className="border-top-0">Trạng Thái</th>
-                      <th className="border-top-0">Hành Động</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentCategories.length > 0 ? (
-                      currentCategories.map((category) => (
-                        <tr key={category.id}>
-                          <td>{category.id}</td>
-                          <td>{category.name}</td>
-                          <td>
-                            <span 
-                              className={`badge mb-2 mt-2 ${
-                                category.status === 1 ? 'bg-success ' : 'bg-danger'
-                              }`}
-                            >
-                              {category.status === 1 ? 'Đang hoạt động' : 'Không hoạt động'}
-                            </span>
-                          </td>
-                          <td>
-                            <div className="d-flex gap-2">
-                              <span><a href={`/admin/editCategory/${category.id}`} className="btn btn-primary">Sửa</a></span>
-                              <span>
-                               
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="4">Không có danh mục nào</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination Controls */}
-              <div className="pagination ">
-                <button 
-                  className="btn btn-primary mx-3" 
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                >
-                  &lt; Previous
-                </button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <button 
-                  className="btn btn-primary mx-3" 
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next &gt;
-                </button>
-              </div>
-
-              {error && <p className="text-danger">{error}</p>}
+                                <td> 
+                                    <div className="d-flex gap-2 ">
+                                    <span><a href='/admin/category/edit' className="btn btn-primary">Edit</a></span>
+                                    <span><button href className="btn btn-danger">Delete</button></span>
+                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>minhtrung</td>
+     
+                                <td> 
+                                    <div className="d-flex gap-2 ">
+                                    <span><a href='/admin/category/edit' className="btn btn-primary">Edit</a></span>
+                                    <span><button href className="btn btn-danger">Delete</button></span>
+                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>minhtrung</td>
+                           
+                                <td> 
+                                    <div className="d-flex gap-2 ">
+                                    <span><a href='/admin/category/edit' className="btn btn-primary">Edit</a></span>
+                                    <span><button href className="btn btn-danger">Delete</button></span>
+                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>minhtrung</td>
+                            
+                                <td> 
+                                    <div className="d-flex gap-2 ">
+                                    <span><a href='/admin/category/edit' className="btn btn-primary">Edit</a></span>
+                                    <span><button href className="btn btn-danger">Delete</button></span>
+                                     </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-
-      {/* Kết thúc nội dung trang */}
-      <Footer />
     </div>
-  );
+</div>
+
+{/* End PAge Content  */}
+
+</div>
+);
 };
 
 export default ListCategory;

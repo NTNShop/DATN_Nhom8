@@ -1,7 +1,6 @@
 import React from 'react';
 import Header from "../layouts/header";
-import Footer from "../layouts/footer";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../../assets/css/styleEdit.css"
 
 const AddProduct = () => {

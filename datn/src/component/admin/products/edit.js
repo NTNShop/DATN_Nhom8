@@ -1,150 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React from 'react';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-
-import { getProductById, updateProduct } from '../../../services/product';
+// import "bootstrap/dist/css/bootstrap.min.css";
+import "../../../assets/css/styleEdit.css"
 
 const EditProduct = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-
-  const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
-  const [status, setStatus] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProduct = () => {
-      getProductById(id, (productData) => {
-        if (productData) {
-          setProduct(productData);
-          setName(productData.name);
-          setPrice(productData.price);
-         
-          setDescription(productData.description);
-          setImage(productData.image);
-          setStatus(productData.status);
-          setLoading(false);
-        } else {
-          setError('Sản phẩm không tồn tại');
-          setLoading(false);
-        }
-      }, (error) => {
-        setError(error);
-        setLoading(false);
-      });
-    };
-
-    fetchProduct();
-  }, [id]);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const updatedProduct = { name, price, description, image, status };
-
-    updateProduct(id, updatedProduct, (response) => {
-      setSuccessMessage('Sản phẩm đã được cập nhật thành công');
-      setError('');
-      navigate('/admin/product');
-    }, (error) => {
-      setSuccessMessage('');
-      setError(error);
-    });
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div>
-      <Header />
-
-      <div className="row">
-        <div className="col-sm-11" style={{ position: "relative", left: "241px" }}>
-          <div className="card">
-            <div className="card-body">
-              <h4 className="card-title">Chỉnh Sửa Sản Phẩm</h4>
-
-              {error && <div className="alert alert-danger">{error}</div>}
-              {successMessage && <div className="alert alert-success">{successMessage}</div>}
-
-              <form onSubmit={handleSubmit}>
+    
+    return (
+<div>
+<Header />
+        <div class="col-sm-11" style={{position: "relative", left: "241px"}}>
+    <div className="card">
+        <div className="card-body">
+        <h4 className="card-title">Edit Product</h4>
+            <form class="form-horizontal form-material mx-2">
                 <div className="form-group mb-3">
-                  <label className="col-md-12 mb-0">Tên Sản Phẩm</label>
-                  <input
-                    type="text"
-                    className="form-control-line border-input"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
+                    <label className="col-md-12 mb-0">Name</label>
+                    <div class="col-md-12">
+                    <input type="text" id="fullname" placeholder=""
+                        className=" form-control-line border-input"/>
+                    </div>
                 </div>
-                <div className="form-group mb-3">
-                  <label className="col-md-12 mb-0">Giá</label>
-                  <input
-                    type="number"
-                    className="form-control-line border-input"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    required
-                  />
+                <div class="form-group mb-3">
+                    <label for="example-email" class="col-md-12">Image</label>
+                    <div class="col-md-12">
+                        <input type="file" placeholder="johnathan@admin.com"
+                            class="form-control-line border-input" name="example-email"
+                            id="example-email"/>
+                    </div>
                 </div>
-
-                <div className="form-group mb-3">
-                  <label className="col-md-12 mb-0">Mô Tả</label>
-                  <textarea
-                    className="form-control-line border-input"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                  ></textarea>
+                <div class="form-group mb-3">
+                    <label class="col-md-12 mb-0">Price</label>
+                    <div class="col-md-12">
+                        <input type="text"class="form-control-line border-input"/>
+                    </div>
                 </div>
-                <div className="form-group mb-3">
-                  <label className="col-md-12 mb-0">Hình Ảnh</label>
-                  <input
-                    type="text"
-                    className="form-control-line border-input"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                    required
-                  />
+                <div class="form-group mb-3">
+                    <label class="col-md-12 mb-0">ID category</label>
+                    <div class="col-md-12">
+                        <input type="text" 
+                            class="form-control-line border-input"/>
+                    </div>
                 </div>
-                <div className="form-group mb-3">
-                  <label className="col-md-12 mb-0">Trạng Thái</label>
-                  <select
-                    className="form-control-line border-input"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    required
-                  >
-                    <option value="">Chọn trạng thái</option>
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
-                  </select>
+                <div class="form-group mb-3">
+                    <label class="col-md-12 mb-0">Description</label>
+                    <div class="col-md-12">
+                        <textarea rows="5" class=" border-input2 form-control-line"></textarea>
+                    </div>
                 </div>
-                <div className="form-group">
-                  <button type="submit" className="btn btn-primary">
-                    Cập Nhật
-                  </button>
+                {/* <div class="form-group">
+                    <label class="col-sm-12">Select Country</label>
+                    <div class="col-sm-12 border-bottom">
+                        <select class="form-select shadow-none ps-0 border-0 form-control-line">
+                            <option>London</option>
+                            <option>India</option>
+                            <option>Usa</option>
+                            <option>Canada</option>
+                            <option>Thailand</option>
+                        </select>
+                    </div>
+                </div> */}
+                <div class="form-group">
+                    <div class="col-sm-12 d-flex">
+                        <button class="btn btn-success mx-auto mx-md-0 text-white">Save</button>
+                    </div>
                 </div>
-              </form>
-            </div>
-          </div>
+            </form>
         </div>
-      </div>
-
-      <Footer />
     </div>
-  );
+</div>
+</div>
+);
 };
 
 export default EditProduct;
-                            
