@@ -11,7 +11,7 @@ const Authentication = () => {
 <div className="login-box">
 	<div className="login-snip">
 		<input id="tab-1" type="radio" name="tab" className="sign-in" checked/><label for="tab-1" className="tab">Đăng nhập</label>
-		<input id="tab-2" type="radio" name="tab" className="sign-up"/><label for="tab-2" className="tab"></label>
+		<input id="tab-2" type="radio" name="tab" className="sign-up"/><label for="tab-2" className="tab">Đăng ký</label>
 		<div className="login-space">
 			<div className="login">
 				<div className="group">
@@ -32,6 +32,31 @@ const Authentication = () => {
 				<div className="hr"></div>
 				<div className="foot">
 					<a href="#">Quên mật khẩu?</a>
+				</div>
+			</div>
+			<div className="sign-up-form">
+				<div className="group">
+					<label for="user" className="label">Tên đăng nhập</label>
+					<input id="user" type="text" className="input" placeholder="Tạo tên đăng nhập..."/>
+				</div>
+				<div className="group">
+					<label for="pass" className="label">Mật khẩu</label>
+					<input id="pass" type="password" className="input" data-type="password" placeholder="Tạo mật khẩu..."/>
+				</div>
+				<div className="group">
+					<label for="pass" className="label">Lặp lại mật khẩu</label>
+					<input id="pass" type="password" className="input" data-type="password" placeholder="Nhập lại mật khẩu..." />
+				</div>
+				<div className="group">
+					<label for="pass" className="label">Email</label>
+					<input id="pass" type="text" className="input" placeholder="Nhập email..."/>
+				</div>
+				<div className="group">
+					<input type="submit" className="button" value="Đăng ký"/>
+				</div>
+				<div className="hr"></div>
+				<div className="foot">
+					<label for="tab-1">Đã có tài khoản?</label>
 				</div>
 			</div>
 		</div>

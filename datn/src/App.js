@@ -13,6 +13,7 @@ import EditUser from "./component/admin/users/edit";
 import AddUser from "./component/admin/users/add";
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
+import Authentication2 from "./component/client/authentication";
 
 //import css
   //
@@ -29,6 +30,7 @@ function App() {
     createRoutesFromElements(
       <Route>
       {/* Các route public */}
+      <Route path="/login" element={<Authentication2 />} />
 
 
       {/* Các route admin */}
