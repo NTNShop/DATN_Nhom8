@@ -54,7 +54,7 @@ const Header = () => {
                   <Link to="/blog">Bài viết</Link>
                 </li>
                 <li>
-                  <a href="./contact.html">Liên Hệ</a>
+                <Link to="/contact">Liên Hệ</Link>
                 </li>
               </ul>
             </nav>

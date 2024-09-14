@@ -14,6 +14,7 @@ import './assets/css/slicknav.min.css'
 import './assets/css/style.css'
 import Shop from "./component/client/shop";
 import Detail from "./component/client/shop/detail";
+import Contact from "./component/client/contact";
 
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
@@ -33,6 +34,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutSection />} />
         <Route path="/shop" element={<Shop/>}/>
         <Route path="/detail" element={<Detail/>}/>
+        <Route path="/contact" element={<Contact/>}/>
       </Route>
     )
   )
