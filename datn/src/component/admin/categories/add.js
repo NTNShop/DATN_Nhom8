@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addCategory } from '../../../services/categories';
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-import "../../../assets/css/styleEdit.css";
+// import "../../../assets/css/styleEdit.css";
 
 const AddCategory = () => {
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ const AddCategory = () => {
       return;
     }
 
-    addCategory(
+    AddCategory(
       { name, description, status: parseInt(status) },
       (response) => {
         setSuccess(true);

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCategories, updateCategory } from '../../../services/categories';
-import "bootstrap/dist/css/bootstrap.min.css";
+// import { getCategories, updateCategory } from '../../../services/categories';
+// import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-import "../../../assets/css/styleEdit.css";
+// import "../../../assets/css/styleEdit.css";
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -16,22 +16,22 @@ const EditCategory = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchCategory = () => {
-      getCategories('http://localhost:3001/api', (data) => {
-        // Tìm danh mục theo id
-        const category = data.find(cat => cat.id === parseInt(id));
-        if (category) {
-          setName(category.name);
-          setDescription(category.description || ''); // Nếu không có description thì để trống
-          setStatus(category.status ? '1' : '0'); // Chuyển đổi trạng thái thành chuỗi
-        } else {
-          setError('Danh mục không tồn tại');
-        }
-      }, setError); // Đảm bảo setError là một hàm
-    };
+    // const fetchCategory = () => {
+    //   getCategories('http://localhost:3001/api', (data) => {
+    //     // Tìm danh mục theo id
+    //     const category = data.find(cat => cat.id === parseInt(id));
+    //     if (category) {
+    //       setName(category.name);
+    //       setDescription(category.description || ''); // Nếu không có description thì để trống
+    //       setStatus(category.status ? '1' : '0'); // Chuyển đổi trạng thái thành chuỗi
+    //     } else {
+    //       setError('Danh mục không tồn tại');
+    //     }
+    //   }, setError); // Đảm bảo setError là một hàm
+    // };
 
-    fetchCategory();
-  }, [id]);
+    // fetchCategory();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,9 +45,9 @@ const EditCategory = () => {
     // Reset error before making update request
     setError(null);
 
-    updateCategory(id, { name, description, status: parseInt(status) }, () => {
-      setSuccess(true);
-    }, setError); // Đảm bảo setError là một hàm
+    // updateCategory(id, { name, description, status: parseInt(status) }, () => {
+    //   setSuccess(true);
+    // }, setError); // Đảm bảo setError là một hàm
   };
 
   useEffect(() => {

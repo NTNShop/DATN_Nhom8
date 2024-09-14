@@ -1,140 +1,66 @@
-import React, { useState } from 'react';
-import "bootstrap/dist/css/bootstrap.min.css";
+import React from 'react';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-import "../../../assets/css/styleEdit.css";
-import { useNavigate } from 'react-router-dom';
-import { addProduct } from '../../../services/product'; // Import hàm addProduct từ service
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../../../assets/css/styleEdit.css"
 
 const AddProduct = () => {
-  const [name, setProductName] = useState('');
-  const [image, setImage] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [status, setStatus] = useState(''); // Thêm state cho trạng thái
-  const [formErrors, setFormErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
-
-  const validateForm = () => {
-    const errors = {};
-
-    if (!name) errors.name = "Tên sản phẩm không được để trống!";
-    if (!price) errors.price = "Giá không được để trống!";
-    if (!status) errors.status = "Vui lòng chọn trạng thái!"; // Kiểm tra trạng thái
-    return errors;
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const errors = validateForm();
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-    setFormErrors({});
-
-    const productData = { name, image, price, description, status };
-
-    addProduct(productData, (response) => {
-      setSuccessMessage('Thêm sản phẩm thành công!');
-      setErrorMessage('');
-      navigate('/admin/product'); // Điều hướng tới trang quản lý sản phẩm
-    }, (error) => {
-      setSuccessMessage('');
-      setErrorMessage(error);
-    });
-  };
-
-  return (
-    <div>
-      <Header />
-      <div className="col-sm-11" style={{ position: "relative", left: "241px" }}>
-        <div className="card">
-          <div className="card-body">
-            <h4 className="card-title">Thêm Sản Phẩm</h4>
-            <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
-              <div className="form-group mb-3">
-                <label className="col-md-12 mb-0">Tên Sản Phẩm</label>
-                <div className="col-md-12">
-                  <input 
-                    type="text" 
-                    id="name" 
-                    value={name}
-                    onChange={(e) => setProductName(e.target.value)} 
-                    className="form-control-line border-input" 
-                    placeholder="Nhập tên sản phẩm"
-                  />
-                  {formErrors.name && <p className="text-danger">{formErrors.name}</p>}
+    
+    return (
+<div>
+<Header />
+<div class="col-sm-11" style={{position: "relative", left: "241px"}}>
+        
+    <div className="card">
+        <div className="card-body">
+        <h4 className="card-title">Add Product</h4>
+            <form class="form-horizontal form-material mx-2">
+                <div className="form-group mb-3">
+                    <label className="col-md-12 mb-0">Name</label>
+                    <div class="col-md-12">
+                    <input type="text" id="fullname" placeholder=""
+                        className=" form-control-line border-input"/>
+                    </div>
                 </div>
-              </div>
-              <div className="form-group mb-3">
-                <label className="col-md-12 font-weight-bold">Hình Ảnh</label>
-                <div className="col-md-12">
-                  <input 
-                    type="text" 
-                    className="form-control-line border-input" 
-                    onChange={(e) => setImage(e.target.value)}
-                  />
+                <div class="form-group mb-3">
+                    <label for="example-email" className="col-md-12 font-weight-bold">Image</label>
+                    <div class="col-md-12">
+                        <input type="file" placeholder="johnathan@admin.com"
+                            class="form-control-line border-input" name="example-email"
+                            id="example-email"/>
+                    </div>
                 </div>
-              </div>
-              <div className="form-group mb-3">
-                <label className="col-md-12 mb-0">Giá</label>
-                <div className="col-md-12">
-                  <input 
-                    type="text" 
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="form-control-line border-input" 
-                    placeholder="Nhập giá sản phẩm"
-                  />
-                  {formErrors.price && <p className="text-danger">{formErrors.price}</p>}
+                <div class="form-group mb-3">
+                    <label class="col-md-12 mb-0">Price</label>
+                    <div class="col-md-12">
+                        <input type="text"class="form-control-line border-input"/>
+                    </div>
                 </div>
-              </div>
-            
-              <div className="form-group mb-3">
-                <label className="col-md-12 mb-0">Mô Tả</label>
-                <div className="col-md-12">
-                  <textarea 
-                    rows="5" 
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="border-input2 form-control-line" 
-                    placeholder="Nhập mô tả sản phẩm"
-                  ></textarea>
+                <div class="form-group mb-3">
+                    <label class="col-md-12 mb-0">ID category</label>
+                    <div class="col-md-12">
+                        <input type="text" 
+                            class="form-control-line border-input"/>
+                    </div>
                 </div>
-              </div>
-              <div className="form-group mb-3">
-                <label className="col-md-12 mb-0">Trạng Thái</label>
-                <div className="col-md-12">
-                  <select
-                    id="status"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="form-control-line border-input"
-                  >
-                    <option value="">Chọn trạng thái</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                  {formErrors.status && <p className="text-danger">{formErrors.status}</p>}
+                <div class="form-group mb-3">
+                    <label class="col-md-12 mb-0">Description</label>
+                    <div class="col-md-12">
+                        <textarea rows="5" class=" border-input2 form-control-line"></textarea>
+                    </div>
                 </div>
-              </div>
-              <div className="form-group">
-                <div className="col-sm-12 d-flex">
-                  <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">Thêm Sản Phẩm</button>
+       
+                <div class="form-group">
+                    <div class="col-sm-12 d-flex">
+                        <button class="btn btn-success mx-auto mx-md-0 text-white">Add Product</button>
+                    </div>
                 </div>
-              </div>
             </form>
-            {successMessage && <p className="text-success">{successMessage}</p>}
-            {errorMessage && <p className="text-danger">{errorMessage}</p>}
-          </div>
         </div>
-      </div>
-      <Footer />
     </div>
-  );
+</div>
+</div>
+);
 };
 
 export default AddProduct;

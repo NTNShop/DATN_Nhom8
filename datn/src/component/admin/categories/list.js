@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-import { getCategories, deleteCategory } from '../../../services/categories';
+// import { getCategories, deleteCategory } from '../../../services/categories';
 
 const ListCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -10,11 +10,11 @@ const ListCategory = () => {
   const [categoriesPerPage] = useState(5); // Số lượng danh mục mỗi trang
 
   useEffect(() => {
-    const fetchCategories = () => {
-      getCategories('http://localhost:3001/api', setCategories, setError);
-    };
+    // const fetchCategories = () => {
+    //   getCategories('http://localhost:3001/api', setCategories, setError);
+    // };
 
-    fetchCategories();
+    // fetchCategories();
   }, []);
 
 
