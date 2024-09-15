@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom'; 
+import { Link } from "react-router-dom";
 import logo from "../../../assets/img/logo.png";
 
 const Header = () => {
@@ -27,11 +27,11 @@ const Header = () => {
           <div className="col-lg-8">
             <nav className="header__menu">
               <ul>
-              <li>
+                <li>
                   <Link to="/">Trang chủ</Link>
                 </li>
                 <li>
-                <Link to="/shop">Cửa Hàng</Link>
+                  <Link to="/shop">Cửa Hàng</Link>
                 </li>
                 <li>
                   <a href="#">Trang</a>
@@ -40,10 +40,10 @@ const Header = () => {
                       <a href="./shop-details.html">Chi Tiết Cửa Hàng</a>
                     </li>
                     <li>
-                      <a href="./cart">Giỏ Hàng</a>
+                      <Link to="/cart">Giỏ hàng</Link>
                     </li>
                     <li>
-                      <a href="./checkout">Thanh Toán</a>
+                      <Link to="/checkout">Thanh Toán</Link>
                     </li>
                     <li>
                       <a href="./blog">Chi Tiết Blog</a>
@@ -54,7 +54,7 @@ const Header = () => {
                   <Link to="/blog">Bài viết</Link>
                 </li>
                 <li>
-                <Link to="/contact">Liên Hệ</Link>
+                  <Link to="/contact">Liên Hệ</Link>
                 </li>
               </ul>
             </nav>
