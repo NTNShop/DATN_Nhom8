@@ -15,6 +15,7 @@ import AddUser from "./component/admin/users/add";
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import Authentication2 from "./component/client/authentication";
+import ListOrder from "./component/admin/order/list";
 
 //import css
 import './assets/plugins/chartist-js/dist/chartist.min.css';
@@ -45,6 +46,7 @@ function App() {
       <Route path="/admin/login" element={<Authentication />} />
       <Route path="/admin/addUser" element={<AddUser />} />
       <Route path="/admin/editUser" element={<EditUser />} />
+      <Route path="/admin/order/list" element={<ListOrder />} />
     
     </Route>
     )

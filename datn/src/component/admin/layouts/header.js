@@ -156,6 +156,26 @@ const Header = () => {
                     <span className="hide-menu">Người Dùng</span>
                   </a>
                 </li>
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/list"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi me-2 mdi-account-check"></i>
+                    <span className="hide-menu">Đơn hàng</span>
+                  </a>
+                </li>
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/comment"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi me-2 mdi-account"></i>
+                    <span className="hide-menu">Bình luận</span>
+                  </a>
+                </li>
               </ul>
             </nav>
           </div>
