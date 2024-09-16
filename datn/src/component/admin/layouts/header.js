@@ -101,7 +101,7 @@ const Header = () => {
                 <li className="sidebar-item">
                   <a
                     className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin"
+                    href="/admin/dashboard"
                     aria-expanded="false"
                   >
                     <i className="mdi me-2 mdi-gauge"></i>
