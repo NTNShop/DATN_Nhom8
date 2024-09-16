@@ -89,7 +89,7 @@ const ListUser = () => {
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

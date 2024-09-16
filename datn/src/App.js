@@ -17,9 +17,6 @@ import Authentication from "./component/admin/authentication";
 import Authentication2 from "./component/client/authentication";
 
 //import css
-  //
-  // import './assets/authentication/main';
-// import './assets/authentication/style.css';
 import './assets/plugins/chartist-js/dist/chartist.min.css';
 import './assets/plugins/chartist-js/dist/chartist-init.css';
 import './assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css';
