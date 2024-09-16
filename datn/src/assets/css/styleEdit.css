@@ -1,0 +1,26 @@
+/* border input trong form edit/add của admin */
+.border-input {
+  border: 0;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 0;
+  width: 100%;
+  transition: border-bottom 0.5s ease;
+}
+
+.border-input:focus {
+  outline: none;
+  border-bottom: 1px solid chartreuse;
+}
+/* dành riêng cho form mô tả  */
+.border-input2 {
+    border: 0;
+    border-bottom: 1px solid #dee2e6;
+    
+    width: 100%;
+    transition: border-bottom 0.5s ease;
+  }
+  
+  .border-input2:focus {
+    outline: none;
+    border-bottom: 1px solid chartreuse;
+  }
