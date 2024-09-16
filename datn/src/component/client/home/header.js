@@ -31,13 +31,16 @@ const Header = () => {
                   <Link to="/">Trang chủ</Link>
                 </li>
                 <li>
-                  <Link to="/shop">Cửa Hàng</Link>
+                  <Link to="/product">Cửa Hàng</Link>
                 </li>
                 <li>
                   <a href="#">Trang</a>
                   <ul className="header__menu__dropdown">
                     <li>
-                      <a href="./shop-details.html">Chi Tiết Cửa Hàng</a>
+                      <a href="./product-details.html">Chi Tiết Cửa Hàng</a>
+                    </li>
+                    <li>
+                      <a href="./blog-details.html">Chi Tiết Bài Viết</a>
                     </li>
                     <li>
                       <Link to="/cart">Giỏ hàng</Link>
@@ -53,6 +56,7 @@ const Header = () => {
                 <li>
                   <Link to="/blog">Bài viết</Link>
                 </li>
+                
                 <li>
                   <Link to="/contact">Liên Hệ</Link>
                 </li>

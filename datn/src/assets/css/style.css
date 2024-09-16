@@ -244,6 +244,7 @@ ol {
 	-webkit-animation: loader 0.8s linear infinite;
 }
 
+
 @keyframes loader {
 	0% {
 		-webkit-transform: rotate(0deg);
@@ -408,6 +409,7 @@ ol {
 	visibility: visible;
 }
 
+
 .header__top__right__language:after {
 	position: absolute;
 	right: -21px;
@@ -419,9 +421,57 @@ ol {
 	content: "";
 }
 
+
 .header__top__right__language img {
 	margin-right: 6px;
 }
+.discount-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 0 0 0 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.discount-badge {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: red;
+	color: white;
+	padding: 5px 10px;
+	border-radius: 0 0 0 10px;
+	font-size: 14px;
+	font-weight: bold;
+  }
+  .div-title {
+	position: relative;
+	display: inline-block;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+  }
+  
+  .div-title h2 {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+  }
+  
+  
+  .div-title:before {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	width: 100%;
+	background-color: #cc0000; /* Hoặc màu khác theo ý bạn */
+	z-index: -1;
+  }
+  
 
 .header__top__right__language div {
 	font-size: 14px;

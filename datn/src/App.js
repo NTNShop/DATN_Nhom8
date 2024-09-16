@@ -12,9 +12,10 @@ import './assets/css/nice-select.css'
 // import './assets/css/owl.carousel.min.css'
 import './assets/css/slicknav.min.css'
 import './assets/css/style.css'
-import Shop from "./component/client/shop";
-import Detail from "./component/client/shop/detail";
+import Product from "./component/client/shop";
+import ProductDetail from "./component/client/shop/detail";
 import Contact from "./component/client/contact";
+import BlogDetails from "./component/client/blog/detail";
 
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
@@ -30,10 +31,12 @@ function App() {
       <Route>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog-details/:id" element={<BlogDetails />} />
+
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
-        <Route path="/shop" element={<Shop/>}/>
-        <Route path="/detail" element={<Detail/>}/>
+        <Route path="/product" element={<Product/>}/>
+        <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
       </Route>
     )
