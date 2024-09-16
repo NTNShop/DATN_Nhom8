@@ -5,7 +5,7 @@ const Dashboard = () => {
       <div class="">
 {/* <!-- Start Page Content --> */}
 <Header />
-        <div className="container">
+        <div className="" style={{position: "relative", left: "150px"}}>
             
         <div className="container-fluid">
             <div className="page-wrapper">

@@ -127,14 +127,14 @@ const Header = () => {
                     <i className="mdi me-2 mdi-table"></i>
                     <span className="hide-menu">Danh Mục</span>
                   </a>
-                  <a
+                  {/* <a
                     className="sidebar-link waves-effect waves-dark sidebar-link"
                     href="/admin/category/thongke"
                     aria-expanded="false"
                   >
                     <i className="mdi me-2 mdi-chart-bar"></i>
                     <span className="hide-menu"> Thống Kê Danh Mục</span>
-                  </a>
+                  </a> */}
                 </li>
                 <li className="sidebar-item">
                   <a
