@@ -15,7 +15,7 @@ import AddUser from "./component/admin/users/add";
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import Authentication2 from "./component/client/authentication";
-
+import AlternativePaymentPage from "./component/paypal";
 //import css
 import './assets/plugins/chartist-js/dist/chartist.min.css';
 import './assets/plugins/chartist-js/dist/chartist-init.css';
@@ -70,12 +70,14 @@ function App() {
       <Route path="/admin/addUser" element={<AddUser />} />
       <Route path="/admin/editUser" element={<EditUser />} />
     
-      <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
         <Route path="/shop" element={<Shop/>}/>
         <Route path="/detail" element={<Detail/>}/>
+        <Route path="/alternative-payment" element={<AlternativePaymentPage/>}/>
+
     </Route>
     )
   );
