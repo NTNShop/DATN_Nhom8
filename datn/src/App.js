@@ -49,6 +49,10 @@ import './assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-too
 import "./assets/plugins/c3-master/c3.min.css";
 import './assets/plugins/c3-master/c3.min.css';
 import "./assets/css/style.min.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(

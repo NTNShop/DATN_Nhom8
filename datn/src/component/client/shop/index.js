@@ -3,12 +3,31 @@ import Header from "../home/header";
 import Footer from "../home/footer";
 import { Link } from "react-router-dom";
 import sp from "../../../assets/img/cart/sp1.png";
+import banner from "../../../assets/img/hero/banner2.jpg";
 const Product = () => (
   <>
     <Header />
+    <section 
+    className="breadcrumb-section set-bg" 
+    style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+  >
+    <div className="container">
+      <div className="row">
+        <div className="col-lg-12 text-center">
+          <div className="breadcrumb__text">
+            <h2>CỬA HÀNG</h2>
+            <div className="breadcrumb__option">
+              <a href="./index.html">TRANG CHỦ</a>
+              <span>CỬA HÀNG</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
     <section classNameName="product spad">
       <div className="container">
-        <div className="row">
+        <div className="row pt-5">
           <div className="col-lg-3 col-md-5">
             <div className="sidebar">
               <div className="sidebar__item">
@@ -520,105 +539,18 @@ const Product = () => (
                   </div>
                 </div>
               </div>
-              <div className="col-lg-4 col-md-6 col-sm-6">
-                <div className="product__item">
-                  <div className="product__item__pic set-bg">
-                    <img src={sp} width={300}></img>
-                    <ul className="product__item__pic__hover">
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-heart"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-retweet"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-shopping-cart"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
-                    </h5>
-                    <h5>40.000.000đ</h5>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-4 col-md-6 col-sm-6">
-                <div className="product__item">
-                  <div className="product__item__pic set-bg">
-                    <img src={sp} width={300}></img>
-                    <ul className="product__item__pic__hover">
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-heart"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-retweet"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-shopping-cart"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
-                    </h5>
-                    <h5>40.000.000đ</h5>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-4 col-md-6 col-sm-6">
-                <div className="product__item">
-                  <div className="product__item__pic set-bg">
-                    <img src={sp} width={300}></img>
-                    <ul className="product__item__pic__hover">
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-heart"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-retweet"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-shopping-cart"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
-                    </h5>
-                    <h5>40.000.000đ</h5>
-                  </div>
-                </div>
-              </div>
+              
+              
             </div>
-            <div className="product__pagination">
-              <a href="#">1</a>
-              <a href="#">2</a>
-              <a href="#">3</a>
-              <a href="#">
-                <i className="fa fa-long-arrow-right"></i>
-              </a>
-            </div>
+            <div className="product__pagination d-flex justify-content-center pb-5">
+  <a href="#" className="mx-2">1</a>
+  <a href="#" className="mx-2">2</a>
+  <a href="#" className="mx-2">3</a>
+  <a href="#" className="mx-2">
+    <i className="bi bi-arrow-right"></i>
+  </a>
+</div>
+
           </div>
         </div>
       </div>
