@@ -38,7 +38,7 @@ import './assets/css/slicknav.min.css'
 import './assets/css/style.css'
 import Shop from "./component/client/shop";
 import Detail from "./component/client/shop/detail";
-
+import PaymentSuccessPage from "./component/paypal/success";
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -77,6 +77,7 @@ function App() {
         <Route path="/shop" element={<Shop/>}/>
         <Route path="/detail" element={<Detail/>}/>
         <Route path="/alternative-payment" element={<AlternativePaymentPage/>}/>
+        <Route path="/success" element={<PaymentSuccessPage/>}/>
 
     </Route>
     )

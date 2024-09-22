@@ -66,8 +66,8 @@ const AlternatePaymentSection = () => {
 
                  
 
-                  <div className="col-lg-12 text-center">
-                    <button type="submit" className="site-btn site-btn--primary">Xác nhận thanh toán</button>
+                   <div className="col-lg-12 text-center">
+                   <a href="/success" type="submit" className="site-btn site-btn--primary">Xác nhận thanh toán</a>
                   </div>
                 </div>
               </form>
