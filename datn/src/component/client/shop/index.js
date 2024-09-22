@@ -28,26 +28,36 @@ const Product = () => (
                   </li>
                 </ul>
               </div>
-
               <div className="sidebar__item sidebar__item__color--option">
                 <h4>Màu sắc</h4>
                 <div className="sidebar__item__color sidebar__item__color--white">
-                  <label for="white">Trắng</label>
+                  <label htmlFor="white">Trắng</label>
                 </div>
                 <div className="sidebar__item__color sidebar__item__color--gray">
-                  <label for="gray">Vàng</label>
+                  <label htmlFor="gray">Vàng</label>
                 </div>
                 <div className="sidebar__item__color sidebar__item__color--red">
-                  <label for="red">Đỏ</label>
+                  <label htmlFor="red">Đỏ</label>
                 </div>
                 <div className="sidebar__item__color sidebar__item__color--black">
-                  <label for="black">Đen</label>
+                  <label htmlFor="black">Đen</label>
                 </div>
                 <div className="sidebar__item__color sidebar__item__color--blue">
-                  <label for="blue">Blue</label>
+                  <label htmlFor="blue">Xanh dương</label>
                 </div>
                 <div className="sidebar__item__color sidebar__item__color--green">
-                  <label for="green">Xanh</label>
+                  <label htmlFor="green">Xanh lá</label>
+                </div>
+              </div>
+
+              <div className="sidebar__item sidebar__item__price--option">
+                <h4>Lọc theo giá</h4>
+                <div className="sidebar__item__price">
+                  <label htmlFor="priceRange">Chọn khoảng giá:</label>
+                  <input type="range" id="priceRange" min="0" max="100000" step="1000" />
+                  <div className="price-range-display">
+                    <span>0 đ</span> - <span>100000 đ</span>
+                  </div>
                 </div>
               </div>
 

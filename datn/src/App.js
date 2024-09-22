@@ -5,18 +5,18 @@ import Home from "./component/client/home";
 import Blog from './component/client/blog';
 import Cart from "./component/client/cart";
 import CheckoutSection from "./component/client/check-out";
-import './assets/css/bootstrap.min.css'
-import './assets/css/elegant-icons.css'
-import './assets/css/font-awesome.min.css'
-// import './assets/css/jquery-ui.min.css'
-import './assets/css/nice-select.css'
-// import './assets/css/owl.carousel.min.css'
-import './assets/css/slicknav.min.css'
-import './assets/css/style2.css'
 import Product from "./component/client/shop";
 import ProductDetail from "./component/client/shop/detail";
 import Contact from "./component/client/contact";
 import BlogDetails from "./component/client/blog/detail";
+import Favourites from "./component/client/favourites";
+
+import './assets/css/bootstrap.min.css'
+import './assets/css/elegant-icons.css'
+import './assets/css/font-awesome.min.css'
+import './assets/css/nice-select.css'
+import './assets/css/slicknav.min.css'
+import './assets/css/style2.css'
 
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
@@ -63,6 +63,7 @@ function App() {
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/login" element={<Authentication2 />} />
+        <Route path="/favourites" element={<Favourites />} />
 
 
       {/* Các route admin */}
