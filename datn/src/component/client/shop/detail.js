@@ -24,152 +24,155 @@ const Detail = () => {
         { title: "Hệ thống truyền động", value: "Tự động vô cấp" },
         { title: "Hệ thống khởi động", value: "Điện" },
         { title: "Mức tiêu thụ nhiên liệu", value: "2,12 lít/100Km" },
-
     ];
+
     const [mainImage, setMainImage] = useState(sp);
+    const [quantity, setQuantity] = useState(1);
 
     const handleThumbnailClick = (image) => {
         setMainImage(image);
     };
 
+    // const [quantity, setQuantity] = useState(1);
+
+    const incrementQuantity = () => {
+        setQuantity((prevQuantity) => prevQuantity + 1);
+    };
+
+    const decrementQuantity = () => {
+        setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1)); // Prevents quantity from being less than 1
+    };
+
+    const handleQuantityChange = (e) => {
+        const value = Math.max(1, parseInt(e.target.value) || 1); // Ensures the input stays above 0
+        setQuantity(value);
+    };
+
     return (
         <>
             <Header />
-            <section className="product-details spad">
+            <section className="product-details py-5">
                 <div className="container">
                     <div className="row">
-                        <div className="col-lg-6 col-md-6">
+                        <div className="col-lg-6 col-md-6 mb-4">
                             <div className="product__details__pic">
-                                <div className="product__details__pic__item">
-                                    <img className="product__details__pic__item--large" src={mainImage} alt="Product" />
+                                <div className="product__details__pic__item mb-3">
+                                    <img className="img-fluid w-100" src={mainImage} alt="Product" />
                                 </div>
-                                <div className="product__details__pic__slider owl-carousel">
-                                    <img
-                                        src={sp}
-                                        alt="Thumbnail 1"
-                                        className={mainImage === sp ? 'active' : ''}
-                                        onClick={() => handleThumbnailClick(sp)}
-                                    />
-                                    <img
-                                        src={sp1}
-                                        alt="Thumbnail 2"
-                                        className={mainImage === sp1 ? 'active' : ''}
-                                        onClick={() => handleThumbnailClick(sp1)}
-                                    />
-                                    <img
-                                        src={sp}
-                                        alt="Thumbnail 3"
-                                        className={mainImage === sp ? 'active' : ''}
-                                        onClick={() => handleThumbnailClick(sp)}
-                                    />
-                                    <img
-                                        src={sp}
-                                        alt="Thumbnail 4"
-                                        className={mainImage === sp ? 'active' : ''}
-                                        onClick={() => handleThumbnailClick(sp)}
-                                    />
+                                <div className="row">
+                                    {[sp, sp1, sp, sp].map((image, index) => (
+                                        <div className="col-3" key={index}>
+                                            <img
+                                                src={image}
+                                                alt={`Thumbnail ${index + 1}`}
+                                                className={`img-thumbnail ${mainImage === image ? 'border-primary' : ''}`}
+                                                onClick={() => handleThumbnailClick(image)}
+                                                style={{ cursor: "pointer" }}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__text">
                                 <h3>Xe tay ga honda</h3>
-                                <div className="product__details__rating">
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star-half-o"></i>
+                                <div className="product__details__rating mb-3">
+                                    <span className="text-warning me-1">
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star-half-o"></i>
+                                    </span>
                                     <span>(18 reviews)</span>
                                 </div>
-                                <div className="product__details__price">40.000.000đ</div>
-                                <p>Thuộc phân khúc xe ga cao cấp và thừa hưởng thiết kế sang trọng nổi tiếng của dòng xe SH, Sh mode luôn được đánh giá cao nhờ kiểu dáng sang trọng, tinh tế tới từng đường nét, động cơ tiên tiến và các tiện nghi cao cấp xứng tầm phong cách sống thời thượng, đẳng cấp.</p>
+                                <div className="product__details__price fs-4 mb-3 text-danger">40.000.000đ</div>
+                                <p className="mb-4">
+                                    Thuộc phân khúc xe ga cao cấp và thừa hưởng thiết kế sang trọng nổi tiếng của dòng xe SH...
+                                </p>
+
                                 <div className="product__details__quantity">
                                     <div className="quantity">
                                         <div className="pro-qty">
-                                            <input type="text" value="1" />
+                                            <span className="dec qtybtn" onClick={decrementQuantity}>-</span>
+                                            <input
+                                                type="text"
+                                                value={quantity}
+                                                onChange={handleQuantityChange}
+                                            />
+                                            <span className="inc qtybtn" onClick={incrementQuantity}>+</span>
                                         </div>
                                     </div>
                                 </div>
-                                {/* <Link to="/" className="primary-btn">ADD TO CART</Link> */}
-                                {/* <Link to="/" className="heart-icon"><span className="icon_heart_alt"></span></Link> */}
-                                <ul className="list-unstyled">
-                                    <li className="mb-2">
-                                        <b>Động cơ:</b>
-                                        <span className="d-block">Động cơ eSP+ 4 van </span>
-                                        <samp className="d-block">Khung dập thế hệ mới eSAF</samp>
+                                <a href="#" className="primary-btn">ADD TO CART</a>
+                                <a href="#" className="heart-icon">
+                                    <span className="icon_heart_alt"></span>
+                                </a>
+
+
+                                <ul className="list-group list-group-flush mb-4">
+                                    <li className="list-group-item">
+                                        <strong>Động cơ:</strong> Động cơ eSP+ 4 van
                                     </li>
-                                    <li className="mb-2">
-                                        <b>Tiện ích:</b>
-                                        <span className="d-block">Hộc để đồ phía trước có trang bị cổng sạc USB.</span>
-                                        <samp className="d-block">Hộc đựng đồ dưới yên rộng rãi</samp>
+                                    <li className="list-group-item">
+                                        <strong>Tiện ích:</strong> Hộc để đồ phía trước có trang bị cổng sạc USB...
                                     </li>
-                                    <li className="mb-2">
-                                        <b>An toàn:</b>
-                                        <span className="d-block">Hệ thống chống bó cứng phanh (ABS)</span>
-                                        <span className="d-block">Hệ thống khóa thông minh Smart Key</span>
-                                    </li>
-                                    <li>
-                                        <b>Share on:</b>
-                                        <div className="d-flex gap-2">
-                                            <a href="#" className="text-decoration-none"><i className="fa fa-facebook"></i></a>
-                                            <a href="#" className="text-decoration-none"><i className="fa fa-twitter"></i></a>
-                                            <a href="#" className="text-decoration-none"><i className="fa fa-instagram"></i></a>
-                                            <a href="#" className="text-decoration-none"><i className="fa fa-pinterest"></i></a>
-                                        </div>
+                                    <li className="list-group-item">
+                                        <strong>An toàn:</strong> Hệ thống chống bó cứng phanh (ABS)...
                                     </li>
                                 </ul>
-
-
                             </div>
                         </div>
-                        <div className="col-lg-12">
-                            <div className="product__details__tab">
-                                <ul className="nav nav-tabs" role="tablist">
-                                    <li className="nav-item">
-                                        {/* <Link className="nav-link active" data-toggle="tab" to="#tabs-1" role="tab" aria-selected="true">Description</Link> */}
-                                    </li>
-                                    <li className="nav-item">
-                                        {/* <Link className="nav-link" data-toggle="tab" to="#tabs-2" role="tab" aria-selected="false">Information</Link> */}
-                                    </li>
-                                    <li className="nav-item">
-                                        {/* <Link className="nav-link" data-toggle="tab" to="#tabs-3" role="tab" aria-selected="false">Reviews <span>(1)</span></Link> */}
-                                    </li>
-                                </ul>
-                                <div className="tab-content">
-                                    <div className="tab-pane active" id="tabs-1" role="tabpanel">
-                                        <div className="product__details__tab__desc">
-                                            <h6>Thông tin sản phẩm</h6>
-                                            <table
-                                                style={{
-                                                    width: "100%",
-                                                    borderCollapse: "collapse",
-                                                    backgroundColor: "#f8f8f8",
-                                                }}
-                                            >
-                                                <tbody>
-                                                    {thongSo.map((item, index) => (
-                                                        <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
-                                                            <td style={{ padding: "8px", fontWeight: "bold" }}>{item.title}</td>
-                                                            <td style={{ padding: "8px" }}>{item.value}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+
+                        {/* Bảng thông số kỹ thuật */}
+                        <div className="col-lg-12 mt-5">
+                            <h4>Thông số kỹ thuật</h4>
+                            <table className="table table-bordered table-striped mt-3">
+                                <tbody>
+                                    {thongSo.map((item, index) => (
+                                        <tr key={index}>
+                                            <td><strong>{item.title}</strong></td>
+                                            <td>{item.value}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Giao diện phần đánh giá */}
+                    <div className="row mt-5">
+                        <div className="col-12">
+                            <div className="card">
+                                <div className="card-header">
+                                    <h4>Đánh giá sản phẩm</h4>
+                                </div>
+                                <div className="card-body">
+                                    <div className="mb-4">
+                                        <div className="d-flex justify-content-between">
+                                            <div><strong>Nguyễn Văn A</strong></div>
+                                            <div><span className="text-warning">★★★★★</span></div>
                                         </div>
+                                        <p>Xe chạy rất êm, thiết kế đẹp, đáng tiền mua.</p>
                                     </div>
-                                    <div className="tab-pane" id="tabs-2" role="tabpanel">
-                                        <div className="product__details__tab__desc">
-                                            <h6>Products Information</h6>
-                                            <p>SH Mode là một mẫu xe tay ga của Honda nổi bật với thiết kế sang trọng và hiện đại. Xe được trang bị động cơ mạnh mẽ và công nghệ tiên tiến, bao gồm hệ thống phanh ABS và đèn LED tiết kiệm năng lượng.</p>
-                                            {/* <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.</p> */}
+                                    <div className="mb-4">
+                                        <div className="d-flex justify-content-between">
+                                            <div><strong>Trần B</strong></div>
+                                            <div><span className="text-warning">★★★★☆</span></div>
                                         </div>
+                                        <p>Tiết kiệm nhiên liệu và dễ điều khiển.</p>
                                     </div>
-                                    <div className="tab-pane" id="tabs-3" role="tabpanel">
-                                        <div className="product__details__tab__desc">
-                                            <h6>Products Information</h6>
-                                            <p>SH Mode là một mẫu xe tay ga của Honda nổi bật với thiết kế sang trọng và hiện đại. Xe được trang bị động cơ mạnh mẽ và công nghệ tiên tiến, bao gồm hệ thống phanh ABS và đèn LED tiết kiệm năng lượng.</p>
-                                        </div>
+
+                                    {/* Phần bình luận */}
+                                    <div>
+                                        <h5>Viết bình luận</h5>
+                                        <textarea
+                                            className="form-control"
+                                            rows="4"
+                                            placeholder="Nhập bình luận của bạn..."
+                                        ></textarea>
+                                        <button className="btn btn-primary mt-3">Gửi bình luận</button>
                                     </div>
                                 </div>
                             </div>
