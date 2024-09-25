@@ -4,6 +4,7 @@ import Footer from "../home/footer";
 import { Link } from "react-router-dom";
 import sp from "../../../assets/img/cart/sp1.png";
 import sp1 from "../../../assets/img/cart/cart.png";
+import { FaStar } from 'react-icons/fa';
 
 const Detail = () => {
     const thongSo = [
@@ -48,6 +49,10 @@ const Detail = () => {
         const value = Math.max(1, parseInt(e.target.value) || 1); // Ensures the input stays above 0
         setQuantity(value);
     };
+    const [rating, setRating] = useState(0); // Đánh giá sao
+    const [hover, setHover] = useState(null); // Hover sao
+    const [comment, setComment] = useState(''); // Nội dung bình luận
+
 
     return (
         <>
@@ -168,13 +173,57 @@ const Detail = () => {
                                     {/* Phần bình luận */}
                                     <div>
                                         <h5>Viết bình luận</h5>
+
+                                        {/* Hiển thị đánh giá sao */}
+                                        <div className="mb-3">
+                                            {[...Array(5)].map((star, index) => {
+                                                const ratingValue = index + 1;
+                                                return (
+                                                    <label key={index}>
+                                                        <input
+                                                            type="radio"
+                                                            name="rating"
+                                                            value={ratingValue}
+                                                            onClick={() => setRating(ratingValue)}
+                                                            style={{ display: 'none' }} // Ẩn radio button
+                                                        />
+                                                        <FaStar
+                                                            className="star"
+                                                            color={ratingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
+                                                            size={30}
+                                                            onMouseEnter={() => setHover(ratingValue)}
+                                                            onMouseLeave={() => setHover(null)}
+                                                            style={{ cursor: "pointer" }}
+                                                        />
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {/* Textarea để nhập bình luận */}
                                         <textarea
                                             className="form-control"
                                             rows="4"
                                             placeholder="Nhập bình luận của bạn..."
+                                            value={comment}
+                                            onChange={(e) => setComment(e.target.value)}
                                         ></textarea>
-                                        <button className="btn btn-primary mt-3">Gửi bình luận</button>
+
+                                        {/* Nút gửi bình luận */}
+                                        <button
+                                            className="btn btn-primary mt-3"
+                                            onClick={() => {
+                                                if (!comment) {
+                                                    alert("Vui lòng nhập bình luận.");
+                                                    return;
+                                                }
+                                                alert(`Bình luận: ${comment}\nĐánh giá: ${rating} sao`);
+                                            }}
+                                        >
+                                            Gửi bình luận
+                                        </button>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
