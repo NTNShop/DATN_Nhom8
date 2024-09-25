@@ -73,7 +73,6 @@ function App() {
         <Route path="/product" element={<Product/>}/>
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
-        <Route path="/login" element={<Authentication2 />} />
         <Route path="/favourites" element={<Favourites />} />
 
         <Route path="/login" element={<Login />} />
