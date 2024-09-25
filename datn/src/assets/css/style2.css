@@ -668,7 +668,49 @@ ol {
 	margin-right: 50px;
 	position: relative;
 }
-
+.sidebar__item__price {
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+  }
+  
+  .sidebar__item__price label {
+	margin-bottom: 5px;
+	font-weight: bold;
+  }
+  
+  .sidebar__item__price input[type="range"] {
+	-webkit-appearance: none;
+	width: 100%;
+	height: 8px;
+	background: #ddd;
+	border-radius: 5px;
+	outline: none;
+  }
+  
+  .sidebar__item__price input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	background: #cc0000;
+	border-radius: 50%;
+	cursor: pointer;
+  }
+  
+  .sidebar__item__price input[type="range"]::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	background: #007bff;
+	border-radius: 50%;
+	cursor: pointer;
+  }
+  
+  .price-range-display {
+	margin-top: 10px;
+	font-weight: bold;
+  }
+  
 .header__menu ul li .header__menu__dropdown {
 	position: absolute;
 	left: 0;

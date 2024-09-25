@@ -9,18 +9,18 @@ import ProfileClient from "./component/client/profile/index";
 import Login from "./component/client/profile/login";
 import Register from "./component/client/profile/register";
 import ForgotPassword from "./component/client/profile/forgetPassword";
-import './assets/css/bootstrap.min.css'
-import './assets/css/elegant-icons.css'
-import './assets/css/font-awesome.min.css'
-// import './assets/css/jquery-ui.min.css'
-import './assets/css/nice-select.css'
-// import './assets/css/owl.carousel.min.css'
-import './assets/css/slicknav.min.css'
-import './assets/css/style2.css'
 import Product from "./component/client/shop";
 import ProductDetail from "./component/client/shop/detail";
 import Contact from "./component/client/contact";
 import BlogDetails from "./component/client/blog/detail";
+import Favourites from "./component/client/favourites";
+
+import './assets/css/bootstrap.min.css'
+import './assets/css/elegant-icons.css'
+import './assets/css/font-awesome.min.css'
+import './assets/css/nice-select.css'
+import './assets/css/slicknav.min.css'
+import './assets/css/style2.css'
 
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
@@ -73,6 +73,9 @@ function App() {
         <Route path="/product" element={<Product/>}/>
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
+        <Route path="/login" element={<Authentication2 />} />
+        <Route path="/favourites" element={<Favourites />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
