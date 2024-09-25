@@ -28,13 +28,13 @@ const Detail = () => {
     ];
 
     const [mainImage, setMainImage] = useState(sp);
-    const [quantity, setQuantity] = useState(1);
+
 
     const handleThumbnailClick = (image) => {
         setMainImage(image);
     };
 
-    // const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState(1);
 
     const incrementQuantity = () => {
         setQuantity((prevQuantity) => prevQuantity + 1);
@@ -186,4 +186,4 @@ const Detail = () => {
     );
 };
 
-export default ProductDetail;
+export default Detail;
