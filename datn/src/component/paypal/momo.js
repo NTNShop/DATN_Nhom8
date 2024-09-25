@@ -50,7 +50,7 @@ const Momo = () => {
                 <div className="payment-info">
                   <img src={momoLogo} alt="MoMo Logo" className="payment-info__image" />
                   <p>Thanh toán qua MoMo bằng cách quét mã QR hoặc sử dụng số điện thoại đã đăng ký MoMo của bạn.</p>
-                  <a href="/success" className="payment-button" target="_blank" rel="noopener noreferrer">
+                  <a href="/qrmomo" className="payment-button" target="_blank" rel="noopener noreferrer">
   Tiến hành thanh toán
 </a>
 

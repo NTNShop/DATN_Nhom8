@@ -50,7 +50,7 @@ const Atm = () => {
                 <div className="payment-info">
                   <img src={atmLogo} alt="MoMo Logo" className="payment-info__image" />
                   <p>Thanh toán tiện ích với tài khoản thẻ 24/24h</p>
-                  <a href="/success" className="payment-button" target="_blank" rel="noopener noreferrer">
+                  <a href="/qratm" className="payment-button" target="_blank" rel="noopener noreferrer">
                     Tiến hành thanh toán
                   </a>
                 </div>

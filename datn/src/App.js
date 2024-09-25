@@ -41,6 +41,8 @@ import Detail from "./component/client/shop/detail";
 import PaymentSuccessPage from "./component/paypal/success";
 import Momo from "./component/paypal/momo";
 import Atm from "./component/paypal/atm";
+import Qratm from "./component/paypal/qratm";
+import Qrmomo from "./component/paypal/qrmomo";
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -82,6 +84,8 @@ function App() {
         <Route path="/success" element={<PaymentSuccessPage/>}/>
         <Route path="/momo" element={<Momo/>}/>
         <Route path="/atm" element={<Atm/>}/>
+        <Route path="/qratm" element={<Qratm/>}/>
+        <Route path="/qrmomo" element={<Qrmomo/>}/>
 
     </Route>
     )
