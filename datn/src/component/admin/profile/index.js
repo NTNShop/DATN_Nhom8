@@ -15,12 +15,12 @@ const Profile = () => {
             <div className="page-breadcrumb">
                 <div className="row align-items-center">
                     <div className="col-md-6 col-8 align-self-center">
-                        <h3 className="page-title mb-0 p-0">Profile</h3>
+                        <h3 className="page-title mb-0 p-0">Hồ sơ</h3>
                         <div className="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb">
-                                    <li className="breadcrumb-item"><a href="/admin">Home</a></li>
-                                    <li className="breadcrumb-item active" aria-current="page">Profile</li>
+                                    <li className="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+                                    <li className="breadcrumb-item active" aria-current="page">Hồ sơ</li>
                                 </ol>
                             </nav>
                         </div>

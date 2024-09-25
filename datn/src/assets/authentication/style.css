@@ -6,20 +6,23 @@ body{
 }
 
 .login-box{
-	width:100%;
-	margin:auto;
-	max-width:525px;
-	min-height:670px;
-	position:relative;
+	/* width:100%; */
+	/* margin:auto; */
+	/* max-width:525px;
+	min-height:670px; */
+	/* position:relative; */
 	background:url(https://images.unsplash.com/photo-1507208773393-40d9fc670acf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1268&q=80) no-repeat center;
 	box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+	
 }
 .login-snip{
+	/* margin-bottom: 200px; */
 	width:100%;
-	height:100%;
-	position:absolute;
+	height:700px;
+	/* position: relative; */
 	padding:90px 70px 50px 70px;
-	background:rgba(0, 77, 77,.9);
+	background:rgba(0, 60, 60, 0.9);
+	
 }
 .login-snip .login,
 .login-snip .sign-up-form{
@@ -71,8 +74,16 @@ body{
 	color:#fff;
 	display:block;
 }
-.login-space .group .input,
+/* ============================================================================================================ */
+.login-space .group .input{
+	width: 800px;
+	border: none;
+	padding: 15px 20px;
+	border-radius: 25px;
+	background: rgba(255, 255, 255, .1);
+}
 .login-space .group .button{
+	width: 800px;
 	border:none;
 	padding:15px 20px;
 	border-radius:25px;
