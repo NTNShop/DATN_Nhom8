@@ -9,9 +9,26 @@ const EditUser = () => {
   return (
     <div>
       <Header />
+      <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
+        <div className="page-breadcrumb">
+        <div className="row align-items-center">
+                    <div className="col-md-6 col-8 align-self-center">
+                        <div className="d-flex align-items-center">
+                            <nav aria-label="breadcrumb">
+                                <ol className="breadcrumb">
+                                    <li className="breadcrumb-item"><a href="#">Danh sách người dùng</a></li>
+                                    <li className="breadcrumb-item active" aria-current="page">Chỉnh sửa người dùng</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+          </div>
+      
+          <div className="container-fluid">
 
       <div className="row">
-        <div className="col-sm-11" style={{ position: "relative", left: "241px" }}>
+        <div className="col-sm-10">
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">Chỉnh Sửa Người Dùng</h4>
@@ -26,7 +43,7 @@ const EditUser = () => {
                   />
                 </div>
                 <div className="form-group mb-3">
-                  <label className="col-md-12 mb-0">Tên</label>
+                  <label className="col-md-12 mb-0">Họ và tên</label>
                   <input
                     type="text"
                     className="form-control-line border-input"
@@ -40,6 +57,26 @@ const EditUser = () => {
                     className="form-control-line border-input"
                     required/>
                     </div>
+                    <div className="form-group mb-3">
+                <label className="col-md-12 mb-0">Mật Khẩu</label>
+                <div className="col-md-12">
+                  <input 
+                    type="password" 
+                    id="password" 
+                    className="form-control-line border-input" 
+                  />
+                </div>
+              </div>
+              <div className="form-group mb-3">
+                <label className="col-md-12 mb-0">Số điện thoại</label>
+                <div className="col-md-12">
+                  <input 
+                    type="text" 
+                    id="name" 
+                    className="form-control-line border-input" 
+                  />
+                </div>
+              </div>
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Vai Trò</label>
                       <select
@@ -62,15 +99,21 @@ const EditUser = () => {
                         <option value="0">Inactive</option>
                       </select>
                     </div>
-                    <button type="submit" className="btn btn-success">Cập Nhật</button>
+                    <div class="form-group">
+                            <div class="col-sm-12 d-flex">
+                                <button class="btn btn-success mx-auto mx-md-0 text-white">Cập nhật</button>
+                            </div>
+                        </div>
                   </form>
                 </div>
               </div>
             </div>
           </div>
-    
-          <Footer />
+          </div>
+          {/* <Footer /> */}
         </div>
+                
+      </div>
       );
     }
     

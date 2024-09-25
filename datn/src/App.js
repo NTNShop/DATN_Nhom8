@@ -41,11 +41,15 @@ import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import Authentication2 from "./component/client/authentication";
 import ListOrder from "./component/admin/order/list";
+import Comment from "./component/admin/comment/list";
+import BlogAdmin from "./component/admin/blog/list";
+import EditBlog from "./component/admin/blog/edit";
+import AddBlog from "./component/admin/blog/add";
 
 //import css
 import './assets/plugins/chartist-js/dist/chartist.min.css';
 import './assets/plugins/chartist-js/dist/chartist-init.css';
-import './assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css';
+// import './assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css';
 import "./assets/plugins/c3-master/c3.min.css";
 import './assets/plugins/c3-master/c3.min.css';
 import "./assets/css/style.min.css";
@@ -79,7 +83,11 @@ function App() {
       <Route path="/admin/login" element={<Authentication />} />
       <Route path="/admin/addUser" element={<AddUser />} />
       <Route path="/admin/editUser" element={<EditUser />} />
-      <Route path="/admin/order/list" element={<ListOrder />} />
+      <Route path="/admin/order" element={<ListOrder />} />
+      <Route path="/admin/comment" element={<Comment />} />
+      <Route path="/admin/blog" element={<BlogAdmin />} />
+      <Route path="/admin/addBlog" element={<AddBlog />} />
+      <Route path="/admin/editBlog" element={<EditBlog />} />
       </Route>
     )
   )
