@@ -49,7 +49,6 @@ import BlogAdmin from "./component/admin/blog/list";
 import EditBlog from "./component/admin/blog/edit";
 import AddBlog from "./component/admin/blog/add";
 
-import Authentication2 from "./component/client/authentication";
 import AlternativePaymentPage from "./component/paypal";
 //import css
 import './assets/plugins/chartist-js/dist/chartist.min.css';
@@ -63,10 +62,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 
-import Home from "./component/client/home";
-import Blog from './component/client/blog';
-import Cart from "./component/client/cart";
-import CheckoutSection from "./component/client/check-out";
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
 import './assets/css/font-awesome.min.css'
@@ -110,6 +105,19 @@ function App() {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProfileClient />} />
 
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutSection />} />
+        <Route path="/shop" element={<Shop/>}/>
+        <Route path="/detail" element={<Detail/>}/>
+        <Route path="/alternative-payment" element={<AlternativePaymentPage/>}/>
+        <Route path="/success" element={<PaymentSuccessPage/>}/>
+        <Route path="/momo" element={<Momo/>}/>
+        <Route path="/atm" element={<Atm/>}/>
+        <Route path="/qratm" element={<Qratm/>}/>
+        <Route path="/qrmomo" element={<Qrmomo/>}/>
+
       {/* Các route admin */}
       <Route path="/admin" element={<Layout />} />
       <Route path="/admin/dashboard" element={<Dashboard />} />
@@ -129,20 +137,9 @@ function App() {
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
-      </Route>
+
     
-        <Route path="/" element={<Home />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<CheckoutSection />} />
-        <Route path="/shop" element={<Shop/>}/>
-        <Route path="/detail" element={<Detail/>}/>
-        <Route path="/alternative-payment" element={<AlternativePaymentPage/>}/>
-        <Route path="/success" element={<PaymentSuccessPage/>}/>
-        <Route path="/momo" element={<Momo/>}/>
-        <Route path="/atm" element={<Atm/>}/>
-        <Route path="/qratm" element={<Qratm/>}/>
-        <Route path="/qrmomo" element={<Qrmomo/>}/>
+        
 
     </Route>
     )

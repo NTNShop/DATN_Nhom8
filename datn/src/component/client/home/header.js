@@ -56,7 +56,6 @@ const Header = () => {
             <nav className="header__menu">
               <ul>
                 <li>
-                <li>
                   <Link to="/">Trang chủ</Link>
                 </li>
                 <li>
@@ -88,7 +87,6 @@ const Header = () => {
                 
                 <li>
                   <Link to="/contact">Liên Hệ</Link>
-                  <Link to="/contact">Liên Hệ</Link>
                 </li>
                 
               </ul>
@@ -104,7 +102,7 @@ const Header = () => {
                 <li>
                   <Link to ="/cart">
                     <i className="fa fa-shopping-cart"></i> <span>3</span>
-                  </a>
+                  </Link>
                 </li>
                 <li >
                       <a href="#" className="pl-1">
