@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../home/header';
 import Footer from '../home/footer';
 import { Link } from 'react-router-dom';
-import sp from "../../../assets/img/cart/cart.png";
+import banner from "../../../assets/img/hero/banner2.jpg";
 
 const Contact = () => {
 
@@ -10,24 +10,53 @@ const Contact = () => {
         <>
           <Header />
             {/* Breadcrumb Section Begin */}
-            <section className="breadcrumb-section">
-            <img src={sp} width={9400} height={350} alt="Breadcrumb" className="breadcrumb-img" />
+            <section 
+    className="breadcrumb-section set-bg" 
+    style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+  >
+    <div className="container">
+      <div className="row">
+        <div className="col-lg-12 text-center">
+          <div className="breadcrumb__text">
+            <h2>LIÊN HỆ</h2>
+            <div className="breadcrumb__option">
+              <a href="./index.html">TRANG CHỦ</a>
+              <span>LIÊN HỆ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+            {/* Breadcrumb Section End */}
+{/* Contact Form Begin */}
+<div className="contact-form spad">
                 <div className="container">
                     <div className="row">
-                        <div className="col-lg-12 text-center">
-                            <div className="breadcrumb__text">
-                                <h2>Contact Us</h2>
-                                <div className="breadcrumb__option">
-                                    <a href="./index.html">Home</a>
-                                    <span>Contact Us</span>
-                                </div>
+                        <div className="col-lg-12">
+                            <div className="contact__form__title">
+                                <h2>Để lại tin nhắn</h2>
                             </div>
                         </div>
                     </div>
+                    <form action="#">
+                        <div className="row">
+                            <div className="col-lg-6 col-md-6">
+                                <input type="text" placeholder="Họ và tên" />
+                            </div>
+                            <div className="col-lg-6 col-md-6">
+                                <input type="text" placeholder="Email" />
+                            </div>
+                            <div className="col-lg-12 text-center">
+                                <textarea placeholder="Lời nhắn"></textarea>
+                                <button type="submit" className="site-btn">Gửi</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </section>
-            {/* Breadcrumb Section End */}
-
+            </div>
+            {/* Contact Form End */}
             {/* Contact Section Begin */}
             <section className="contact spad">
                 <div className="container">
@@ -89,33 +118,7 @@ const Contact = () => {
             </div>
             {/* Map End */}
 
-            {/* Contact Form Begin */}
-            <div className="contact-form spad">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <div className="contact__form__title">
-                                <h2>Để lại tin nhắn</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <form action="#">
-                        <div className="row">
-                            <div className="col-lg-6 col-md-6">
-                                <input type="text" placeholder="Họ và tên" />
-                            </div>
-                            <div className="col-lg-6 col-md-6">
-                                <input type="text" placeholder="Email" />
-                            </div>
-                            <div className="col-lg-12 text-center">
-                                <textarea placeholder="Lời nhắn"></textarea>
-                                <button type="submit" className="site-btn">Gửi</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            {/* Contact Form End */}
+            
             <Footer />
         </>
     );

@@ -5,14 +5,23 @@ import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import Cart from "../../../assets/img/cart/cart.png";
 import Cart1 from "../../../assets/img/cart/cart1.png";
-
+import banner from "../../../assets/img/hero/banner3.avif";
 const Blog = () => {
   return (
     <>
       <Header />
-      <div className="text-center">
-        <h2>TIN TỨC XE MÁY</h2>
+      <div>
+        <img src={banner} alt="Logo"/>
       </div>
+      <div className="container">
+      <div className="row">
+        <div className="col-lg-12 text-center">
+          <div className="breadcrumb__text">
+            <h2 className="text-dark pt-5" style={{ borderBottom: '2px solid #de0000'}}>BÀI VIẾT</h2>
+          </div>
+        </div>
+      </div>
+    </div>
       <div className="blog spad text-center">
         <div className="container">
           <div className="row">
@@ -26,33 +35,14 @@ const Blog = () => {
                     </button>
                   </form>
                 </div>
-                <div className="blog__sidebar__item col-lg-8">
-                  <h4>Danh mục xe máy</h4>
-                  <ul>
-                    <li>
-                      <a href="#">Tất cả</a>
-                    </li>
-                    <li>
-                      <a href="#">Xe tay ga (20)</a>
-                    </li>
-                    <li>
-                      <a href="#">Xe côn tay (5)</a>
-                    </li>
-                    <li>
-                      <a href="#">Xe điện (9)</a>
-                    </li>
-                    <li>
-                      <a href="#">Xe phân khối lớn (10)</a>
-                    </li>
-                  </ul>
-                </div>
+
 
                 <div className="blog__sidebar__item">
                   <h4>Tin tức xe máy gần đây</h4>
                   <div className="blog__sidebar__recent">
                     <a href="#" className="blog__sidebar__recent__item">
                       <div className="blog__sidebar__recent__item__pic">
-                        <img src={Cart1} width={100} height={65} alt="" />
+                        <img src={Cart1} width={100}  alt="" />
                       </div>
                       <div className="blog__sidebar__recent__item__text">
                         <h6>Top 5 xe máy tay ga tốt nhất năm 2024</h6>
@@ -61,7 +51,7 @@ const Blog = () => {
                     </a>
                     <a href="#" className="blog__sidebar__recent__item">
                       <div className="blog__sidebar__recent__item__pic">
-                        <img src={Cart1}  width={100} height={65} alt="" />
+                        <img src={Cart1}  width={100}  alt="" />
                       </div>
                       <div className="blog__sidebar__recent__item__text">
                         <h6>Các mẫu xe điện mới nhất trên thị trường</h6>
@@ -70,7 +60,7 @@ const Blog = () => {
                     </a>
                     <a href="#" className="blog__sidebar__recent__item">
                       <div className="blog__sidebar__recent__item__pic">
-                        <img src={Cart1}  width={100} height={65} alt="" />
+                        <img src={Cart1}  width={100} alt="" />
                       </div>
                       <div className="blog__sidebar__recent__item__text">
                         <h6>Đánh giá xe phân khối lớn mới ra mắt</h6>
@@ -122,6 +112,60 @@ const Blog = () => {
                   </div>
                 </div>
                 {/* Repeat for other blog items */}
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <div className="blog__item">
+                    <div className="blog__item__pic">
+                      <img src={Cart} alt="" />
+                    </div>
+                    <div className="blog__item__text">
+                      <ul>
+                        <li>
+                          <i className="fa fa-calendar-o"></i> Ngày 4 tháng 5,
+                          2024
+                        </li>
+                        <li>
+                          <i className="fa fa-comment-o"></i> 5
+                        </li>
+                      </ul>
+                      <h5>
+                        <Link to="/blog-details/2">Hướng dẫn chọn xe điện tiết kiệm</Link>
+                      </h5>
+                      <p>
+                        Những lưu ý quan trọng khi chọn mua xe điện để tiết kiệm chi phí và bảo vệ môi trường.
+                      </p>
+                      <Link to="/blog-details/2" className="blog__btn">
+                        ĐỌC THÊM <span className="arrow_right"></span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <div className="blog__item">
+                    <div className="blog__item__pic">
+                      <img src={Cart} alt="" />
+                    </div>
+                    <div className="blog__item__text">
+                      <ul>
+                        <li>
+                          <i className="fa fa-calendar-o"></i> Ngày 4 tháng 5,
+                          2024
+                        </li>
+                        <li>
+                          <i className="fa fa-comment-o"></i> 5
+                        </li>
+                      </ul>
+                      <h5>
+                        <Link to="/blog-details/2">Hướng dẫn chọn xe điện tiết kiệm</Link>
+                      </h5>
+                      <p>
+                        Những lưu ý quan trọng khi chọn mua xe điện để tiết kiệm chi phí và bảo vệ môi trường.
+                      </p>
+                      <Link to="/blog-details/2" className="blog__btn">
+                        ĐỌC THÊM <span className="arrow_right"></span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
                 <div className="col-lg-6 col-md-6 col-sm-6">
                   <div className="blog__item">
                     <div className="blog__item__pic">

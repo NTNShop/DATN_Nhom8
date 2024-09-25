@@ -5,6 +5,10 @@ import Home from "./component/client/home";
 import Blog from './component/client/blog';
 import Cart from "./component/client/cart";
 import CheckoutSection from "./component/client/check-out";
+import ProfileClient from "./component/client/profile/index";
+import Login from "./component/client/profile/login";
+import Register from "./component/client/profile/register";
+import ForgotPassword from "./component/client/profile/forgetPassword";
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
 import './assets/css/font-awesome.min.css'
@@ -39,7 +43,6 @@ import EditUser from "./component/admin/users/edit";
 import AddUser from "./component/admin/users/add";
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
-import Authentication2 from "./component/client/authentication";
 import ListOrder from "./component/admin/order/list";
 import Comment from "./component/admin/comment/list";
 import BlogAdmin from "./component/admin/blog/list";
@@ -53,6 +56,10 @@ import './assets/plugins/chartist-js/dist/chartist-init.css';
 import "./assets/plugins/c3-master/c3.min.css";
 import './assets/plugins/c3-master/c3.min.css';
 import "./assets/css/style.min.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -66,8 +73,10 @@ function App() {
         <Route path="/product" element={<Product/>}/>
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
-        <Route path="/login" element={<Authentication2 />} />
-
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/profile" element={<ProfileClient />} />
 
       {/* Các route admin */}
       <Route path="/admin" element={<Layout />} />
