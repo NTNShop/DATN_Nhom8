@@ -47,19 +47,20 @@ const Header = () => {
         <div className="row">
           <div className="col-lg-3">
             <div className="header__logo">
-              <a href="./index.html">
+              <Link to="/">
                 <img src={logo} width={150} height={75} alt="Logo" />
-              </a>
+              </Link>
             </div>
           </div>
           <div className="col-lg-6">
             <nav className="header__menu">
               <ul>
                 <li>
+                <li>
                   <Link to="/">Trang chủ</Link>
                 </li>
                 <li>
-                  <Link to="/product">Cửa Hàng</Link>
+                  <Link to="/shop">Cửa Hàng</Link>
                 </li>
                 <li>
                   <a href>Trang</a>
@@ -77,7 +78,7 @@ const Header = () => {
                       <Link to="/checkout">Thanh Toán</Link>
                     </li>
                     <li>
-                      <a href="./blog">Chi Tiết Blog</a>
+                      <Link to="/blog">Chi Tiết Blog</Link>
                     </li>
                   </ul>
                 </li>
@@ -86,6 +87,7 @@ const Header = () => {
                 </li>
                 
                 <li>
+                  <Link to="/contact">Liên Hệ</Link>
                   <Link to="/contact">Liên Hệ</Link>
                 </li>
                 
@@ -100,7 +102,7 @@ const Header = () => {
                   <Link to="/profile"><i className="fa fa-user"></i></Link>
                 </li>
                 <li>
-                  <a href="/cart">
+                  <Link to ="/cart">
                     <i className="fa fa-shopping-cart"></i> <span>3</span>
                   </a>
                 </li>

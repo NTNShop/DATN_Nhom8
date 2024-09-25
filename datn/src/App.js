@@ -49,6 +49,8 @@ import BlogAdmin from "./component/admin/blog/list";
 import EditBlog from "./component/admin/blog/edit";
 import AddBlog from "./component/admin/blog/add";
 
+import Authentication2 from "./component/client/authentication";
+import AlternativePaymentPage from "./component/paypal";
 //import css
 import './assets/plugins/chartist-js/dist/chartist.min.css';
 import './assets/plugins/chartist-js/dist/chartist-init.css';
@@ -59,6 +61,34 @@ import "./assets/css/style.min.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+
+import Home from "./component/client/home";
+import Blog from './component/client/blog';
+import Cart from "./component/client/cart";
+import CheckoutSection from "./component/client/check-out";
+import './assets/css/bootstrap.min.css'
+import './assets/css/elegant-icons.css'
+import './assets/css/font-awesome.min.css'
+// import './assets/css/jquery-ui.min.css'
+import './assets/css/nice-select.css'
+// import './assets/css/owl.carousel.min.css'
+import './assets/css/slicknav.min.css'
+import './assets/css/style.css'
+import Shop from "./component/client/shop";
+import Detail from "./component/client/shop/detail";
+import PaymentSuccessPage from "./component/paypal/success";
+import Momo from "./component/paypal/momo";
+import Atm from "./component/paypal/atm";
+import Qratm from "./component/paypal/qratm";
+import Qrmomo from "./component/paypal/qrmomo";
+// import './assets/css/all.min.css'
+// import './assets/css/animate.css'
+// import './assets/css/magnific-popup.css'
+// import './assets/css/main.css'
+// import './assets/css/owl.carousel.css'
+// import './assets/css/meanmenu.min.css'
+// import './assets/css/responsive.css'
 
 function App() {
   const router = createBrowserRouter(
@@ -100,11 +130,27 @@ function App() {
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
       </Route>
-    )
-  )
+    
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutSection />} />
+        <Route path="/shop" element={<Shop/>}/>
+        <Route path="/detail" element={<Detail/>}/>
+        <Route path="/alternative-payment" element={<AlternativePaymentPage/>}/>
+        <Route path="/success" element={<PaymentSuccessPage/>}/>
+        <Route path="/momo" element={<Momo/>}/>
+        <Route path="/atm" element={<Atm/>}/>
+        <Route path="/qratm" element={<Qratm/>}/>
+        <Route path="/qrmomo" element={<Qrmomo/>}/>
 
+    </Route>
+    )
+  );
+ 
   return (
     <RouterProvider router={router} />
+   
   );
 }
 
