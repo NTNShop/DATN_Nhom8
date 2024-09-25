@@ -10,9 +10,9 @@ const Blog = () => {
   return (
     <>
       <Header />
-      <div className="col-lg-12">
-                                <img src={banner} width={""} alt="Logo" />
-                        </div>   
+      <div>
+        <img src={banner} alt="Logo"/>
+      </div>
       <div className="container">
       <div className="row">
         <div className="col-lg-12 text-center">
@@ -112,6 +112,60 @@ const Blog = () => {
                   </div>
                 </div>
                 {/* Repeat for other blog items */}
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <div className="blog__item">
+                    <div className="blog__item__pic">
+                      <img src={Cart} alt="" />
+                    </div>
+                    <div className="blog__item__text">
+                      <ul>
+                        <li>
+                          <i className="fa fa-calendar-o"></i> Ngày 4 tháng 5,
+                          2024
+                        </li>
+                        <li>
+                          <i className="fa fa-comment-o"></i> 5
+                        </li>
+                      </ul>
+                      <h5>
+                        <Link to="/blog-details/2">Hướng dẫn chọn xe điện tiết kiệm</Link>
+                      </h5>
+                      <p>
+                        Những lưu ý quan trọng khi chọn mua xe điện để tiết kiệm chi phí và bảo vệ môi trường.
+                      </p>
+                      <Link to="/blog-details/2" className="blog__btn">
+                        ĐỌC THÊM <span className="arrow_right"></span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <div className="blog__item">
+                    <div className="blog__item__pic">
+                      <img src={Cart} alt="" />
+                    </div>
+                    <div className="blog__item__text">
+                      <ul>
+                        <li>
+                          <i className="fa fa-calendar-o"></i> Ngày 4 tháng 5,
+                          2024
+                        </li>
+                        <li>
+                          <i className="fa fa-comment-o"></i> 5
+                        </li>
+                      </ul>
+                      <h5>
+                        <Link to="/blog-details/2">Hướng dẫn chọn xe điện tiết kiệm</Link>
+                      </h5>
+                      <p>
+                        Những lưu ý quan trọng khi chọn mua xe điện để tiết kiệm chi phí và bảo vệ môi trường.
+                      </p>
+                      <Link to="/blog-details/2" className="blog__btn">
+                        ĐỌC THÊM <span className="arrow_right"></span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
                 <div className="col-lg-6 col-md-6 col-sm-6">
                   <div className="blog__item">
                     <div className="blog__item__pic">

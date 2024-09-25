@@ -43,7 +43,6 @@ const Header = () => {
                 </div>
             </div>
         </div>
-
       <div className="container">
         <div className="row">
           <div className="col-lg-3">
@@ -98,14 +97,17 @@ const Header = () => {
             <div className="header__cart">
               <ul>
                 <li>
-                  <a href>
-                    <i className="fa fa-user"></i>
-                  </a>
+                  <Link to="/profile"><i className="fa fa-user"></i></Link>
                 </li>
                 <li>
                   <a href="/cart">
                     <i className="fa fa-shopping-cart"></i> <span>3</span>
                   </a>
+                </li>
+                <li >
+                      <a href="#" className="pl-1">
+                        <i className="fa fa-heart"></i>
+                      </a>
                 </li>
               </ul>
             </div>
@@ -126,7 +128,7 @@ const Header = () => {
                   <div className="hero__categories">
                       <div className="hero__categories__all">
                           <i className="fa fa-bars"></i>
-                          <span>All departments</span>
+                          <span>Tất cả danh mục</span>
                       </div>
                     <ul>
                       <li>
