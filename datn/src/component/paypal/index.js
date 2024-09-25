@@ -87,8 +87,8 @@ const AlternatePaymentSection = () => {
 
                 <div className="col-lg-12 text-center my-4">
                     <div className="payment-info">
-                      <img src={qrCode} alt="QR Code" className="payment-info__image" />
-                      <img src={momoLogo} alt="MoMo Logo" className="payment-info__image" />
+                      <a href='/atm'><img src={qrCode} alt="QR Code" className="payment-info__image" /></a>
+                      <a href='/momo'><img src={momoLogo} alt="MoMo Logo" className="payment-info__image" /></a>
                     </div>
                     <p className="payment-info__text">Chọn một trong hai phương thức để thanh toán</p>
                   </div>

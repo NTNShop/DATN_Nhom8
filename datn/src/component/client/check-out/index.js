@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';  // Thêm useNavigate để điều hướng
 import Header from '../home/header';
 import Footer from '../home/footer';
@@ -8,32 +8,17 @@ const CheckoutSection = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const navigate = useNavigate(); // Hook điều hướng
 
-  // Hàm điều hướng người dùng tới trang PayPal
-  const redirectToPayPal = () => {
-    const paypalUrl = 'https://www.paypal.com/cgi-bin/webscr'; 
-    const form = document.createElement('form');
-    form.setAttribute('action', paypalUrl);
-    form.setAttribute('method', 'POST');
-
-    form.innerHTML = `
-      <input type="hidden" name="cmd" value="_xclick">
-      <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@example.com">
-      <input type="hidden" name="item_name" value="Tổng cộng đơn hàng">
-      <input type="hidden" name="amount" value="750.99">
-      <input type="hidden" name="currency_code" value="USD">
-    `;
-    document.body.appendChild(form);
-    form.submit();
-  };
-
-  // Xử lý khi chọn phương thức thanh toán
-  useEffect(() => {
-    if (selectedPaymentMethod === 'paypal') {
-      redirectToPayPal();
-    } else if (selectedPaymentMethod === 'cod') {
-      navigate('/alternative-payment');  // Điều hướng tới trang mới
+  // Hàm xử lý khi nhấn nút "ĐẶT HÀNG"
+  const handlePlaceOrder = (e) => {
+    e.preventDefault();  // Ngăn chặn tải lại trang khi form được submit
+    if (selectedPaymentMethod === 'cod') {
+      navigate('/alternative-payment');  // Điều hướng tới trang thanh toán khác
+    } else if (selectedPaymentMethod === 'cash-on-delivery') {
+      navigate('/success');  // Điều hướng tới trang thành công
+    } else {
+      alert("Vui lòng chọn phương thức thanh toán!"); // Cảnh báo nếu chưa chọn phương thức
     }
-  }, [selectedPaymentMethod, navigate]);
+  };
 
   return (
     <>
@@ -62,14 +47,13 @@ const CheckoutSection = () => {
           <div className="row">
             <div className="col-lg-12">
               <h6>
-                <span className="icon_tag_alt"></span> Có mã giảm giá? <a href="#">Nhấp vào đây</a> để nhập mã của bạn
+                <span className="icon_tag_alt"></span> Có mã giảm giá? <a href="">Nhấp vào đây</a> để nhập mã của bạn
               </h6>
             </div>
           </div>
           <div className="checkout__form">
             <h4>Chi tiết thanh toán</h4>
-            <form action="#">
-
+            <form onSubmit={handlePlaceOrder}>
               <div className="row">
                 <div className="col-lg-8 col-md-6">
                   {/* Form thông tin người dùng */}
@@ -121,26 +105,26 @@ const CheckoutSection = () => {
 
                     {/* Chọn phương thức thanh toán */}
                     <div className="checkout__input__radio">
-                      <label htmlFor="payment">
-                        
+                      <label htmlFor="payment-cod">
                         <input
                           type="radio"
-                          id="payment"
+                          id="payment-cod"
                           name="payment-method"
                           onChange={() => setSelectedPaymentMethod('cod')}
-                        />Thanh toán bằng phương thức khác
+                        />
+                        Thanh toán bằng phương thức khác
                         <span className="checkmark"></span>
                       </label>
                     </div>
                     <div className="checkout__input__radio">
-                      <label htmlFor="paypal">
-                        
+                      <label htmlFor="cash-on-delivery">
                         <input
                           type="radio"
-                          id="paypal"
+                          id="cash-on-delivery"
                           name="payment-method"
-                          onChange={() => setSelectedPaymentMethod('paypal')}
-                        />Paypal
+                          onChange={() => setSelectedPaymentMethod('cash-on-delivery')}
+                        />
+                        Thanh toán khi nhận hàng
                         <span className="checkmark"></span>
                       </label>
                     </div>
