@@ -140,6 +140,8 @@
 .quenmatkhau:hover{
 	color: #de0000;
 }
+
+  
 html,
 body {
 	height: 100%;
@@ -881,6 +883,9 @@ ol {
 
 .hero__categories ul li {
 	list-style: none;
+	margin-left: 10px;
+	border-bottom: 1px solid #de0000;
+	margin-right: 5px;
 }
 
 .hero__categories ul li a {
