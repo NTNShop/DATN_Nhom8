@@ -43,7 +43,7 @@ const Header = () => {
               </a>
             </div>
             <div
-              className="navbar-collapse collapse"
+              className="navbar-collapse collapse ml-2"
               id="navbarSupportedContent"
               data-navbarbg="skin5"
             >

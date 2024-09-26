@@ -49,7 +49,7 @@ import BlogAdmin from "./component/admin/blog/list";
 import EditBlog from "./component/admin/blog/edit";
 import AddBlog from "./component/admin/blog/add";
 
-import AlternativePaymentPage from "./component/paypal";
+import AlternativePaymentPage from "./component/client/paypal";
 //import css
 import './assets/plugins/chartist-js/dist/chartist.min.css';
 import './assets/plugins/chartist-js/dist/chartist-init.css';
@@ -72,11 +72,11 @@ import './assets/css/slicknav.min.css'
 import './assets/css/style.css'
 import Shop from "./component/client/shop";
 import Detail from "./component/client/shop/detail";
-import PaymentSuccessPage from "./component/paypal/success";
-import Momo from "./component/paypal/momo";
-import Atm from "./component/paypal/atm";
-import Qratm from "./component/paypal/qratm";
-import Qrmomo from "./component/paypal/qrmomo";
+import PaymentSuccessPage from "./component/client/paypal/success";
+import Momo from "./component/client/paypal/momo";
+import Atm from "./component/client/paypal/atm";
+import Qratm from "./component/client/paypal/qratm";
+import Qrmomo from "./component/client/paypal/qrmomo";
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
