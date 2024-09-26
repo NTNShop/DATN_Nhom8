@@ -26,7 +26,7 @@ const Footer = () => {
           <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
             <div className="footer__widget">
               <h6>Liên kết hữu ích</h6>
-              <ul>
+              <ul className="p-0">
                 <li>
                   <a href="#">Về chúng tôi</a>
                 </li>
