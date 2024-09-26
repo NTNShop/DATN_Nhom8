@@ -27,13 +27,13 @@ File: scss
 @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800");
 @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800");
 @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800");
-@import url(icons/font-awesome/css/fontawesome-all.css);
+/* @import url(icons/font-awesome/css/fontawesome-all.css);
 @import url(icons/simple-line-icons/css/simple-line-icons.css);
 @import url(icons/weather-icons/css/weather-icons.min.css);
 @import url(icons/themify-icons/themify-icons.css);
 @import url(icons/flag-icon-css/flag-icon.min.css);
 @import url(icons/material-design-iconic-font/css/materialdesignicons.min.css);
-@import url(icons/crypto-icons/cryptocoins.css);
+@import url(icons/crypto-icons/cryptocoins.css); */
 .search-box .app-search .form-control, .topbar .mega-dropdown .dropdown-menu {
   border-radius: 0px; }
 
@@ -852,7 +852,7 @@ pre {
       max-width: 720px; } }
   @media (min-width: 992px) {
     .container {
-      max-width: 960px; } }
+      max-width: 1320px; } }
   @media (min-width: 1600px) {
     .container {
       max-width: 1140px; } }
@@ -8241,7 +8241,7 @@ html[dir="ltr"] body .p-l-0 {
   #main-wrapper[data-layout="vertical"] .left-sidebar[data-sidebarbg="skin2"], #main-wrapper[data-layout="vertical"] .left-sidebar[data-sidebarbg="skin2"] ul, #main-wrapper[data-layout="horizontal"] .left-sidebar[data-sidebarbg="skin2"], #main-wrapper[data-layout="horizontal"] .left-sidebar[data-sidebarbg="skin2"] ul {
     background: #fe5419; }
     #main-wrapper[data-layout="vertical"] .left-sidebar[data-sidebarbg="skin2"]::after, #main-wrapper[data-layout="vertical"] .left-sidebar[data-sidebarbg="skin2"] ul::after, #main-wrapper[data-layout="horizontal"] .left-sidebar[data-sidebarbg="skin2"]::after, #main-wrapper[data-layout="horizontal"] .left-sidebar[data-sidebarbg="skin2"] ul::after {
-      background: url(../../assets/images/background/sidebarbg.png) no-repeat;
+      /* background: url(../../assets/images/background/sidebarbg.png) no-repeat; */
       position: absolute;
       top: 0px;
       content: "";
@@ -9181,14 +9181,14 @@ Main sidebar
 ******************/
 .left-sidebar {
   position: absolute;
-  width: 250px;
+  width: 240px;
   height: 100%;
   top: 0px;
   z-index: 10;
   padding-top: 64px;
   background: #fff;
   -webkit-box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
-  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08); }
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.0); }
 
 /*******************
 sidebar navigation
@@ -12352,7 +12352,7 @@ label {
 .error-box {
   height: 100%;
   position: fixed;
-  background: url(../../../../assets/images/background/error-bg.jpg) no-repeat center center #fff;
+  /* background: url(../../../../assets/images/background/error-bg.jpg) no-repeat center center #fff; */
   width: 100%; }
   .error-box .error-body {
     padding-top: 5%; }
@@ -14191,7 +14191,7 @@ File: scss
   .mailbox .drop-title:after {
     content: "";
     position: absolute;
-    background: url(../../assets/images/background/img5.png) no-repeat;
+    /* background: url(../../assets/images/background/img5.png) no-repeat; */
     opacity: 0.2;
     top: 0px;
     left: 0px;

@@ -18,7 +18,7 @@ const Cart = () => (
           <div className="breadcrumb__text">
             <h2>GIỎ HÀNG</h2>
             <div className="breadcrumb__option">
-              <a href="./index.html">TRANG CHỦ</a>
+              <a href="./">TRANG CHỦ</a>
               <span>GIỎ HÀNG</span>
             </div>
           </div>

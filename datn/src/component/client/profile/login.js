@@ -27,14 +27,18 @@ const Login = () => {
                             <input type="password" className="border-inputs"/>
                         </div>
                         <div className="col-6 p-0"> <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button></div> 
-                        <div className="col-4 p-0 pt-2">  <a href="forgotPassword" className="quenmatkhau">Quên mật khẩu?</a></div> 
+                        <div className="row">
+                        <div className="col-4 p-0 pt-2 ">  <a href="forgotPassword" className="quenmatkhau">Bạn chưa có tài khoản?</a></div>
+                        <div className="col-4 p-0 pt-2 " >  <a href="forgotPassword" className="quenmatkhau">Quên mật khẩu?</a></div> 
+                        </div>
+                         
                     </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <Footer/>
     </>
   );
 };
