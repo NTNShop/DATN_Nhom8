@@ -11,7 +11,7 @@ const Profile = () => {
             <Header />
             <div className="container">
 
-        <div className="page-wrapper">
+        <div className="page-wrapper" style={{ position: "relative", left: "150px" }}>
             <div className="page-breadcrumb">
                 <div className="row align-items-center">
                     <div className="col-md-6 col-8 align-self-center">

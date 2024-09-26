@@ -13,8 +13,8 @@ const Header = () => {
                     <div className="col-lg-6 col-md-6">
                         <div className="header__top__left">
                             <ul>
-                                <li><i className="fa fa-envelope"></i> hello@colorlib.com</li>
-                                <li>Free Shipping for all Order of $99</li>
+                                <li><i className="fa fa-envelope"></i> nhom8@fpt.edu.vn</li>
+                                <li>Giao hàng miễn phí cho tất hóa đơn trên 50 triệu</li>
                             </ul>
                         </div>
                     </div>
@@ -36,7 +36,7 @@ const Header = () => {
                                 </ul>
                             </div>
                             <div className="header__top__right__auth">
-                                <a href><i className="fa fa-user"></i> Login</a>
+                                <a href="/login"><i className="fa fa-user"></i> Login</a>
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ const Header = () => {
                   </Link>
                 </li>
                 <li >
-                      <a href="#" className="pl-1">
+                      <a href="favourites" className="pl-1">
                         <i className="fa fa-heart"></i>
                       </a>
                 </li>

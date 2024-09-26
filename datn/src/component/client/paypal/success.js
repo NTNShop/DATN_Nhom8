@@ -1,8 +1,8 @@
 import React from 'react';
-import Header from '../client/home/header';
-import Footer from '../client/home/footer';
-import successTick from '../../assets/img/hero/tick.png'; // Đảm bảo bạn có đường dẫn đúng cho logo tick thành công
-import banner from "../../assets/img/hero/banner2.jpg"; // Đảm bảo bạn có đường dẫn đúng cho banner
+import Header from '../../client/home/header';
+import Footer from '../../client/home/footer';
+import successTick from '../../../assets/img/hero/tick.png'; // Đảm bảo bạn có đường dẫn đúng cho logo tick thành công
+// import banner from "../../assets/img/hero/banner2.jpg"; // Đảm bảo bạn có đường dẫn đúng cho banner
 
 const PaymentSuccessPage = () => {
   return (
