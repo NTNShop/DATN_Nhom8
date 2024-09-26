@@ -25,7 +25,7 @@ const Header = () => {
         data-header-position="absolute"
         data-boxed-layout="full"
       >
-        <header className="topbar" style={{backgroundColor: 'grey'}} data-navbarbg="skin6">
+        <header className="topbar"  data-navbarbg="skin6">
           <nav className="navbar top-navbar navbar-expand-md navbar-dark">
             <div className="navbar-header" data-logobg="skin6">
               <a className="navbar-brand ms-4" href="/admin">

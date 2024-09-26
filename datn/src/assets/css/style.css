@@ -9181,14 +9181,14 @@ Main sidebar
 ******************/
 .left-sidebar {
   position: absolute;
-  width: 250px;
+  width: 240px;
   height: 100%;
   top: 0px;
   z-index: 10;
   padding-top: 64px;
   background: #fff;
   -webkit-box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
-  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08); }
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.0); }
 
 /*******************
 sidebar navigation
