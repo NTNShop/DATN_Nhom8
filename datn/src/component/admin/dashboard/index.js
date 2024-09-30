@@ -220,10 +220,10 @@ const Dashboard = () => {
                       <h6 className=""><i className="fa fa-circle font-10 me-2 " style={{color : 'blue'}}></i>Xe số</h6>
                     </li>
                     <li className="me-4">
-                      <h6 className=""><i className="fa fa-circle font-10 me-2 " style={{color : 'yellow'}}></i>Desktop</h6>
+                      <h6 className=""><i className="fa fa-circle font-10 me-2 " style={{color : 'yellow'}}></i>Xe tay côn</h6>
                     </li>
                     <li className="me-4">
-                      <h6 className=""><i className="fa fa-circle font-10 me-2" style={{color : 'cyan'}}></i>Tablet</h6>
+                      <h6 className=""><i className="fa fa-circle font-10 me-2" style={{color : 'cyan'}}></i>Xe tay ga</h6>
                     </li>
                     </ul>
                 </div>

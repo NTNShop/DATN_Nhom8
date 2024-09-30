@@ -27,7 +27,7 @@ const ListCategory = () => {
             <div class="col-sm-10">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Danh sách sản phẩm</h4>
+                        <h4 class="card-title">Danh sách danh mục</h4>
                         <span><a href='/admin/category/add' className="btn btn-primary">Thêm danh mục</a></span>
 
                         <div class="table-responsive ">
