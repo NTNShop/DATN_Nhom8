@@ -212,18 +212,18 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <hr class="mt-0 mb-0"/>
+                  <hr className="mt-0 mb-0"/>
                 </div>
-                <div class="card-body text-center ">
-                  <ul class="list-inline d-flex justify-content-center align-items-center mb-0">
-                    <li class="me-4">
-                      <h6 class="text-info"><i class="fa fa-circle font-10 me-2 "></i>Mobile</h6>
+                <div className="card-body text-center ">
+                  <ul className="list-inline d-flex justify-content-center align-items-center mb-0">
+                    <li className="me-4">
+                      <h6 className=""><i className="fa fa-circle font-10 me-2 " style={{color : 'blue'}}></i>Xe số</h6>
                     </li>
-                    <li class="me-4">
-                      <h6 class=" text-primary"><i class="fa fa-circle font-10 me-2"></i>Desktop</h6>
+                    <li className="me-4">
+                      <h6 className=""><i className="fa fa-circle font-10 me-2 " style={{color : 'yellow'}}></i>Desktop</h6>
                     </li>
-                    <li class="me-4">
-                      <h6 class=" text-success"><i class="fa fa-circle font-10 me-2"></i>Tablet</h6>
+                    <li className="me-4">
+                      <h6 className=""><i className="fa fa-circle font-10 me-2" style={{color : 'cyan'}}></i>Tablet</h6>
                     </li>
                     </ul>
                 </div>
