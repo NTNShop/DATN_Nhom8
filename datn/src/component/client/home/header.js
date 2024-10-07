@@ -110,7 +110,8 @@ const Header = () => {
                   </li>
                   <li>
                     <a href="#" className="pl-1">
-                      <i className="fa fa-heart"></i>
+                      
+                      <Link to="/favourites"><i className="fa fa-heart"></i></Link>
                     </a>
                   </li>
                 </ul>
