@@ -34,10 +34,6 @@ const Register = () => {
                             <label>Email</label>
                             <input type="email" className="border-inputs"/>
                         </div>
-                        <div className="form-group">
-                            <label>Số điện thoại</label>
-                            <input type="text" className="border-inputs"/>
-                        </div>
                         <div className="col-6 p-0"> <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button></div> 
                         <div className="col-4 p-0 pt-2">  <a href="/login" className="quenmatkhau">Bạn đã có tài khoản?</a></div> 
                     </form>
