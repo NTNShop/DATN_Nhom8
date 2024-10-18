@@ -81,24 +81,34 @@ const Home = () => {
       <div className="category spad">
         <div className="container">
           <div className="row">
-            <div className="col-lg-3 col-md-6 col-sm-6">
+            <div className="col-lg-2 col-md-2 col-sm-2">
               <div className="category__item">
-              <span>Xe tay ga</span>
+              <span>Xe đạp thành phố</span>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
+            <div className="col-lg-2 col-md-2 col-sm-2">
               <div className="category__item">
-                <span>Xe số</span>
+                <span>Xe đạp địa hình</span>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
+            <div className="col-lg-2 col-md-2 col-sm-2">
               <div className="category__item">
-              <span>Xe côn tay</span>
+              <span>Xe đạp trẻ em</span>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
+            <div className="col-lg-2 col-md-2 col-sm-2">
               <div className="category__item">
-              <span>Xe phân khối lớn</span>
+              <span>Xe Carbon</span>
+              </div>
+            </div>
+            <div className="col-lg-2 col-md-2 col-sm-2">
+              <div className="category__item">
+              <span>Xe đạp cũ</span>
+              </div>
+            </div>
+            <div className="col-lg-2 col-md-2 col-sm-2">
+              <div className="category__item">
+              <span>Xe đạp đua</span>
               </div>
             </div>
           </div>
