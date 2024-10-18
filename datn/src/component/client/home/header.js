@@ -59,7 +59,7 @@ const Header = () => {
                 </a>
               </div>
             </div>
-            <div className="col-lg-6">
+            <div className="col-lg-7">
               <nav className="header__menu">
                 <ul>
                   <li>
@@ -69,24 +69,7 @@ const Header = () => {
                     <Link to="/product">Cửa Hàng</Link>
                   </li>
                   <li>
-                    <a href="#">Trang</a>
-                    <ul className="header__menu__dropdown">
-                      <li>
-                        <a href="./product-details.html">Chi Tiết Cửa Hàng</a>
-</li>
-                      <li>
-                        <a href="./blog-details.html">Chi Tiết Bài Viết</a>
-                      </li>
-                      <li>
-                        <Link to="/cart">Giỏ hàng</Link>
-                      </li>
-                      <li>
-                        <Link to="/checkout">Thanh Toán</Link>
-                      </li>
-                      <li>
-                        <a href="./blog">Chi Tiết Blog</a>
-                      </li>
-                    </ul>
+                    <a href="/introduce">Giới Thiệu</a>
                   </li>
                   <li>
                     <Link to="/blog">Bài viết</Link>
@@ -97,7 +80,7 @@ const Header = () => {
                 </ul>
               </nav>
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-2">
               <div className="header__cart">
                 <ul>
                   <li>
