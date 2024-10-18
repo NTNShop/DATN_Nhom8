@@ -35,12 +35,14 @@ const introduce = () => {
                     </div>
                     <div className='col-6'>
                         <div className='title-intro'>
-                            <span className='text-danger'>|</span>  Bảo vệ môi trường 
+                            <span className='text-danger'>|</span>  HONDA Việt Nam
                         </div>
                         <div className='content-intro2 pt-4'>
-                        & Nhận thức rõ bảo vệ môi trường là trách nhiệm lâu dài và cấp bách đối với xã hội, bên cạnh nỗ lực giảm thiểu tác động
-                            từ hoạt động sản xuất và các sản phẩm của mình tới môi trường, Honda Việt Nam còn chú trọng tới việc góp phần gìn giữ môi trường Việt Nam cho thế hệ tương lai.
-                            Trong thời gian tới, Honda Việt Nam mong muốn sẽ triển khai nhiều hoạt động cộng đồng có ý nghĩa với mục đích cùng người dân Việt nam từng ngày nâng cao ý thức bảo vệ môi trường.
+                        Được thành lập vào năm 1996, công ty Honda Việt Nam là công ty liên doanh giữa 3 đơn vị: Công ty Honda Motor (Nhật Bản), Công ty Asian Honda Motor (Thái Lan), 
+                        Tổng Công ty Máy Động Lực và Máy Nông nghiệp Việt Nam với 2 ngành sản phẩm chính: xe máy và xe ô tô. Sau hơn 20 năm có mặt tại Việt Nam, 
+                        Honda Việt Nam đã không ngừng phát triển và trở thành một trong những đơn vị hàng đầu trong lĩnh vực sản xuất xe gắn máy và ô tô uy tín tại thị trường Việt Nam. <br/>
+                        
+                         Với khẩu hiệu “Sức mạnh của những Ước mơ”, Honda Việt Nam mong muốn được chia sẻ và cùng mọi người thực hiện ước mơ thông qua việc tạo thêm ra nhiều niềm vui mới cho người dân và xã hội Việt Nam.
                         </div>
                         <nav className='pt-4 content-intro2'>
                             <div className='text-hover-intro'>
@@ -71,13 +73,14 @@ const introduce = () => {
                     <div className='col-12 row'>
                         <div className='col-6'>
                             <div className='title-intro'>
-                                <span className='text-danger'>|</span>  Hỗ trợ giáo dục 
+                                <span className='text-danger'>|</span>  Nhà máy sản xuất 
                             </div>
                             <div className='content-intro2 pt-4'>
-                            Có thể nói hỗ trợ giáo dục là ưu tiên hàng đầu trong các hoạt động xã hội của Công ty Honda Việt Nam. Chính vì vậy, ngay từ ngày đầu thành lập, Công ty đã triển khai rất nhiều chương trình hỗ trợ cho giáo dục như:
-                             tài trợ động cơ, xe máy dùng làm giáo cụ đào tạo cho các trường kỹ thuật và dạy nghề trên toàn quốc; thành lập “Quỹ Hỗ trợ” với mong muốn khuyến khích niềm say mê học hỏi trong mỗi học sinh
-                             triển khai Giải thưởng Honda Y-E-S dành cho Kỹ sư và Nhà Khoa học Trẻ Việt Nam tại các trường Đại học hàng đầu Việt Nam thuộc khối khoa học công nghệ, kỹ thuật; tổ chức sân chơi
-                            dành cho học sinh tiểu học trên toàn quốc với mong muốn khơi dậy niềm say mê khám phá và nỗ lực biến ước mơ thành hiện thực.
+                            Nhà máy sản xuất xe máy của Honda tại Việt Nam thuộc công ty Honda Việt Nam (HVN), được thành lập vào năm 1996. Honda Việt Nam có 3 nhà máy chính để sản xuất và lắp ráp xe máy, với tổng công suất hàng năm đạt hàng triệu xe máy các loại. Dưới đây là thông tin cụ thể về các nhà máy của Honda tại Việt Nam: <br/>
+                             <spam className='text-danger'>* </spam>Nhà máy 1 (tại Phúc Thắng, Phúc Yên, Vĩnh Phúc)<br/>
+                             <spam className='text-danger'>* </spam>Nhà máy 2 (tại Phúc Thắng, Vĩnh Phúc)<br/>
+                             <spam className='text-danger'>* </spam>Nhà máy 3 (tại huyện Hà Nam)<br/>
+                            Các nhà máy này không chỉ cung cấp xe máy cho thị trường trong nước mà còn xuất khẩu sang nhiều quốc gia khác. Honda Việt Nam nổi tiếng với việc không ngừng cải tiến và áp dụng công nghệ mới, đóng vai trò quan trọng trong ngành công nghiệp xe máy tại Việt Nam.
                             </div>
                             <nav className='pt-4 content-intro2'>
                                 <div className='text-hover-intro'>
@@ -124,12 +127,11 @@ const introduce = () => {
                     </div>
                     <div className='col-6'>
                         <div className='title-intro'>
-                            <span className='text-danger'>|</span>  Bảo vệ môi trường 
+                            <span className='text-danger'>|</span>  Honda Ô tô
                         </div>
                         <div className='content-intro2 pt-4'>
-                        & Nhận thức rõ bảo vệ môi trường là trách nhiệm lâu dài và cấp bách đối với xã hội, bên cạnh nỗ lực giảm thiểu tác động
-                            từ hoạt động sản xuất và các sản phẩm của mình tới môi trường, Honda Việt Nam còn chú trọng tới việc góp phần gìn giữ môi trường Việt Nam cho thế hệ tương lai.
-                            Trong thời gian tới, Honda Việt Nam mong muốn sẽ triển khai nhiều hoạt động cộng đồng có ý nghĩa với mục đích cùng người dân Việt nam từng ngày nâng cao ý thức bảo vệ môi trường.
+                        Không ngừng nỗ lực để đa dạng hóa sản phẩm, mẫu xe Honda CR-V tiếp tục được Công ty giới thiệu vào tháng 12 năm 2008 và Honda City vào tháng 6 năm 2013. Ngoài những dòng xe sản xuất trong nước, Honda Việt Nam còn nhập khẩu thêm các mẫu xe sedan và mẫu xe đa dụng cao cấp lần lượt là Honda Accord và Honda Odyssey nhằm đáp ứng nhu cầu ngày càng cao của khách hàng. Năm 2016, Honda Việt Nam chuyển sang nhập khẩu mẫu xe Honda Civic thay vì sản xuất trong nước. <br/>
+                        Bắt đầu hoạt động kinh doanh ô tô từ năm 2006, chỉ sau hơn 1 năm, Honda Việt Nam đã xây dựng thành công nhà máy, mạng lưới đại lý, các chương trình đào tạo bán hàng, dịch vụ, lái xe an toàn cho nhân viên các đại lý và ra mắt mẫu xe đầu tiên là Honda Civic vào tháng 8 năm 2006.
                         </div>
                         <nav className='pt-4 content-intro2'>
                             <div className='text-hover-intro'>
