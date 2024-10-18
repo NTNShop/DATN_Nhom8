@@ -3,10 +3,10 @@ import logo from "../../../assets/img/logo.png";
 
 const Footer = () => {
   return (
-    <footer className="footer spad">
-      <div className="container">
+    <footer>
+      <div className="edit-footer col-12">
         <div className="row">
-          <div className="col-lg-3 col-md-6 col-sm-6">
+          <div className="col-lg-3 col-md-6 col-sm-6 pl-4">
             <div className="footer__about">
               <div className="footer__about__logo">
                 <a href="./index.html">
@@ -18,15 +18,15 @@ const Footer = () => {
                   Địa chỉ: 50, Nguyễn Văn Linh, phường An Khánh, quận Ninh Kiều,
                   TP. Cần Thơ
                 </li>
-                <li>Điện thoại: 0975.643.777</li>
-                <li>Email: hondanambinh@gmail.com</li>
+                <li>Điện thoại:<a className="link-color" href="#"> 0975.643.777</a></li>
+                <li>Email: <a className="link-color" href="#">nhom8@gmail.com</a> </li>
               </ul>
             </div>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
             <div className="footer__widget">
               <h6>Liên kết hữu ích</h6>
-              <ul>
+              <ul className="p-0">
                 <li>
                   <a href="#">Về chúng tôi</a>
                 </li>
@@ -82,17 +82,17 @@ const Footer = () => {
                 </button>
               </form>
               <div className="footer__widget__social">
-                <a href="#">
-                  <i className="fa fa-facebook"></i>
+                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                  <i className="bi bi-facebook"></i>
                 </a>
-                <a href="#">
-                  <i className="fa fa-instagram"></i>
+                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                  <i className="bi bi-instagram"></i>
                 </a>
-                <a href="#">
-                  <i className="fa fa-twitter"></i>
+                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                  <i className="bi bi-twitter"></i>
                 </a>
-                <a href="#">
-                  <i className="fa fa-pinterest"></i>
+                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                  <i className="bi bi-pinterest"></i>
                 </a>
               </div>
             </div>
@@ -100,19 +100,20 @@ const Footer = () => {
         </div>
         <div className="row">
           <div className="col-lg-12">
-            <div className="footer__copyright">
+            <div className="footer__copyright d-flex justify-content-center">
               <div className="footer__copyright__text text-center">
                 <p>
                   Bản quyền &copy;
                   <a>
-                    {new Date().getFullYear()} Tất cả các quyền được bảo lưu |
-                    Mẫu này được tạo với bởi Nhóm 8
+                    {new Date().getFullYear()} |
+                    Thực hiện bởi Nhóm 8
                   </a>
                 </p>
               </div>
             </div>
           </div>
         </div>
+      
       </div>
     </footer>
   );

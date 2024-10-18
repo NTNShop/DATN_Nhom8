@@ -1,49 +1,51 @@
 import React from 'react';
-import style from '../../assets/authentication/style.css';
-
 
 const Authentication = () => {
   return (
-        <div className={style}>
-          <div className ="row">
-	<div className="col-md-6 mx-auto p-0">
-		<div className="">
-<div className="login-box">
-	<div className="login-snip">
-		<input id="tab-1" type="radio" name="tab" className="sign-in" checked/><label for="tab-1" className="tab">Đăng nhập</label>
-		<input id="tab-2" type="radio" name="tab" className="sign-up"/><label for="tab-2" className="tab"></label>
-		<div className="login-space">
-			<div className="login">
-				<div className="group">
-					<label for="user" className="label">Tên đăng nhập</label>
-					<input id="user" type="text" className="input"  placeholder="Nhập tên đăng nhập..."/>
-				</div>
-				<div className="group">
-					<label for="pass" className="label">Mật khẩu</label>
-					<input id="pass" type="password" className="input" data-type="password" placeholder="Nhập mật khẩu..."/>
-				</div>
-				<div className="group">
-					<input id="check" type="checkbox" className="check" checked/>
-					<label for="check"><span className="icon"></span> Giữ đăng nhập</label>
-				</div>
-				<div className="group">
-					<input type="submit" className="button" value="Đăng nhập"/>
-				</div>
-				<div className="hr"></div>
-				<div className="foot">
-					<a href="#">Quên mật khẩu?</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>   
-</div>
-</div>
-</div>
-
+    <div className="">
+      <section className="vh-100" style={{ backgroundColor: 'black' }}>
+        <div className="container py-5 h-100">
+          <div className="row d-flex justify-content-center align-items-center h-100">
+            <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div className="card shadow-2-strong" style={{ borderRadius: '1rem' }}>
+                <div className="card-body p-5 ">
+  
+                  <h3 className="mb-5">Đăng nhập</h3>
+  
+                  <div className="form-outline mb-4">
+                    <label className="form-label" htmlFor="typeEmailX-2">Tên đăng nhập</label>
+                    <input type="email" id="typeEmailX-2" className="form-control form-control-lg" />
+                  </div>
+  
+                  <div className="form-outline mb-4">
+                    <label className="form-label" htmlFor="typePasswordX-2">Mật khẩu</label>
+                    <input type="password" id="typePasswordX-2" className="form-control form-control-lg" />
+                  </div>
+  
+                  <div className="form-check d-flex justify-content-start mb-4">
+                    <input className="form-check-input" type="checkbox" value="" id="form1Example3" />
+                    <label className="form-check-label" htmlFor="form1Example3"> Ghi nhớ mật khẩu </label>
+                  </div>
+  
+                  <button className="btn btn-lg btn-block text-light" style={{'background': '#198754'}} type="submit">Đăng nhập</button>
+  
+                  <hr className="my-4"/>
+  
+                  <button className="btn btn-lg col-12 text-light" style={{'background': '#ea4335'}} type="submit">
+                    <i className="fab fa-google me-2 text-light"></i> Đăng nhập bằng Google
+                  </button>
+                  <button className="btn btn-lg mb-2 col-12 text-light mt-1" style={{'background': '#3b5998'}} type="submit">
+                    <i className="fab fa-facebook-f me-2 text-light"></i> Đăng nhập bằng Facebook
+                  </button>
+  
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      );
-    };
-
+      </section>
+    </div>
+  );
+};
 
 export default Authentication;

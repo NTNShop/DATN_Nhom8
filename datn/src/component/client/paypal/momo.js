@@ -1,8 +1,8 @@
 import React from 'react';
-import Header from '../client/home/header';
-import Footer from '../client/home/footer';
-import momoLogo from '../../assets/img/hero/momo.webp'; // Đảm bảo đường dẫn chính xác
-import banner from "../../assets/img/hero/banner2.jpg"; // Đảm bảo đường dẫn chính xác
+import Header from '../../client/home/header';
+import Footer from '../../client/home/footer';
+import momoLogo from '../../../assets/img/hero/momo.webp'; // Đảm bảo đường dẫn chính xác
+import banner from "../../../assets/img/hero/banner2.jpg"; // Đảm bảo đường dẫn chính xác
 
 const Momo = () => {
   return (

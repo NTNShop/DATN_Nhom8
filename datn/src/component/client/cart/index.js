@@ -18,7 +18,7 @@ const Cart = () => (
           <div className="breadcrumb__text">
             <h2>GIỎ HÀNG</h2>
             <div className="breadcrumb__option">
-              <a href="./index.html">TRANG CHỦ</a>
+              <a href="./">TRANG CHỦ</a>
               <span>GIỎ HÀNG</span>
             </div>
           </div>
@@ -45,7 +45,7 @@ const Cart = () => (
                 <tbody>
                   <tr>
                     <td className="shoping__cart__item">
-                    <img src={sp} alt="Vegetable Package" style={{ width: '150px', height: '150px' }} />
+                    <img src={sp} alt="Vegetable Package" style={{ width: '150px', }} />
                     <h5>Xe Tay Ga</h5>
                     </td>
                     <td className="shoping__cart__price">
@@ -67,7 +67,7 @@ const Cart = () => (
                   </tr>
                   <tr>
                   <td className="shoping__cart__item">
-                    <img src={sp} alt="Vegetable Package" style={{ width: '150px', height: '150px' }} />
+                    <img src={sp} alt="Vegetable Package" style={{ width: '150px' }} />
                     <h5>Xe Tay Ga</h5>
                     </td>
                     <td className="shoping__cart__price">
@@ -89,7 +89,7 @@ const Cart = () => (
                   </tr>
                   <tr>
                   <td className="shoping__cart__item">
-                    <img src={sp} alt="Vegetable Package" style={{ width: '150px', height: '150px' }} />
+                    <img src={sp} alt="Vegetable Package" style={{ width: '150px' }} />
                     <h5>Xe Tay Ga</h5>
                     </td>
                     <td className="shoping__cart__price">

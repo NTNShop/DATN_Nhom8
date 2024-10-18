@@ -1,10 +1,10 @@
 import React from 'react';
-import Header from '../client/home/header';
-import Footer from '../client/home/footer';
-import QR from '../../assets/img/hero/qr.png'; // Đảm bảo bạn có đường dẫn đúng cho logo tick thành công
-import banner from "../../assets/img/hero/banner2.jpg"; // Đảm bảo bạn có đường dẫn đúng cho banner
+import Header from '../../client/home/header';
+import Footer from '../../client/home/footer';
+import QR from '../../../assets/img/hero/momo.png'; // Đảm bảo bạn có đường dẫn đúng cho logo tick thành công
+// import banner from "../../assets/img/hero/banner2.jpg"; // Đảm bảo bạn có đường dẫn đúng cho banner
 
-const Qratm = () => {
+const Qrmomo = () => {
   return (
     <>
       <Header />
@@ -15,7 +15,7 @@ const Qratm = () => {
           <div className="row">
             <div className="col-lg-12 text-center">
               <img src={QR} alt="QR Code" className="payment-success__icon" />
-              <h4 className="payment-success__title">Quét mã QR tại đây để thanh toán.</h4>
+              <h4 className="payment-success__title">Quét mã QR tại đây để thanh toán .</h4>
               <p className="payment-success__description">
                 Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn và gửi thông tin chi tiết qua email.
               </p>
@@ -32,7 +32,7 @@ const Qratm = () => {
         .payment-success {
           padding: 60px 0;
           text-align: center;
-          background-color: #fffbe6; /* Màu vàng nhạt */
+          background-color: #ffe6e6;
         }
 
         .payment-success__icon {
@@ -44,7 +44,7 @@ const Qratm = () => {
           font-size: 2.5rem;
           font-weight: bold;
           margin-bottom: 1rem;
-          color: black; /* Màu vàng */
+          color: black; /* Màu đen */
         }
 
         .payment-success__description {
@@ -75,4 +75,4 @@ const Qratm = () => {
   );
 };
 
-export default Qratm;
+export default Qrmomo;

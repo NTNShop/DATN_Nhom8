@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from '../client/home/header';
-import Footer from '../client/home/footer';
-import qrCode from '../../assets/img/hero/visa.png'; // Đảm bảo đường dẫn chính xác
-import momoLogo from '../../assets/img/hero/momo.webp'; // Đảm bảo đường dẫn chính xác
-import banner from "../../assets/img/hero/banner2.jpg"; // Đảm bảo đường dẫn chính xác
+import Header from '../../client/home/header';
+import Footer from '../../client/home/footer';
+import qrCode from '../../../assets/img/hero/visa.png'; // Đảm bảo đường dẫn chính xác
+import momoLogo from '../../../assets/img/hero/momo.webp'; // Đảm bảo đường dẫn chính xác
+import banner from "../../../assets/img/hero/banner2.jpg"; // Đảm bảo đường dẫn chính xác
 
 const AlternatePaymentSection = () => {
   return (
@@ -232,7 +232,7 @@ const AlternatePaymentSection = () => {
         .checkout__order__total {
             font-weight: bold;
             margin-top: 1rem;
-        }
+            }
 
         .checkout__input__radio {
             margin-bottom: 1rem;
@@ -269,6 +269,7 @@ const AlternatePaymentSection = () => {
             transform: translate(-50%, -50%);
         }
       `}</style>
+
     </>
   );
 };
