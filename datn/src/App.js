@@ -14,6 +14,7 @@ import ProductDetail from "./component/client/shop/detail";
 import Contact from "./component/client/contact";
 import BlogDetails from "./component/client/blog/detail";
 import Favourites from "./component/client/favourites";
+import Introduce from "./component/client/introduce";
 
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
@@ -99,6 +100,7 @@ function App() {
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/favourites" element={<Favourites />} />
+        <Route path="/introduce" element={<Introduce />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
