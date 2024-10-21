@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../home/header";
 import Footer from "../home/footer";
 import { Link } from "react-router-dom";
-import sp from "../../../assets/img/cart/sp1.png";
+import sp from "../../../assets/img/cart/sp1.webp";
 import banner from "../../../assets/img/hero/banner2.jpg";
 const Product = () => (
   <>
