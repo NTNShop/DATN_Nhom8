@@ -14831,3 +14831,40 @@ File: scss
 @media (max-width: 991.98px) {
   .do-block {
     display: block !important; } }
+
+
+
+
+/* đây là dành cho đăng nhập đăng xuất */
+.user-menu {
+  position: absolute; /* Đặt menu ở vị trí tuyệt đối so với phần tử cha */
+  right: 0; /* Canh phải cho menu */
+  top: 100%; /* Canh menu ngay bên dưới phần tử cha */
+  background-color: white;
+  border: 1px solid #ddd;
+  z-index: 1000; /* Đảm bảo z-index cao để không bị các phần tử khác đè lên */
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* Mặc định ẩn */
+}
+
+.user-menu.open {
+  display: block; /* Hiển thị khi menu mở */
+}
+
+.user-menu li {
+  padding: 8px 12px;
+  list-style: none;
+}
+
+.user-menu li button {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.user-menu li button:hover {
+  color: #f56a6a;
+}
