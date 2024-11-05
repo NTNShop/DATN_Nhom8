@@ -18,7 +18,6 @@ const Login = () => {
                     <div className="col-6">
                         <h2 className="text-center text-danger col-lg-12 col-12">Đăng Nhập</h2>
                         <form>
-                           
                             <div className="form-group">
                                 <label>Tài khoản</label>
                                 <input type="text" className="border-inputs"/>
