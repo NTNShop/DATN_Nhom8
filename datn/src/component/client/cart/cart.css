@@ -1,0 +1,142 @@
+.pro-qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between buttons and input */
+  }
+  
+  .qty-btn {
+    background-color: #f0f0f0; /* Light gray background */
+    border: 1px solid #d9d9d9; /* Border color */
+    padding: 8px 12px; /* Padding inside the buttons */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 18px; /* Font size for button text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for hover effects */
+  }
+  
+  .qty-btn:hover {
+    background-color: #e0e0e0; /* Darker gray on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+  }
+  
+  .qty-btn:disabled {
+    cursor: not-allowed; /* Not-allowed cursor for disabled state */
+    background-color: #f9f9f9; /* Light background for disabled state */
+  }
+  
+  .qty-input {
+    width: 50px; /* Fixed width for input */
+    height: 40px; /* Fixed height for input */
+    text-align: center; /* Center text */
+    border: 1px solid #d9d9d9; /* Border for input */
+    border-radius: 5px; /* Rounded corners for input */
+    font-size: 16px; /* Font size for input text */
+  }
+  body {
+  font-family: Arial, sans-serif; /* Font chung cho toàn bộ trang */
+}
+
+.promotion-section {
+  background-color: #f9f9f9; /* Màu nền sáng để tạo sự tương phản */
+  padding: 40px 20px; /* Khoảng đệm dọc */
+}
+
+.container {
+  width: 80%; /* Điều chỉnh để phù hợp với thiết kế của bạn */
+  margin: auto; /* Giữa trang */
+}
+
+.promotion-item {
+  margin-bottom: 40px; /* Khoảng cách giữa các mục */
+  padding: 20px; /* Khoảng đệm quanh nội dung */
+  border: 1px solid #ccc; /* Đường viền nhẹ quanh các mục */
+  border-radius: 10px; /* Góc bo tròn */
+  background-color: #fff; /* Nền trắng cho từng mục */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng nhẹ */
+  position: relative; /* Để có thể đặt hình ảnh trong header */
+}
+
+.promotion-header {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.promotion-header img {
+  max-width: 80px; /* Chiều rộng tối đa cho hình ảnh */
+  margin-right: 20px; /* Khoảng cách giữa hình ảnh và tiêu đề */
+}
+
+.promotion-item h2 {
+  font-size: 24px; /* Kích thước phông cho tiêu đề */
+  color: #ec4237; /* Màu đỏ cho tiêu đề */
+  margin: 0; /* Xóa khoảng cách mặc định */
+}
+
+.promotion-item p {
+  font-size: 16px; /* Kích thước phông cho văn bản */
+  line-height: 1.6; /* Khoảng cách giữa các dòng */
+  color: #333; /* Màu tối cho văn bản */
+  margin: 10px 0; /* Khoảng cách giữa các đoạn */
+}
+body {
+    font-family: Arial, sans-serif; /* Font chung cho toàn bộ trang */
+  }
+  
+  .promotion-section {
+    background-color: #f9f9f9; /* Màu nền sáng */
+    padding: 40px 20px; /* Khoảng đệm dọc */
+  }
+  
+  .container {
+    width: 80%; /* Điều chỉnh chiều rộng */
+    margin: auto; /* Giữa trang */
+  }
+  
+  .promotion-item {
+    margin-bottom: 40px; /* Khoảng cách giữa các mục */
+    padding: 20px; /* Khoảng đệm quanh nội dung */
+    border: 1px solid #ccc; /* Đường viền nhẹ quanh các mục */
+    border-radius: 10px; /* Góc bo tròn */
+    background-color: #fff; /* Nền trắng */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng nhẹ */
+  }
+  
+  .promotion-header {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+  }
+  
+  .promo-image {
+    max-width: 80px; /* Chiều rộng tối đa cho hình ảnh */
+    margin-right: 20px; /* Khoảng cách giữa hình ảnh và tiêu đề */
+  }
+  
+  .promo-title {
+    display: flex;
+    flex-direction: column; /* Sắp xếp tiêu đề theo cột */
+  }
+  
+  .promo-title h2 {
+    font-size: 24px; /* Kích thước phông cho tiêu đề */
+    color: #ec4237; /* Màu đỏ cho tiêu đề */
+    margin: 0; /* Xóa khoảng cách mặc định */
+  }
+  
+  .highlight {
+    font-size: 18px; /* Kích thước phông cho phần nhấn mạnh */
+    font-weight: bold; /* Đậm */
+    color: #ec4237; /* Màu đỏ cho phần nhấn mạnh */
+  }
+  
+  .promotion-item p {
+    font-size: 16px; /* Kích thước phông cho văn bản */
+    line-height: 1.6; /* Khoảng cách giữa các dòng */
+    color: #333; /* Màu tối cho văn bản */
+    margin: 10px 0; /* Khoảng cách giữa các đoạn */
+  }
+  
+  .promotion-item p:last-of-type {
+    margin-bottom: 0; /* Xóa khoảng cách dưới cùng của đoạn cuối */
+  }
+  
