@@ -4,8 +4,8 @@ import Footer from '../home/footer';
 import sp from "../../../assets/img/cart/sp1.png";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import './cart.css'; // Assuming you have a separate CSS file for styles
-import Cart1 from "../../../assets/img/hero/subinfor_cart_img.webp";
-import Cart2 from "../../../assets/img/hero/subinfor2_cart_img.webp";
+// import Cart1 from "../../../assets/img/hero/subinfor_cart_img.webp";
+// import Cart2 from "../../../assets/img/hero/subinfor2_cart_img.webp";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
