@@ -45,7 +45,7 @@ const Header = () => {
                   </div>
                   <div className="header__top__right__language">
                     <i className="bi bi-globe-americas"></i>
-                    <div className="pl-2">English</div>
+                    <div className="pl-2">Tiếng Việt</div>
                     <span className="arrow_carrot-down"></span>
                     <ul>
                       <li>
@@ -171,8 +171,8 @@ const Header = () => {
                     <i className="fa fa-phone"></i>
                   </div>
                   <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
+                    <h5>0123456789</h5>
+                    <span>Hỗ trợ 24/7</span>
                   </div>
                 </div>
               </div>
