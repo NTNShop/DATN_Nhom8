@@ -23,11 +23,21 @@ const Login = () => {
             const response = await loginUser(data.email, data.password);
             if (response && response.status && response.data.token) {
                 Cookies.set("authToken", response.data.token, { expires: 7 });
-                setSuccessMessage("Đăng nhập thành công!");
-                setTimeout(() => {
-                    setSuccessMessage("");
-                    window.location.href = "/";
-                }, 2000);
+                
+                // Kiểm tra nếu role là admin
+                if (response.data.user.role === 'admin') {
+                    setSuccessMessage("Đăng nhập thành công với quyền Admin!");
+                    setTimeout(() => {
+                        setSuccessMessage("");
+                        window.location.href = "/admin"; // Điều hướng đến trang admin
+                    }, 2000);
+                } else {
+                    setSuccessMessage("Đăng nhập thành công!");
+                    setTimeout(() => {
+                        setSuccessMessage("");
+                        window.location.href = "/"; // Điều hướng đến trang chính cho user
+                    }, 2000);
+                }
             } else {
                 setError("Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu.");
             }
@@ -129,7 +139,7 @@ const Login = () => {
                                                     {...register("password", {
                                                         required: "Mật khẩu không được để trống.",
                                                         pattern: {
-                                                            value: /^[a-zA-Z0-9]{8,}$/,
+                                                            value: /^[a-zA-Z0-9]{3,}$/,
                                                             message: "Mật khẩu chỉ được chứa chữ và số, tối thiểu 8 ký tự."
                                                         }
                                                     })}
