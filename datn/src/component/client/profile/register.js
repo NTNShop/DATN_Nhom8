@@ -1,43 +1,29 @@
-
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
-import { registerUser } from "../../../services/register";
+import { registerUser } from "../../../services/client/register";
 import { toast } from "react-toastify";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    full_name: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-  });
-  const [message, setMessage] = useState("");
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const navigate = useNavigate();
+  const password = watch("password");
 
-  const handChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Confirm Password Validation
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Mật khẩu không khớp");
-      return;
-    }
-
+  // Hàm xử lý đăng ký
+  const onSubmit = async (data) => {
     try {
-      const response = await registerUser(formData);
+      const response = await registerUser(data);
       const successMessage = response.message || "Đăng ký thành công!";
       toast.success(successMessage);
-      window.location.href = "/login"; // Redirect to login page
+      navigate("/login"); // Chuyển hướng đến trang đăng nhập
     } catch (error) {
       toast.error(error.message || "Đăng ký thất bại");
     }
@@ -63,7 +49,7 @@ const Register = () => {
                 <h2 className="text-center text-danger col-lg-12 col-12">
                   Đăng Ký
                 </h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group">
                     <label>
                       Tài khoản <span style={{ color: "red" }}>*</span>
@@ -71,12 +57,15 @@ const Register = () => {
                     <input
                       type="text"
                       className="border-inputs"
-                      name="full_name"
-                      value={formData.full_name}
-                      onChange={handChange}
-                      required
+                      {...register("full_name", {
+                        required: "Vui lòng nhập tài khoản",
+                      })}
                     />
+                    {errors.full_name && (
+                      <p className="text-danger">{errors.full_name.message}</p>
+                    )}
                   </div>
+
                   <div className="form-group">
                     <label>
                       Số điện thoại <span style={{ color: "red" }}>*</span>
@@ -84,12 +73,20 @@ const Register = () => {
                     <input
                       type="text"
                       className="border-inputs"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handChange}
-                      required
+                      {...register("phone", {
+                        required: "Vui lòng nhập số điện thoại",
+                        pattern: {
+                          value: /^0[0-9]{9}$/, // Bắt đầu với "0" và theo sau là 9 chữ số khác
+                          message:
+                            "Số điện thoại phải bắt đầu bằng 00"
+                        },
+                      })}
                     />
+                    {errors.phone && (
+                      <p className="text-danger">{errors.phone.message}</p>
+                    )}
                   </div>
+
                   <div className="form-group">
                     <label>
                       Mật khẩu <span style={{ color: "red" }}>*</span>
@@ -97,12 +94,19 @@ const Register = () => {
                     <input
                       type="password"
                       className="border-inputs"
-                      name="password"
-                      value={formData.password}
-                      onChange={handChange}
-                      required
+                      {...register("password", {
+                        required: "Vui lòng nhập mật khẩu",
+                        minLength: {
+                          value: 6,
+                          message: "Mật khẩu phải có ít nhất 6 ký tự",
+                        },
+                      })}
                     />
+                    {errors.password && (
+                      <p className="text-danger">{errors.password.message}</p>
+                    )}
                   </div>
+
                   <div className="form-group">
                     <label>
                       Nhập lại mật khẩu <span style={{ color: "red" }}>*</span>
@@ -110,12 +114,19 @@ const Register = () => {
                     <input
                       type="password"
                       className="border-inputs"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handChange}
-                      required
+                      {...register("confirmPassword", {
+                        required: "Vui lòng nhập lại mật khẩu",
+                        validate: (value) =>
+                          value === password || "Mật khẩu không khớp",
+                      })}
                     />
+                    {errors.confirmPassword && (
+                      <p className="text-danger">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
                   </div>
+
                   <div className="form-group">
                     <label>
                       Email <span style={{ color: "red" }}>*</span>
@@ -123,21 +134,28 @@ const Register = () => {
                     <input
                       type="email"
                       className="border-inputs"
-                      name="email"
-                      value={formData.email}
-                      onChange={handChange}
-                      required
+                      {...register("email", {
+                        required: "Vui lòng nhập email",
+                        pattern: {
+                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                          message: "Email không hợp lệ",
+                        },
+                      })}
                     />
+                    {errors.email && (
+                      <p className="text-danger">{errors.email.message}</p>
+                    )}
                   </div>
+
                   <div className="col-6 p-0">
                     <button type="submit" className="btn btn-danger text-light">
                       Đăng Ký
                     </button>
                   </div>
                   <div className="col-4 p-0 pt-2">
-                    <a href="/login" className="quenmatkhau">
+                    <Link to="/login" className="quenmatkhau">
                       Bạn đã có tài khoản?
-                    </a>
+                    </Link>
                   </div>
                 </form>
               </div>

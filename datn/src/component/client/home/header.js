@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "../../../assets/img/logo.png";
 import Cookies from "js-cookie";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { logoutUser } from "../../../services/Login";
+import { logoutUser } from "../../../services/client/Login";
 
 const Header = () => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
