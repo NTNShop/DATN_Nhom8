@@ -10,24 +10,21 @@ const Contact = () => {
         <>
           <Header />
             {/* Breadcrumb Section Begin */}
-            <section 
-    className="breadcrumb-section set-bg" 
-    style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-  >
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-12 text-center">
-          <div className="breadcrumb__text">
-            <h2>LIÊN HỆ</h2>
-            <div className="breadcrumb__option">
-              <a href="./index.html">TRANG CHỦ</a>
-              <span>LIÊN HỆ</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+            <section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-12 text-center">
+                            <div className="breadcrumb__text">
+                                <h2>LIÊN HỆ</h2>
+                                <div className="breadcrumb__option">
+                                    <a href="./index.html">TRANG CHỦ</a>
+                                    <span>LIÊN HỆ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             {/* Breadcrumb Section End */}
 {/* Contact Form Begin */}
