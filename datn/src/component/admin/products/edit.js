@@ -4,6 +4,8 @@ import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';  // Import useParams
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const EditProduct = () => {
     const { id } = useParams();  // Use useParams to get the product ID from the URL
@@ -240,6 +242,22 @@ const EditProduct = () => {
                                                 className="form-control-line border-input"
                                             />
                                             {errors.description && <span className="text-danger">{errors.description}</span>}
+                                        </div>
+                                    </div>
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
+                                        <div className="col-md-12">
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={product.specifications}
+                                                onChange={(event, editor) => {
+                                                    const data = editor.getData();
+                                                    setProduct((prevState) => ({
+                                                        ...prevState,
+                                                        specifications: data,
+                                                    }));
+                                                }}
+                                            />
                                         </div>
                                     </div>
 
