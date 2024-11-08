@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import Header from "../home/header";
 import Footer from "../home/footer";
 import { Link } from "react-router-dom";
-import sp from "../../../assets/img/cart/sp1.png";
+import sp from "../../../assets/img/cart/sp1.webp";
+import sp2 from "../../../assets/img/cart/sp2.webp";
+import sp3 from "../../../assets/img/cart/sp3.webp";
+import sp4 from "../../../assets/img/cart/sp4.webp";
+
 import sp1 from "../../../assets/img/cart/cart.png";
 import { FaStar } from 'react-icons/fa';
 
@@ -66,7 +70,7 @@ const Detail = () => {
                                     <img className="img-fluid w-100" src={mainImage} alt="Product" />
                                 </div>
                                 <div className="row">
-                                    {[sp, sp1, sp, sp].map((image, index) => (
+                                    {[sp, sp2, sp3, sp4].map((image, index) => (
                                         <div className="col-3" key={index}>
                                             <img
                                                 src={image}
