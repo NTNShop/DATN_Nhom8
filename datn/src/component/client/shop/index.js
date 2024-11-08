@@ -2,8 +2,9 @@ import React from "react";
 import Header from "../home/header";
 import Footer from "../home/footer";
 import { Link } from "react-router-dom";
-import sp from "../../../assets/img/cart/sp1.png";
+import sp from "../../../assets/img/cart/sp1.webp";
 import banner from "../../../assets/img/hero/banner2.jpg";
+import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
 const Product = () => (
   <>
     <Header />
@@ -34,16 +35,16 @@ const Product = () => (
                 <h4>Các loại</h4>
                 <ul>
                   <li>
-                    <Link to="/">Tay ga</Link>
+                    <Link to="/">Xe đạp trẻ em</Link>
                   </li>
                   <li>
-                    <Link to="/">Xe số</Link>
+                    <Link to="/">Xe đạp thể thao</Link>
                   </li>
                   <li>
-                    <Link to="/">Tay côn</Link>
+                    <Link to="/">Xe đạp Fixed Gear</Link>
                   </li>
                   <li>
-                    <Link to="/">Phân khối lơn</Link>
+                    <Link to="/">Xe đạp địa hình</Link>
                   </li>
                 </ul>
               </div>
@@ -90,10 +91,10 @@ const Product = () => (
                         className="latest-product__item"
                       >
                         <div className="latest-product__item__pic">
-                          <img src={sp} alt="Product" />
+                          <img src={sp4} alt="Product" />
                         </div>
                         <div className="latest-product__item__text">
-                          <h6>Xe tay ga</h6>
+                          <h6>Xe đạp đua carbon Nesto Rhino</h6>
                           <span>40.000.000đ</span>
                         </div>
                       </Link>
@@ -104,10 +105,10 @@ const Product = () => (
                         className="latest-product__item"
                       >
                         <div className="latest-product__item__pic">
-                          <img src={sp} alt="Product" />
+                          <img src={sp4} alt="Product" />
                         </div>
                         <div className="latest-product__item__text">
-                          <h6>Xe tay ga</h6>
+                          <h6>Xe đạp đua carbon Nesto Rhino</h6>
                           <span>40.000.000đ</span>
                         </div>
                       </Link>
@@ -116,10 +117,10 @@ const Product = () => (
                         className="latest-product__item"
                       >
                         <div className="latest-product__item__pic">
-                          <img src={sp} alt="Product" />
+                          <img src={sp4} alt="Product" />
                         </div>
                         <div className="latest-product__item__text">
-                          <h6>Xe tay ga</h6>
+                          <h6>Xe đạp đua carbon Nesto Rhino</h6>
                           <span>40.000.000đ</span>
                         </div>
                       </Link>
@@ -128,10 +129,10 @@ const Product = () => (
                         className="latest-product__item"
                       >
                         <div className="latest-product__item__pic">
-                          <img src={sp} alt="Product" />
+                          <img src={sp4} alt="Product" />
                         </div>
                         <div className="latest-product__item__text">
-                          <h6>Xe tay ga</h6>
+                          <h6>Xe đạp đua carbon Nesto Rhino</h6>
                           <span>40.000.000đ</span>
                         </div>
                       </Link>
@@ -171,8 +172,8 @@ const Product = () => (
                       </ul>
                     </div>
                     <div className="product__discount__item__text">
-                      <h5>
-                        <Link to="/product-details/1">Xe tay ga</Link>
+                      <h5 >
+                        <Link  to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link>
                       </h5>
                       <div className="product__item__price">
                         40.000.000đ<span>45.000.000đ</span>
@@ -207,7 +208,7 @@ const Product = () => (
                     </div>
                     <div className="product__discount__item__text">
                       <h5>
-                        <Link to="/product-details/1">Xe tay ga</Link>
+                        <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link>
                       </h5>
                       <div className="product__item__price">
                         40.000.000đ<span>45.000.000đ</span>
@@ -242,7 +243,7 @@ const Product = () => (
                     </div>
                     <div className="product__discount__item__text">
                       <h5>
-                        <Link to="/product-details/1">Xe tay ga</Link>
+                        <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link>
                       </h5>
                       <div className="product__item__price">
                         40.000.000đ<span>45.000.000đ</span>
@@ -303,7 +304,7 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                     <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -333,7 +334,8 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
+
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -363,7 +365,8 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                      <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
+
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -393,7 +396,8 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
+
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -423,7 +427,7 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -453,7 +457,8 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
+
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -483,7 +488,8 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
+
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -513,7 +519,8 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
+
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
@@ -543,7 +550,7 @@ const Product = () => (
                   </div>
                   <div className="product__item__text">
                     <h5>
-                      <Link to="/product-details/1">Xe tay ga</Link>
+                    <div className="name-product-bike"> <Link to="/product-details/1">Xe đạp đua carbon Nesto Rhino</Link></div>
                     </h5>
                     <h5>40.000.000đ</h5>
                   </div>
