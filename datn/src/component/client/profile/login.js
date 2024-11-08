@@ -21,28 +21,34 @@ const Login = () => {
     setTimeout(() => setLoading(false), 1500); // Giả lập quá trình tải
   }, []);
 
-  const onSubmit = async (data) => {
-    setError("");
-    try {
-      const response = await loginUser(data.email, data.password);
-      if (response && response.status && response.data.token) {
-        Cookies.set("authToken", response.data.token, { expires: 7 });
-        setSuccessMessage("Đăng nhập thành công!");
-        setTimeout(() => {
-          setSuccessMessage("");
-          window.location.href = "/";
-        }, 2000);
-      } else {
-        setError(
-          "Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu."
-        );
-      }
-    } catch (err) {
-      setError(
-        "Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu."
-      );
-    }
-  };
+    const onSubmit = async (data) => {
+        setError("");
+        try {
+            const response = await loginUser(data.email, data.password);
+            if (response && response.status && response.data.token) {
+                Cookies.set("authToken", response.data.token, { expires: 7 });
+                
+                // Kiểm tra nếu role là admin
+                if (response.data.user.role === 'admin') {
+                    setSuccessMessage("Đăng nhập thành công với quyền Admin!");
+                    setTimeout(() => {
+                        setSuccessMessage("");
+                        window.location.href = "/admin"; // Điều hướng đến trang admin
+                    }, 2000);
+                } else {
+                    setSuccessMessage("Đăng nhập thành công!");
+                    setTimeout(() => {
+                        setSuccessMessage("");
+                        window.location.href = "/"; // Điều hướng đến trang chính cho user
+                    }, 2000);
+                }
+            } else {
+                setError("Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu.");
+            }
+        } catch (err) {
+            setError("Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu.");
+        }
+    };
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -128,101 +134,80 @@ const Login = () => {
                     <div className="success-message">{successMessage}</div>
                   )}
 
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="form-group">
-                      <label>Email</label>
-                      <input
-                        type="email"
-                        className="border-inputs"
-                        {...register("email", {
-                          required: "Email không được để trống.",
-                          pattern: {
-                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: "Email không hợp lệ.",
-                          },
-                        })}
-                      />
-                      {errors.email && (
-                        <p className="error-message">{errors.email.message}</p>
-                      )}
-                    </div>
-                    <div className="form-group">
-                      <label>Mật khẩu</label>
-                      <div className="input-group">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          className="border-inputs"
-                          {...register("password", {
-                            required: "Mật khẩu không được để trống.",
-                          })}
-                        />
-                        <button
-                          type="button"
-                          className="btn btn-light"
-                          onClick={togglePasswordVisibility}
-                        >
-                          {showPassword ? "Ẩn" : "Hiện"}
-                        </button>
-                      </div>
-                      {errors.password && (
-                        <p className="error-message">
-                          {errors.password.message}
-                        </p>
-                      )}
-                    </div>
-                    {error && <p className="text-danger">{error}</p>}
-                    <div className="col-6 p-0">
-                      <button
-                        type="submit"
-                        className="btn btn-danger text-light"
-                      >
-                        Đăng Nhập
-                      </button>
-                    </div>
-                    <div className="row">
-                      <div className="col-4 p-0 pt-2">
-                        <a href="/register" className="quenmatkhau">
-                          Bạn chưa có tài khoản?
-                        </a>
-                      </div>
-                      <div className="col-4 p-0 pt-2">
-                        <a href="/forgotPassword" className="quenmatkhau">
-                          Quên mật khẩu?
-                        </a>
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <div className="bg-primary loginGG mt-3">
-                        <i
-                          style={{ fontSize: "20px" }}
-                          className="bi bi-facebook text-light"
-                        ></i>
-                        <span className="text-loginGG">
-                          Đăng nhập bằng Facebook
-                        </span>
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <div className="bg-danger loginGG">
-                        <i
-                          style={{ fontSize: "20px" }}
-                          className="bi bi-google text-light"
-                        ></i>
-                        <span className="text-loginGG">
-                          Đăng nhập bằng Google
-                        </span>
-                      </div>
-                    </div>
-                  </form>
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="form-group">
+                                            <label>Email</label>
+                                            <input
+                                                type="email"
+                                                className="border-inputs"
+                                                {...register("email", {
+                                                    required: "Email không được để trống.",
+                                                    pattern: {
+                                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                        message: "Email không hợp lệ."
+                                                    }
+                                                })}
+                                            />
+                                            {errors.email && <p className="error-message">{errors.email.message}</p>}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Mật khẩu</label>
+                                            <div className="input-group">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    className="border-inputs"
+                                                    {...register("password", {
+                                                        required: "Mật khẩu không được để trống.",
+                                                        pattern: {
+                                                            value: /^[a-zA-Z0-9]{3,}$/,
+                                                            message: "Mật khẩu chỉ được chứa chữ và số, tối thiểu 8 ký tự."
+                                                        }
+                                                    })}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-light"
+                                                    onClick={togglePasswordVisibility}
+                                                >
+                                                    {showPassword ? "Ẩn" : "Hiện"}
+                                                </button>
+                                            </div>
+                                            {errors.password && <p className="error-message">{errors.password.message}</p>}
+                                        </div>
+                                        {error && <p className="text-danger">{error}</p>}
+                                        <div className="col-6 p-0">
+                                            <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-4 p-0 pt-2">
+                                                <a href="/register" className="quenmatkhau">Bạn chưa có tài khoản?</a>
+                                            </div>
+                                            <div className="col-4 p-0 pt-2">
+                                                <a href="/forgotPassword" className="quenmatkhau">Quên mật khẩu?</a>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <div className="bg-primary loginGG mt-3">
+                                                <i style={{ fontSize: "20px" }} className="bi bi-facebook text-light"></i>
+                                                <span className="text-loginGG">Đăng nhập bằng Facebook</span>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <div className="bg-danger loginGG">
+                                                <i style={{ fontSize: "20px" }} className="bi bi-google text-light"></i>
+                                                <span className="text-loginGG">Đăng nhập bằng Google</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-              </div>
             </div>
-          )}
-        </div>
-      </div>
-      <Footer />
-    </>
-  );
+            <Footer />
+        </>
+    );
 };
 
 export default Login;
