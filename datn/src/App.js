@@ -125,11 +125,11 @@ function App() {
       <Route path="/admin/dashboard" element={<Dashboard />} />
       <Route path="/admin/profile" element={<Profile />} />
       <Route path="/admin/category" element={<Categories />} />
-      <Route path="/admin/category/edit" element={<EditCategories />} />
+      <Route path="/admin/category/edit/:id" element={<EditCategories />} />
       <Route path="/admin/category/add" element={<AddCategories />} />
       <Route path="/admin/product" element={<Product2 />} />
       <Route path="/admin/product/add" element={<AddProduct />} />
-      <Route path="/admin/product/edit" element={<EditProduct />} />
+      <Route path="/admin/product/edit/:id" element={<EditProduct />} />
       <Route path="/admin/user" element={<User />} />
       <Route path="/admin/login" element={<Authentication />} />
       <Route path="/admin/addUser" element={<AddUser />} />
