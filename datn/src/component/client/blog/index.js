@@ -5,28 +5,26 @@ import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import Cart from "../../../assets/img/cart/cart.png";
 import Cart1 from "../../../assets/img/cart/cart1.png";
-import banner from "../../../assets/img/hero/banner3.avif";
+import banner from "../../../assets/img/hero/banner2.jpg";
 const Blog = () => {
   return (
     <>
       <Header />
-      <div>
-        <img src={banner} alt="Logo" />
-      </div>
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-12 text-center">
-            <div className="breadcrumb__text">
-              <h2
-                className="text-dark pt-5"
-                style={{ borderBottom: "2px solid #de0000" }}
-              >
-                BÀI VIẾT
-              </h2>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-12 text-center">
+                            <div className="breadcrumb__text">
+                                <h2>BÀI VIẾT</h2>
+                                <div className="breadcrumb__option">
+                                    <a href="./index.html">TRANG CHỦ</a>
+                                    <span>BÀI VIẾT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
       <div className="blog spad text-center">
         <div className="container">
           <div className="row">
