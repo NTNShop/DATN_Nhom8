@@ -103,7 +103,6 @@ const Detail = () => {
                                 <p className="mb-4">
                                 {product.description}
                                 </p>
-
                                 <div className="product__details__quantity">
                                     <div className="quantity">
                                         <div className="pro-qty">

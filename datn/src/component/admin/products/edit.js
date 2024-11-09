@@ -20,7 +20,15 @@ const EditProduct = () => {
         short_description: '',
         specifications: '',
         status: 'in_stock',
+        warranty: '6',
         images: [], // Images should be handled as files in the form
+        variants: []
+    });
+    // State cho variant đang nhập
+    const [currentVariant, setCurrentVariant] = useState({
+        color: '',
+        price: '',
+        code: ''
     });
     const [errors, setErrors] = useState({});
 
@@ -58,7 +66,39 @@ const EditProduct = () => {
             [name]: value,
         }));
     };
+    const handleVariantChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentVariant(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
+    const addVariant = () => {
+        if (!currentVariant.color || !currentVariant.price) {
+            alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
+            return;
+        }
+        
+        const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        setProduct(prev => ({
+            ...prev,
+            variants: [...prev.variants, { ...currentVariant, code: variantCode }]
+        }));
+        
+        setCurrentVariant({
+            color: '',
+            price: '',
+            code: ''
+        });
+    };
+    const removeVariant = (index) => {
+        setProduct(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
+    };
     const handleFileChange = (e) => {
         setProduct((prevState) => ({
             ...prevState,
@@ -79,29 +119,27 @@ const EditProduct = () => {
             setErrors(formErrors);
             return;
         }
-    
-        const formData = new FormData();
-        
-        // Append all product data
-        formData.append('name', product.name);
-        formData.append('category_id', product.category_id);
-        formData.append('brand_id', product.brand_id);
-        formData.append('price', product.price);
-        formData.append('description', product.description);
-        formData.append('short_description', product.short_description);
-        formData.append('specifications', product.specifications);
-        formData.append('status', product.status);
-    
-        // Handle images
-        if (product.images && product.images.length > 0) {
-            for (let i = 0; i < product.images.length; i++) {
-                formData.append('images[]', product.images[i]);
-            }
-        }
-    
+
         try {
+            const formData = new FormData();
+            
+            // Append all product data
+            Object.keys(product).forEach(key => {
+                if (key === 'images') {
+                    if (product.images.length > 0) {
+                        Array.from(product.images).forEach(file => {
+                            formData.append('images[]', file);
+                        });
+                    }
+                } else if (key === 'variants') {
+                    formData.append('variants', JSON.stringify(product.variants));
+                } else {
+                    formData.append(key, product[key]);
+                }
+            });
+
             const response = await axios.post(
-                `http://127.0.0.1:8000/api/v1/products/${id}`, 
+                `http://127.0.0.1:8000/api/v1/products/${id}`,
                 formData,
                 {
                     headers: {
@@ -110,20 +148,13 @@ const EditProduct = () => {
                     }
                 }
             );
-            
+
             if (response.data.status === 'success') {
                 alert('Cập nhật sản phẩm thành công');
-                // Optional: Redirect to product list or refresh data
-            } else {
-                alert('Có lỗi xảy ra khi cập nhật sản phẩm');
             }
         } catch (error) {
             console.error("Error:", error);
-            if (error.response?.data?.message) {
-                alert(`Lỗi: ${error.response.data.message}`);
-            } else {
-                alert("Có lỗi xảy ra khi cập nhật sản phẩm");
-            }
+            alert(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật sản phẩm");
         }
     };
 
@@ -267,8 +298,68 @@ const EditProduct = () => {
                                             {errors.description && <span className="text-danger">{errors.description}</span>}
                                         </div>
                                     </div>
-                                    
-
+                                    {/* Phần variants */}
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
+                                        <div className="col-md-12">
+                                            <div className="d-flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    name="color"
+                                                    value={currentVariant.color}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập màu sắc"
+                                                    className="form-control"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    value={currentVariant.price}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập giá"
+                                                    className="form-control"
+                                                />
+                                                <button 
+                                                    type="button"
+                                                    onClick={addVariant}
+                                                    className="btn btn-primary"
+                                                >
+                                                    Thêm màu
+                                                </button>
+                                            </div>
+                                            
+                                            <div className="variants-list mt-2">
+                                                {product.variants.map((variant, index) => (
+                                                    <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                                        <span className='text-dark'>
+                                                            Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
+                                                        </span>
+                                                        <button 
+                                                            type="button" 
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => removeVariant(index)}
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thời gian bảo hành</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="warranty"
+                                                value={product.warranty}
+                                                onChange={handleInputChange}
+                                                className="form-control"
+                                            >
+                                                <option value="6">6 tháng</option>
+                                                <option value="12">12 tháng</option>
+                                            </select>
+                                        </div>
+                                    </div>           
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
                                         <div className="col-md-12">
