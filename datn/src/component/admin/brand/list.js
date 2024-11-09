@@ -5,26 +5,26 @@ import { Modal, Button } from 'react-bootstrap';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
-const ListCategory = () => {
-    const [categories, setCategories] = useState([]);
+const ListBrand = () => {
+    const [brand, setBrand] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const [categoryToDelete, setCategoryToDelete] = useState(null);
+    const [brandToDelete, setBrandToDelete] = useState(null);
 
     useEffect(() => {
-        fetchCategories();
+        fetchBrand();
     }, []);
 
-    const fetchCategories = async () => {
+    const fetchBrand = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/v1/categories');
+            const response = await fetch('http://127.0.0.1:8000/api/v1/brands');
             if (!response.ok) {
                 throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
             }
             const data = await response.json();
-            setCategories(data.data);
+            setBrand(data.data);
         } catch (error) {
             console.error("Lỗi khi lấy danh mục:", error);
             setError("Không thể tải danh mục. Vui lòng thử lại sau.");
@@ -32,22 +32,21 @@ const ListCategory = () => {
             setLoading(false);
         }
     };
-    
 
     const confirmDelete = (id) => {
-        setCategoryToDelete(id);
+        setBrandToDelete(id);
         setShowDeleteModal(true);
     };
 
     const handleDelete = async () => {
-        if (!categoryToDelete) return;
+        if (!brandToDelete) return;
 
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/v1/categories/${categoryToDelete}`);
-            setCategories(categories.filter(category => category.id !== categoryToDelete));
-            setCategoryToDelete(null);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/brands/${brandToDelete}`);
+            setBrand(brand.filter(brand => brand.id !== brandToDelete));
+            setBrandToDelete(null);
             setShowDeleteModal(false);
-            setShowSuccessModal(true); // Show success modal
+            setShowSuccessModal(true); // Hiển thị modal thông báo xóa thành công
         } catch (error) {
             console.error("Lỗi khi xóa danh mục:", error);
             setError("Không thể xóa danh mục. Vui lòng thử lại sau.");
@@ -82,16 +81,15 @@ const ListCategory = () => {
                         <div className="col-sm-10">
                             <div className="card">
                                 <div className="card-body">
-                                    <h4 className="card-title">Danh mục sản phẩm</h4>
-                                    <span><Link to='/admin/category/add' className="btn btn-primary">Thêm danh mục</Link></span>
+                                    <h4 className="card-title">Danh sách thương hiệu</h4>
+                                    <span><Link to='/admin/brand/add' className="btn btn-primary">Thêm thương hiệu</Link></span>
 
                                     <div className="table-responsive mt-3">
                                         <table className="table user-table mt-2">
                                             <thead>
                                                 <tr className='table-light'>
                                                     <th className="border-top-0">ID</th>
-                                                    <th className="border-top-0">Tên danh mục</th>
-                                                    <th className="border-top-0">Slug</th>
+                                                    <th className="border-top-0">Tên thương hiệu</th>
                                                     <th className="border-top-0">Hình ảnh</th>
                                                     <th className="border-top-0">Trạng thái</th>
                                                     <th className="border-top-0">Thao tác</th>
@@ -106,25 +104,24 @@ const ListCategory = () => {
                                                     <tr>
                                                         <td colSpan="6">{error}</td>
                                                     </tr>
-                                                ) : categories.length > 0 ? (
-                                                    categories.map((category) => (
-                                                        <tr key={category.id}>
-                                                            <td>{category.id}</td>
-                                                            <td>{category.name}</td>
-                                                            <td>{category.slug}</td>
+                                                ) : brand.length > 0 ? (
+                                                    brand.map((brand) => (
+                                                        <tr key={brand.id}>
+                                                            <td>{brand.id}</td>
+                                                            <td>{brand.name}</td>
                                                             <td>
                                                                 <img 
-                                                                    src={`http://127.0.0.1:8000${category.image_url}`}
-                                                                    alt={category.name}
+                                                                    src={`http://127.0.0.1:8000${brand.logo}`}
+                                                                    alt={brand.name}
                                                                     style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                                                                 />
                                                             </td>
-                                                            <td>{category.status === 1 ? 'Kích hoạt' : 'Không kích hoạt'}</td>
+                                                            <td>{brand.status === 1 ? 'Kích hoạt' : 'Không kích hoạt'}</td>
                                                             <td>
                                                                 <div className="d-flex gap-2">
-                                                                    <span><Link to={`/admin/category/edit/${category.id}`} className="btn btn-primary">Chỉnh sửa</Link></span>
+                                                                    <span><Link to={`/admin/brand/edit/${brand.id}`} className="btn btn-primary">Chỉnh sửa</Link></span>
                                                                     <span>
-                                                                        <button onClick={() => confirmDelete(category.id)} className="btn btn-danger">Xóa</button>
+                                                                        <button onClick={() => confirmDelete(brand.id)} className="btn btn-danger">Xóa</button>
                                                                     </span>
                                                                 </div>
                                                             </td>
@@ -145,7 +142,7 @@ const ListCategory = () => {
                 </div>
                 <Footer />
 
-                {/* Modal for delete confirmation */}
+                {/* Modal xác nhận xóa */}
                 <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
@@ -161,7 +158,7 @@ const ListCategory = () => {
                     </Modal.Footer>
                 </Modal>
 
-                {/* Modal for success message */}
+                {/* Modal thông báo xóa thành công */}
                 <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xóa thành công</Modal.Title>
@@ -178,4 +175,4 @@ const ListCategory = () => {
     );
 };
 
-export default ListCategory;
+export default ListBrand;

@@ -36,6 +36,9 @@ import Profile from "./component/admin/profile/index";
 import Categories from "./component/admin/categories/list";
 import EditCategories from "./component/admin/categories/edit";
 import AddCategories from "./component/admin/categories/add";
+import ListBrand from "./component/admin/brand/list";
+import EditBrand from "./component/admin/brand/edit";
+import AddBrand from "./component/admin/brand/add";
 import Product2 from "./component/admin/products/list";
 import EditProduct from "./component/admin/products/edit";
 import AddProduct from "./component/admin/products/add";
@@ -127,6 +130,9 @@ function App() {
       <Route path="/admin/category" element={<Categories />} />
       <Route path="/admin/category/edit/:id" element={<EditCategories />} />
       <Route path="/admin/category/add" element={<AddCategories />} />
+      <Route path="/admin/brand" element={<ListBrand />} />
+      <Route path="/admin/brand/edit/:id" element={<EditBrand />} />
+      <Route path="/admin/brand/add" element={<AddBrand />} />
       <Route path="/admin/product" element={<Product2 />} />
       <Route path="/admin/product/add" element={<AddProduct />} />
       <Route path="/admin/product/edit/:id" element={<EditProduct />} />

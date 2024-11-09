@@ -4,6 +4,8 @@ import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';  // Import useParams
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const EditProduct = () => {
     const { id } = useParams();  // Use useParams to get the product ID from the URL
@@ -63,7 +65,13 @@ const EditProduct = () => {
             images: e.target.files,
         }));
     };
-
+    const handleCKEditorChange = (event, editor) => {
+        const data = editor.getData();
+        setProduct((prevState) => ({
+            ...prevState,
+            specifications: data,
+        }));
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = validateForm();
@@ -242,6 +250,7 @@ const EditProduct = () => {
                                             {errors.description && <span className="text-danger">{errors.description}</span>}
                                         </div>
                                     </div>
+                                    
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
@@ -257,7 +266,17 @@ const EditProduct = () => {
                                             </select>
                                         </div>
                                     </div>
-
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
+                                        <div className="col-md-12">
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={product.specifications}  // Đưa dữ liệu vào CKEditor
+                                                onChange={handleCKEditorChange}  // Cập nhật dữ liệu khi thay đổi
+                                            />
+                                            {errors.specifications && <span className="text-danger">{errors.specifications}</span>}
+                                        </div>
+                                    </div>      
                                     <div className="form-group">
                                         <div className="col-sm-12 d-flex">
                                             <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">

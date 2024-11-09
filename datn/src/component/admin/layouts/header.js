@@ -142,6 +142,17 @@ const Header = () => {
                 <li className="sidebar-item">
                   <a
                     className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/brand"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi me-2 mdi-store"></i>
+                    <span className="hide-menu">Thương hiệu</span>
+                  </a>
+                </li>
+
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
                     href="/admin/product"
                     aria-expanded="false"
                   >
