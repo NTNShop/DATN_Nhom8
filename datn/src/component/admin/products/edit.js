@@ -79,33 +79,50 @@ const EditProduct = () => {
             setErrors(formErrors);
             return;
         }
-
+    
         const formData = new FormData();
-        Object.keys(product).forEach((key) => {
-            if (key === 'images' && product[key].length > 0) {
-                Array.from(product[key]).forEach((file) => {
-                    formData.append('images[]', file);
-                });
-            } else {
-                formData.append(key, product[key]);
+        
+        // Append all product data
+        formData.append('name', product.name);
+        formData.append('category_id', product.category_id);
+        formData.append('brand_id', product.brand_id);
+        formData.append('price', product.price);
+        formData.append('description', product.description);
+        formData.append('short_description', product.short_description);
+        formData.append('specifications', product.specifications);
+        formData.append('status', product.status);
+    
+        // Handle images
+        if (product.images && product.images.length > 0) {
+            for (let i = 0; i < product.images.length; i++) {
+                formData.append('images[]', product.images[i]);
             }
-        });
-
+        }
+    
         try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/v1/products/${id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            alert('Cập nhật sản phẩm thành công');
-            // Optionally redirect or reset form
-        } catch (error) {
-            if (error.response) {
-                console.error("Dữ liệu lỗi phản hồi:", error.response.data);
-                alert("Không thể cập nhật sản phẩm. Vui lòng kiểm tra lại form và thử lại.");
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/v1/products/${id}`, 
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-HTTP-Method-Override': 'PUT'
+                    }
+                }
+            );
+            
+            if (response.data.status === 'success') {
+                alert('Cập nhật sản phẩm thành công');
+                // Optional: Redirect to product list or refresh data
             } else {
-                console.error("Lỗi:", error.message);
-                alert("Không thể cập nhật sản phẩm. Vui lòng thử lại.");
+                alert('Có lỗi xảy ra khi cập nhật sản phẩm');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            if (error.response?.data?.message) {
+                alert(`Lỗi: ${error.response.data.message}`);
+            } else {
+                alert("Có lỗi xảy ra khi cập nhật sản phẩm");
             }
         }
     };
@@ -119,7 +136,7 @@ const EditProduct = () => {
         if (!product.description) errors.description = "Description is required";
         return errors;
     };
-
+    
     return (
         <div>
             <Header />

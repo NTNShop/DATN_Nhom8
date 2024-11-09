@@ -16,6 +16,8 @@ const EditBrand = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [previewLogo, setPreviewLogo] = useState(null);
+
 
     useEffect(() => {
         fetchBrandData();
@@ -28,9 +30,10 @@ const EditBrand = () => {
             const { name, status, logo } = response.data.data;
             setBrandData({
                 name: name || "",
-                logo: logo ? `http://127.0.0.1:8000${logo}` : null,
                 status: status.toString(),
+                logo: null
             });
+            setPreviewLogo(logo ? `http://127.0.0.1:8000${logo}` : null);
         } catch (error) {
             setErrorMessage("Không thể tải dữ liệu thương hiệu. Vui lòng thử lại sau.");
             console.error("Error fetching brand data:", error);
@@ -39,32 +42,48 @@ const EditBrand = () => {
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-        setBrandData({ ...brandData, [id]: value });
+        setBrandData(prev => ({ ...prev, [id]: value }));
     };
 
     const handleFileChange = (e) => {
-        setBrandData({ ...brandData, logo: e.target.files[0] });
+        const file = e.target.files[0];
+        if (file) {
+            setBrandData(prev => ({ ...prev, logo: file }));
+            // Tạo preview cho ảnh mới
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewLogo(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccessMessage("");
         setErrorMessage("");
-    
+
         const formData = new FormData();
         formData.append('name', brandData.name);
-        if (brandData.logo instanceof File) {
+        formData.append('status', brandData.status);
+        if (brandData.logo) {
             formData.append('logo', brandData.logo);
         }
-        formData.append('status', brandData.status);
-    
+        
+        // Thêm '_method' field để Laravel nhận diện đây là PUT request
+        formData.append('_method', 'PUT');
+
         try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/v1/brands/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-    
-            console.log("API Response: ", response.data); // Xem phản hồi từ API
-    
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/v1/brands/${id}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }
+            );
+
             if (response.data.status === 'success') {
                 setSuccessMessage("Thương hiệu đã được cập nhật thành công!");
                 setShowModal(true);
@@ -72,7 +91,7 @@ const EditBrand = () => {
                 setErrorMessage("Có lỗi xảy ra khi cập nhật thương hiệu.");
             }
         } catch (error) {
-            setErrorMessage("Có lỗi xảy ra khi cập nhật thương hiệu.");
+            setErrorMessage(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật thương hiệu.");
             console.error("Error updating brand:", error);
         }
     };
