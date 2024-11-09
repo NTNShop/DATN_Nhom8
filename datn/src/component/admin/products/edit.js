@@ -20,7 +20,15 @@ const EditProduct = () => {
         short_description: '',
         specifications: '',
         status: 'in_stock',
+        warranty: '6',
         images: [], // Images should be handled as files in the form
+        variants: []
+    });
+    // State cho variant đang nhập
+    const [currentVariant, setCurrentVariant] = useState({
+        color: '',
+        price: '',
+        code: ''
     });
     const [errors, setErrors] = useState({});
 
@@ -58,14 +66,52 @@ const EditProduct = () => {
             [name]: value,
         }));
     };
+    const handleVariantChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentVariant(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
+    const addVariant = () => {
+        if (!currentVariant.color || !currentVariant.price) {
+            alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
+            return;
+        }
+        
+        const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        setProduct(prev => ({
+            ...prev,
+            variants: [...prev.variants, { ...currentVariant, code: variantCode }]
+        }));
+        
+        setCurrentVariant({
+            color: '',
+            price: '',
+            code: ''
+        });
+    };
+    const removeVariant = (index) => {
+        setProduct(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
+    };
     const handleFileChange = (e) => {
         setProduct((prevState) => ({
             ...prevState,
             images: e.target.files,
         }));
     };
-
+    const handleCKEditorChange = (event, editor) => {
+        const data = editor.getData();
+        setProduct((prevState) => ({
+            ...prevState,
+            specifications: data,
+        }));
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = validateForm();
@@ -74,33 +120,41 @@ const EditProduct = () => {
             return;
         }
 
-        const formData = new FormData();
-        Object.keys(product).forEach((key) => {
-            if (key === 'images' && product[key].length > 0) {
-                Array.from(product[key]).forEach((file) => {
-                    formData.append('images[]', file);
-                });
-            } else {
-                formData.append(key, product[key]);
-            }
-        });
-
         try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/v1/products/${id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            const formData = new FormData();
+            
+            // Append all product data
+            Object.keys(product).forEach(key => {
+                if (key === 'images') {
+                    if (product.images.length > 0) {
+                        Array.from(product.images).forEach(file => {
+                            formData.append('images[]', file);
+                        });
+                    }
+                } else if (key === 'variants') {
+                    formData.append('variants', JSON.stringify(product.variants));
+                } else {
+                    formData.append(key, product[key]);
+                }
             });
-            alert('Cập nhật sản phẩm thành công');
-            // Optionally redirect or reset form
-        } catch (error) {
-            if (error.response) {
-                console.error("Dữ liệu lỗi phản hồi:", error.response.data);
-                alert("Không thể cập nhật sản phẩm. Vui lòng kiểm tra lại form và thử lại.");
-            } else {
-                console.error("Lỗi:", error.message);
-                alert("Không thể cập nhật sản phẩm. Vui lòng thử lại.");
+
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/v1/products/${id}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-HTTP-Method-Override': 'PUT'
+                    }
+                }
+            );
+
+            if (response.data.status === 'success') {
+                alert('Cập nhật sản phẩm thành công');
             }
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật sản phẩm");
         }
     };
 
@@ -113,7 +167,7 @@ const EditProduct = () => {
         if (!product.description) errors.description = "Description is required";
         return errors;
     };
-
+    
     return (
         <div>
             <Header />
@@ -244,23 +298,68 @@ const EditProduct = () => {
                                             {errors.description && <span className="text-danger">{errors.description}</span>}
                                         </div>
                                     </div>
+                                    {/* Phần variants */}
                                     <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
+                                        <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
                                         <div className="col-md-12">
-                                            <CKEditor
-                                                editor={ClassicEditor}
-                                                data={product.specifications}
-                                                onChange={(event, editor) => {
-                                                    const data = editor.getData();
-                                                    setProduct((prevState) => ({
-                                                        ...prevState,
-                                                        specifications: data,
-                                                    }));
-                                                }}
-                                            />
+                                            <div className="d-flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    name="color"
+                                                    value={currentVariant.color}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập màu sắc"
+                                                    className="form-control"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    value={currentVariant.price}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập giá"
+                                                    className="form-control"
+                                                />
+                                                <button 
+                                                    type="button"
+                                                    onClick={addVariant}
+                                                    className="btn btn-primary"
+                                                >
+                                                    Thêm màu
+                                                </button>
+                                            </div>
+                                            
+                                            <div className="variants-list mt-2">
+                                                {product.variants.map((variant, index) => (
+                                                    <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                                        <span className='text-dark'>
+                                                            Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
+                                                        </span>
+                                                        <button 
+                                                            type="button" 
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => removeVariant(index)}
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
-
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thời gian bảo hành</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="warranty"
+                                                value={product.warranty}
+                                                onChange={handleInputChange}
+                                                className="form-control"
+                                            >
+                                                <option value="6">6 tháng</option>
+                                                <option value="12">12 tháng</option>
+                                            </select>
+                                        </div>
+                                    </div>           
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
                                         <div className="col-md-12">
@@ -275,7 +374,17 @@ const EditProduct = () => {
                                             </select>
                                         </div>
                                     </div>
-
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
+                                        <div className="col-md-12">
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={product.specifications}  // Đưa dữ liệu vào CKEditor
+                                                onChange={handleCKEditorChange}  // Cập nhật dữ liệu khi thay đổi
+                                            />
+                                            {errors.specifications && <span className="text-danger">{errors.specifications}</span>}
+                                        </div>
+                                    </div>      
                                     <div className="form-group">
                                         <div className="col-sm-12 d-flex">
                                             <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">

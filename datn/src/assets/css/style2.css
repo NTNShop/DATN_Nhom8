@@ -27,19 +27,23 @@
 .link-color:hover{
 	color: #de0000;
 }
+.image-zoom{
+	background-color: #f0f0f0;
+}
 .image-zoom img{
 	object-fit: cover;
 	transition: transform 0.8s;
 	height: 100%;
+	
 }
 .image-zoom img:hover{
 	transform: scale(1.2);
 }
 .intro-moto{
 	height: 220px;
-	background-color: #D70006;
-	
+	background-color: #000000;
 }
+
 .moto-color{
 	width: 65px;
 	height: auto;
@@ -71,11 +75,12 @@
     float: left;
 }
 .banner2 {
-    background:linear-gradient(rgba(217, 217, 217, 0.5), rgba(147, 217, 255, 0.9)),  url(../../assets/img/hero/banner-section.jpg);
+    background:linear-gradient(rgba(133, 133, 133, 0.3), rgba(0, 0, 0, 0.5)),  url(../../assets/img/hero/banner-section.png);
     width: 100%;
     min-height: 500px;
     background-attachment: fixed;
-	
+	background-size: cover;
+
 }
 .sec-100 {
     width: 100%;
@@ -86,9 +91,7 @@
 }
 .anh-banner3 {
 	margin-top: 30px;
-    width: 400px;
-	border-radius: 300px;
-	background-color: rgba(255, 148, 148, 0.3);
+    width: 500px;
 }
 .col-60-2 {
     margin-top: 150px;
@@ -96,7 +99,7 @@
     color: white;
 }
 .suutam{
-	color: #ff1515;
+	color: #ffffff;
 }
 /* zoom danh mục ở trang index */
 .categories__item span{
@@ -110,10 +113,14 @@
 	transition: transform 1.5s;
 }
 .slider-tong {
-    padding: 20px 0;
+    padding: 0px 0px;
 }
 .subcate{
 	padding-top: 100px;
+	padding-bottom: 100px;
+}
+.subcate2{
+	
 	padding-bottom: 100px;
 }
 .formLogin{
@@ -160,6 +167,12 @@
 	padding-bottom: 100px;
 	background: url(../../../src/assets/img/hero/backgr-dn.png);
 }
+.section-intro2{
+	padding-top: 100px;
+	border-bottom: 1px solid rgb(132, 132, 132);
+	padding-bottom: 50px;
+	background: url(../../../src/assets/img/hero/backgr-dn.png);
+}
 .tieude{
 	color: #de0000;
 	text-align: center;
@@ -170,7 +183,7 @@
 .title-intro{
 	font-size: 30px;
 	border-bottom: 3px solid #de0000;
-	width: 50%;
+	width: 62%;
 }
 .tich{
 	margin-right: 15px;
@@ -178,9 +191,10 @@
 }
 .text-hover-intro a {
 	color: #000;
+	transition: color 0.4s ease; 
 }
 .text-hover-intro a:hover {
-	color: #de0000;
+	color: #ff9911;
 }
 .content-intro2{
 	text-align: justify;
@@ -189,7 +203,7 @@
 	color: #000000;
 }
 .banner-intro2{
-	background: linear-gradient(to right, rgba(255, 255, 255, 0), rgb(255, 4, 0)), url(../../assets/img/hero/introbanner2.jpg);
+	background: linear-gradient(to right, rgba(255, 255, 255, 0), rgb(54, 114, 129)), url(../../assets/img/hero/introbanner2.jpg);
     width: 100%;
     min-height: 500px;
 	background-size: cover;
@@ -202,6 +216,321 @@
 	color: #ffffff;
 	text-align: justify;
 	font-size: 19px;
+}
+.road-Speeder-testing-section{
+	background-color: #d8f4ff;
+	
+}
+@keyframes moveBackAndForth {
+	0% {
+	  transform: translateX(0);
+	}
+	50% {
+	  transform: translateX(20px); /* Điều chỉnh khoảng cách di chuyển */
+	}
+	100% {
+	  transform: translateX(0);
+	}
+  }
+  @keyframes rotate360 {
+	0% {
+	  transform: rotate(0deg);
+	}
+	100% {
+	  transform: rotate(360deg);
+	}
+  }
+  .wheel-pather{
+	position: relative;
+  }
+.wheel-360{
+	position:absolute;
+	top:280px;
+	left: 20px;
+}
+.wheel-3602{
+	position:absolute;
+	top:380px;
+	right: 20px;
+}
+.wheel-3603{
+	position:absolute;
+	top:-100px;
+	right: 20px;
+}
+.wheel-3604{
+	position:absolute;
+	bottom:-100px;
+	left:1300px
+}
+/* header */
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+.khungmenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+
+/* phần menu con */
+
+#main-menu {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+#main-menu li {
+    position: relative;
+    margin: 0px 5px;
+}
+
+ul#main-menu>li:hover>.menu-con {
+    display: block;
+}
+/*  */
+.menu-con {
+    width: 250px;
+    /* list-style: none; */
+    display: none;
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
+    top: 50px;
+    transition: all 0.5s ease-in-out;
+}
+
+.menu-con li a {
+    display: block;
+    text-decoration: none;
+    border-bottom: 1px dotted gainsboro;
+}
+
+.name-menucon {
+    color: rgb(255, 255, 255);
+}
+
+
+/* menu chính */
+
+ul#main-menu {
+    display: flex;
+}
+
+ul#main-menu li {
+    height: 40px;
+}
+
+ul#main-menu a {
+    text-transform: uppercase;
+    padding: 10px 20px;
+    display: block;
+    font-weight: bold;
+}
+
+.ten-menu {
+    color: rgb(0, 0, 0);
+    height: 60px;
+}
+
+ul#main-menu a:hover {
+    color: #ff9911;
+}
+
+.logo {
+    color: rgb(0, 0, 0);
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    display: block;
+    padding-left: 60px;
+}
+
+#banner {
+    background: url(../../assets/img/hero/video-header.mp4);
+    min-height: 700px;
+    width: 100%;
+    background-size: cover;
+    z-index: -1;
+    text-align: center;
+}
+
+.video {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+	margin-top: -100px;
+}
+
+.videoheader {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-height: 100%;
+    min-height: 100%;
+    height: 120vh;
+    z-index: -1;
+    background-size: cover;
+}
+
+.tieude1 b {
+    padding-top: 350px;
+    font-size: 35px;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+    z-index: -5;
+}
+
+.tieude1 a:visited {
+    color: white;
+}
+
+.tieudecona1 {
+    font-family: 'Trebuchet MS';
+    color: white;
+    display: inline-block;
+    z-index: -5;
+}
+
+/* menu mẹ */
+
+.main-dangnhap {
+    position: relative;
+}
+
+.dangnhap1 {
+    position: absolute;
+    right: 30px;
+    top: 2px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 0px;
+    transition: all 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.header.sticky {
+    background: #ffffff;
+    opacity: 0.9;
+    color: black;
+    padding: 5px 0px;
+    box-shadow: 0px 5px 15px black;
+}
+
+.header.sticky .logo {
+    color: black;
+}
+
+.header.sticky #main-menu a {
+    color: black;
+	transition: color 0.4s ease;
+}
+
+.header.sticky #main-menu a:hover {
+    color: #ff9911;
+}
+
+.header.sticky .menu-con {
+    background-color: #fff;
+}
+
+.nav {
+    margin-right: 40px;
+}
+
+.nd-timkiem {
+    margin-top: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #9f7954;
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+
+.timkiem-main {
+    margin-top: 20px;
+    width: 230px;
+    height: 25px;
+    border-radius: 5px 5px 5px 5px;
+    margin-left: 10px;
+}
+
+.logointk {
+    width: 100%;
+    text-align: center;
+}
+
+.nav_pc {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: white;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all linear 0.2s;
+}
+
+.nav_overplay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: none;
+    animation: fadeIn linear 0.2s;
+}
+
+.nav_input:checked~.nav_overplay {
+    display: block;
+}
+
+.nav_input:checked~.nav_pc {
+    transform: translateY(0%);
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.frame-category-container {
+   width: 298px;
+}
+.frame-category{
+	border: 1px solid rgb(0, 0, 0);
+ 	 border-radius: 10px;
+	  
+}
+.name-product-bike a{
+	color: #000000;
+	transition: color 0.4s ease;
+}
+.name-product-bike a:hover{
+	color: #ff9911;
 }
 html,
 body {
@@ -339,7 +668,7 @@ ol {
 	right: 0;
 	height: 4px;
 	width: 80px;
-	background: #cc0000;
+	background: #ff9911;
 	content: "";
 	margin: 0 auto;
 }
@@ -356,7 +685,7 @@ ol {
 }
 
 .edit-footer{
-	background-color: #bcbcbc;
+	background-color: #ffffff;
 	padding-top: 30px;
 }
 
@@ -382,7 +711,7 @@ ol {
 	color: #ffffff;
 	text-transform: uppercase;
 	font-weight: 700;
-	background: #cc0000;
+	background: #ff9911;
 	letter-spacing: 2px;
 }
 
@@ -393,7 +722,7 @@ ol {
 	text-transform: uppercase;
 	display: inline-block;
 	padding: 13px 30px 12px;
-	background: #cc0000;
+	background: #000000;
 	border: none;
 }
 
@@ -507,7 +836,7 @@ ol {
   
   .category__item {
 	background-color: #ffffff; /* Màu nền mặc định cho ô danh mục */
-	border: 1px solid #cc0000; /* Viền đỏ cho ô danh mục */
+	border: 1px solid #ff9911; /* Viền đỏ cho ô danh mục */
 	border-radius: 50px; /* Bo tròn 2 đầu của ô */
 	padding: 20px; /* Khoảng cách bên trong ô */
 	text-align: center;
@@ -518,7 +847,7 @@ ol {
     
   .category__item:hover {
 	transition: calc(0.6s);
-	background-color: #cc0000; /* Màu nền khi hover vào */
+	background-color: #ff9911; /* Màu nền khi hover vào */
 	color: #fff; /* Màu chữ khi hover vào */
 	border: 1px solid #000000; /* Viền đỏ cho ô danh mục */
   }
@@ -640,7 +969,6 @@ ol {
 	bottom: 0;
 	height: 3px;
 	width: 100%;
-	background-color: #cc0000; /* Hoặc màu khác theo ý bạn */
 	z-index: -1;
   }
   
@@ -756,7 +1084,7 @@ ol {
 	appearance: none;
 	width: 20px;
 	height: 20px;
-	background: #cc0000;
+	background: #ff9911;
 	border-radius: 50%;
 	cursor: pointer;
   }
@@ -797,7 +1125,7 @@ ol {
 }
 
 .header__menu ul li .header__menu__dropdown li:hover>a {
-	color: #cc0000;
+	color: #ff9911;
 }
 
 .header__menu ul li .header__menu__dropdown li a {
@@ -912,6 +1240,7 @@ ol {
 
 .hero {
 	padding-bottom: 10px;
+	padding-top: 40px;
 }
 
 .hero.hero-normal {
@@ -937,7 +1266,7 @@ ol {
 }
 
 .hero__categories__all {
-	background: #cc0000;
+	background: #000000;
 	position: relative;
 	padding: 10px 25px 10px 40px;
 	cursor: pointer;
@@ -1089,7 +1418,7 @@ ol {
 
 .hero__search__phone__icon {
 	font-size: 18px;
-	color: #cc0000;
+	color: #000000;
 	height: 50px;
 	width: 50px;
 	background: #f5f5f5;
@@ -1277,8 +1606,8 @@ ol {
 }
 
 .featured__item__pic__hover li:hover a {
-	background: #cc0000;
-	border-color: #cc0000;
+	background: #ff9911;
+	border-color: #ff9911;
 }
 
 .featured__item__pic__hover li:hover a i {
@@ -1413,6 +1742,7 @@ ol {
 .from-blog {
 	padding-top: 50px;
 	padding-bottom: 50px;
+	background-color: #f6f8eb;
 }
 
 .from-blog .blog__item {
@@ -1678,7 +2008,7 @@ ol {
 .product__discount__item__pic .product__discount__percent {
 	height: 45px;
 	width: 45px;
-	background: #dd2222;
+	background:#ff9911;
 	border-radius: 50%;
 	font-size: 14px;
 	color: #ffffff;
@@ -1713,8 +2043,8 @@ ol {
 }
 
 .product__item__pic__hover li:hover a {
-	background: #cc0000;
-	border-color: #cc0000;
+	background: #ff9911;
+	border-color: #ff9911;;
 }
 
 .product__item__pic__hover li:hover a i {
@@ -1912,7 +2242,7 @@ ol {
 }
 
 .filter__option span:hover {
-	color: #cc0000;
+	color: #ff9911;;
 }
 
 .product__item {
@@ -1953,8 +2283,8 @@ ol {
 }
 
 .product__item__pic__hover li:hover a {
-	background: #cc0000;
-	border-color: #cc0000;
+	background: #ff9911;;
+	border-color: #ff9911;;
 }
 
 .product__item__pic__hover li:hover a i {
@@ -2680,7 +3010,7 @@ ol {
 
 .blog__item__text ul li {
 	font-size: 16px;
-	color: #b2b2b2;
+	color: #646464;
 	list-style: none;
 	display: inline-block;
 	margin-right: 15px;
@@ -3508,7 +3838,7 @@ ol {
 		-webkit-border-radius: 0;
 		border-radius: 0;
 		background: transparent;
-		color: #cc0000;
+		color: #ff9911;
 	}
 	.humberger__menu__wrapper .slicknav_nav .slicknav_row,
 	.humberger__menu__wrapper .slicknav_nav a {
@@ -3700,7 +4030,7 @@ ol {
 	.humberger__menu__cart ul li a span {
 		height: 13px;
 		width: 13px;
-		background: #cc0000;
+		background: #ff9911;
 		font-size: 10px;
 		color: #ffffff;
 		line-height: 13px;
@@ -3766,7 +4096,7 @@ ol {
 		-webkit-border-radius: 0;
 		border-radius: 0;
 		background: transparent;
-		color: #cc0000;
+		color: #ff9911;
 	}
 	.humberger__menu__wrapper .slicknav_nav .slicknav_row,
 	.humberger__menu__wrapper .slicknav_nav a {

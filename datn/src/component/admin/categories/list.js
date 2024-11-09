@@ -32,6 +32,7 @@ const ListCategory = () => {
             setLoading(false);
         }
     };
+    
 
     const confirmDelete = (id) => {
         setCategoryToDelete(id);

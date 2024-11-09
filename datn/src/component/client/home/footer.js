@@ -18,7 +18,7 @@ const Footer = () => {
                   Địa chỉ: 50, Nguyễn Văn Linh, phường An Khánh, quận Ninh Kiều,
                   TP. Cần Thơ
                 </li>
-                <li>Điện thoại:<a className="link-color" href="#"> 0975.643.777</a></li>
+                <li>Điện thoại:<a className="link-color" href="#"> 0123.456.789</a></li>
                 <li>Email: <a className="link-color" href="#">nhom8@gmail.com</a> </li>
               </ul>
             </div>
