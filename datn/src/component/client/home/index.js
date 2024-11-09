@@ -482,7 +482,7 @@ const Home = () => {
                     <h6>Xe đạp bền chắc, thiết kế an toàn, màu sắc tươi sáng, giúp bé vui chơi và rèn luyện sức khỏe, là lựa chọn hàng đầu cho trẻ em phát triển.</h6>
                   </div>
                   <div className='d-flex align-items-center justify-content-between'>
-                    <a href="#" className="btn btn-dark">Chi Tiết  <i class="bi bi-arrow-right-square"></i></a>
+                    <a href="#" className="btn btn-dark">Chi Tiết  <i className="bi bi-arrow-right-square"></i></a>
                     <div className='pl-5'>
                       Được cập nhật: 18/11/2024
                     </div>
@@ -504,7 +504,7 @@ const Home = () => {
                     <h6>Xe đạp bền chắc, thiết kế an toàn, màu sắc tươi sáng, giúp bé vui chơi và rèn luyện sức khỏe, là lựa chọn hàng đầu cho trẻ em phát triển.</h6>
                   </div>
                   <div className='d-flex align-items-center justify-content-between'>
-                    <a href="#" className="btn btn-dark">Chi Tiết  <i class="bi bi-arrow-right-square"></i></a>
+                    <a href="#" className="btn btn-dark">Chi Tiết  <i className="bi bi-arrow-right-square"></i></a>
                     <div className='pl-5'>
                       Được cập nhật: 18/11/2024
                     </div>
@@ -548,7 +548,7 @@ const Home = () => {
                     <h6>Xe đạp bền chắc, thiết kế an toàn, màu sắc tươi sáng, giúp bé vui chơi và rèn luyện sức khỏe, là lựa chọn hàng đầu cho trẻ em phát triển.</h6>
                   </div>
                   <div className='d-flex align-items-center justify-content-between'>
-                    <a href="#" className="btn btn-dark">Chi Tiết  <i class="bi bi-arrow-right-square"></i></a>
+                    <a href="#" className="btn btn-dark">Chi Tiết  <i className="bi bi-arrow-right-square"></i></a>
                     <div className='pl-5'>
                       Được cập nhật: 10/11/2024
                     </div>

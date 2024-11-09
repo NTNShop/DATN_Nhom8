@@ -1,32 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import Header from "../home/header";
 import Footer from "../home/footer";
 import { Link } from "react-router-dom";
-import sp from "../../../assets/img/cart/sp1.png";
+import sp from "../../../assets/img/cart/sp1.webp";
+import sp2 from "../../../assets/img/cart/sp2.webp";
+import sp3 from "../../../assets/img/cart/sp3.webp";
+import sp4 from "../../../assets/img/cart/sp4.webp";
+
 import sp1 from "../../../assets/img/cart/cart.png";
 import { FaStar } from 'react-icons/fa';
 
 const Detail = () => {
-    const thongSo = [
-        { title: "Khối lượng bản thân", value: "116 kg" },
-        { title: "Dài x Rộng x Cao", value: "1,950x669x1,100 mm" },
-        { title: "Khoảng cách trục bánh xe", value: "1,304 mm" },
-        { title: "Độ cao yên", value: "765 mm" },
-        { title: "Khoảng sáng gầm xe", value: "151 mm" },
-        { title: "Dung tích bình xăng", value: "5,6 lít" },
-        { title: "Kích cỡ lốp", value: "Lốp trước 80/90-16M/C 43P\nLốp sau 100/90-14M/C 57P" },
-        { title: "Phuộc trước", value: "Ống lồng, giảm chấn thủy lực" },
-        { title: "Loại động cơ", value: "Xăng, 4 kỳ, 1 xy lanh, làm mát bằng chất lỏng" },
-        { title: "Dung tích xi-lanh", value: "124,8 cc" },
-        { title: "Đường kính x hành trình pít-tông", value: "53,5 x 55,5 mm" },
-        { title: "Tỉ số nén", value: "11,5:1" },
-        { title: "Công suất tối đa", value: "8,2kW/8500 vòng/phút" },
-        { title: "Mô-men xoắn cực đại", value: "11,7 N.m/5000 vòng/phút" },
-        { title: "Dung tích dầu động cơ", value: "Sau khi xả 0,8 L,Sau khi rã máy 0,9 L" },
-        { title: "Hệ thống truyền động", value: "Tự động vô cấp" },
-        { title: "Hệ thống khởi động", value: "Điện" },
-        { title: "Mức tiêu thụ nhiên liệu", value: "2,12 lít/100Km" },
-    ];
 
     const [mainImage, setMainImage] = useState(sp);
 
@@ -49,9 +35,29 @@ const Detail = () => {
         const value = Math.max(1, parseInt(e.target.value) || 1); // Ensures the input stays above 0
         setQuantity(value);
     };
-    const [rating, setRating] = useState(0); // Đánh giá sao
-    const [hover, setHover] = useState(null); // Hover sao
-    const [comment, setComment] = useState(''); // Nội dung bình luận
+    const { id } = useParams(); // Lấy id sản phẩm từ URL
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(null);
+    const [comment, setComment] = useState('');
+
+    useEffect(() => {
+        // Fetch sản phẩm theo ID
+        const fetchProductDetail = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
+                setProduct(response.data.data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+            }
+        };
+
+        fetchProductDetail();
+    }, [id]);
+
+    if (loading) return <div>Loading...</div>;
 
 
     return (
@@ -63,10 +69,10 @@ const Detail = () => {
                         <div className="col-lg-6 col-md-6 mb-4">
                             <div className="product__details__pic">
                                 <div className="product__details__pic__item mb-3">
-                                    <img className="img-fluid w-100" src={mainImage} alt="Product" />
+                                <img className="img-fluid w-100" src={`http://127.0.0.1:8000${product.images[0].image_url}`} alt="Product" />
                                 </div>
                                 <div className="row">
-                                    {[sp, sp1, sp, sp].map((image, index) => (
+                                    {[sp, sp2, sp3, sp4].map((image, index) => (
                                         <div className="col-3" key={index}>
                                             <img
                                                 src={image}
@@ -82,7 +88,7 @@ const Detail = () => {
                         </div>
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__text">
-                                <h3>Xe tay ga honda</h3>
+                            <h3>{product.name}</h3>
                                 <div className="product__details__rating mb-3">
                                     <span className="text-warning me-1">
                                         <i className="fa fa-star"></i>
@@ -93,9 +99,9 @@ const Detail = () => {
                                     </span>
                                     <span>(18 reviews)</span>
                                 </div>
-                                <div className="product__details__price fs-4 mb-3 text-danger">40.000.000đ</div>
+                                <div className="product__details__price fs-4 mb-3 text-danger">{product.price}đ</div>
                                 <p className="mb-4">
-                                    Thuộc phân khúc xe ga cao cấp và thừa hưởng thiết kế sang trọng nổi tiếng của dòng xe SH...
+                                {product.description}
                                 </p>
 
                                 <div className="product__details__quantity">
@@ -133,18 +139,33 @@ const Detail = () => {
 
                         {/* Bảng thông số kỹ thuật */}
                         <div className="col-lg-12 mt-5">
-                            <h4>Thông số kỹ thuật</h4>
-                            <table className="table table-bordered table-striped mt-3">
-                                <tbody>
-                                    {thongSo.map((item, index) => (
-                                        <tr key={index}>
-                                            <td><strong>{item.title}</strong></td>
-                                            <td>{item.value}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <div 
+                            className="specifications-content mt-3"
+                            dangerouslySetInnerHTML={{ __html: product.specifications }}
+                        />
+                        
+                        {/* Hoặc nếu bạn muốn hiển thị dưới dạng bảng có style, bạn có thể thêm CSS */}
+                        <style>{`
+                            .specifications-content ul {
+                                list-style: none;
+                                padding: 0;
+                            }
+                            .specifications-content li {
+                                padding: 10px 15px;
+                                border-bottom: 1px solid #eee;
+                                display: flex;
+                                align-items: center;
+                            }
+                            .specifications-content li:nth-child(odd) {
+                                background-color: #f8f9fa;
+                            }
+                            .specifications-content h4 {
+                                margin-bottom: 20px;
+                                color: #333;
+                                font-weight: bold;
+                            }
+                        `}</style>
+                    </div>
                     </div>
 
                     {/* Giao diện phần đánh giá */}
