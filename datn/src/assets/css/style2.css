@@ -711,10 +711,12 @@ ol {
 	color: #ffffff;
 	text-transform: uppercase;
 	font-weight: 700;
-	background: #ff9911;
+	background: #000000;
 	letter-spacing: 2px;
 }
-
+.primary-btn:hover {
+	color: white;
+}
 .site-btn {
 	font-size: 14px;
 	color: #ffffff;

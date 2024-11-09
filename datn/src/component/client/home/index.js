@@ -345,7 +345,6 @@ const Home = () => {
                   </ul>
                 </div>
                 <div className="">
-                  
                   <h5>
                     <span
                       style={{ textDecoration: "line-through", color: "#999" }}
@@ -370,17 +369,7 @@ const Home = () => {
                   <div className="image-zoom">
                   <img  src={sp} />
                   </div>
-                  <ul className="featured__item__pic__hover">
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-retweet"></i>
-                      </a>
-                    </li>
+                  <ul className="featured__item__pic__hover pl-0">
                     <li>
                       <a href="/cart">
                         <i className="fa fa-shopping-cart"></i>
@@ -414,17 +403,7 @@ const Home = () => {
                   <div className="image-zoom">
                   <img  src={sp} />
                   </div>
-                  <ul className="featured__item__pic__hover">
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-retweet"></i>
-                      </a>
-                    </li>
+                  <ul className="featured__item__pic__hover pl-0">
                     <li>
                       <a href="/cart">
                         <i className="fa fa-shopping-cart"></i>
@@ -458,17 +437,7 @@ const Home = () => {
                   <div className="image-zoom">
                   <img  src={sp} />
                   </div>
-                  <ul className="featured__item__pic__hover">
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-retweet"></i>
-                      </a>
-                    </li>
+                  <ul className="featured__item__pic__hover pl-0">
                     <li>
                       <a href="/cart">
                         <i className="fa fa-shopping-cart"></i>
