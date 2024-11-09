@@ -119,7 +119,6 @@ function App() {
         <Route path="/atm" element={<Atm/>}/>
         <Route path="/qratm" element={<Qratm/>}/>
         <Route path="/qrmomo" element={<Qrmomo/>}/>
-
       {/* Các route admin */}
       <Route path="/admin" element={<Layout />} />
       <Route path="/admin/dashboard" element={<Dashboard />} />
