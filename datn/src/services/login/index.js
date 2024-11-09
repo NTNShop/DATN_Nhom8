@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 // Hàm đăng nhập người dùng
 export const loginUser = async (email, password) => {
     try {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/login', { email, password });
+        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/login', { email, password });
         const data = response.data;
 
         if (data.status) {
@@ -36,7 +36,7 @@ export const logoutUser = async () => {
     }
 
     try {
-        await axios.post('http://127.0.0.1:8000/api/auth/logout', {}, {
+        await axios.post('http://127.0.0.1:8000/api/v1/auth/logout', {}, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` // Gửi token trong header
