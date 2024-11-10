@@ -2,20 +2,24 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
-import avt from '../../../assets/images/users/avt.png';
+import avt from "../../../assets/images/users/avt.png";
 import { loginUser } from "../../../services/login";
 import { useForm } from "react-hook-form";
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(true); // Trạng thái loading
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true); // Trạng thái loading
 
-    useEffect(() => {
-        setTimeout(() => setLoading(false), 1500); // Giả lập quá trình tải
-    }, []);
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1500); // Giả lập quá trình tải
+  }, []);
 
     const onSubmit = async (data) => {
         setError("");
@@ -46,14 +50,14 @@ const Login = () => {
         }
     };
 
-    const togglePasswordVisibility = () => {
-        setShowPassword((prevShowPassword) => !prevShowPassword);
-    };
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
-    return (
-        <>
-            <style>
-                {`
+  return (
+    <>
+      <style>
+        {`
                     /* Hiệu ứng shimmer cho skeleton */
                     .skeleton {
                         background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -70,8 +74,7 @@ const Login = () => {
                         height: 100px;
                         border-radius: 50%;
                     }
-
-                    .skeleton-text {
+.skeleton-text {
                         height: 20px;
                         width: 100%;
                         margin-top: 10px;
@@ -86,40 +89,56 @@ const Login = () => {
                     .error-message { color: #e74c3c; font-size: 0.9em; }
                     @keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
                 `}
-            </style>
-            <Header />
-            <div className="container pb-5">
-                <div className="border p-5 m-5 formLogin">
-                    {loading ? (
-                        <div className="skeleton-content">
-                            {/* Skeleton avatar */}
-                            <div className="d-flex justify-content-center">
-                                <div className="skeleton skeleton-avatar"></div>
-                            </div>
+      </style>
+      <Header />
+      <div className="container pb-5">
+        <div className="border p-5 m-5 formLogin">
+          {loading ? (
+            <div className="skeleton-content">
+              {/* Skeleton avatar */}
+              <div className="d-flex justify-content-center">
+                <div className="skeleton skeleton-avatar"></div>
+              </div>
 
-                            {/* Skeleton text blocks */}
-                            <div className="skeleton skeleton-text" style={{ width: "60%", margin: "20px auto" }}></div>
-                            <div className="skeleton skeleton-text" style={{ width: "80%", margin: "10px auto" }}></div>
-                            <div className="skeleton skeleton-text" style={{ width: "70%", margin: "10px auto" }}></div>
-                            <div className="skeleton skeleton-text" style={{ width: "40%", margin: "10px auto" }}></div>
-                        </div>
-                    ) : (
-                        <div className="col-lg-12 col-12">
-                            <div className="row">
-                                <div className="col-4 d-flex justify-content-center">
-                                    <img src={avt} className="rounded-circle" alt="User Avatar" />
-                                </div>
-                                <div className="col-6">
-                                    <h2 className="text-center text-danger col-lg-12 col-12">Đăng Nhập</h2>
-                                    
-                                    {successMessage && <div className="success-message">{successMessage}</div>}
+              {/* Skeleton text blocks */}
+              <div
+                className="skeleton skeleton-text"
+                style={{ width: "60%", margin: "20px auto" }}
+              ></div>
+              <div
+                className="skeleton skeleton-text"
+                style={{ width: "80%", margin: "10px auto" }}
+              ></div>
+              <div
+                className="skeleton skeleton-text"
+                style={{ width: "70%", margin: "10px auto" }}
+              ></div>
+              <div
+                className="skeleton skeleton-text"
+                style={{ width: "40%", margin: "10px auto" }}
+              ></div>
+            </div>
+          ) : (
+            <div className="col-lg-12 col-12">
+              <div className="row">
+                <div className="col-4 d-flex justify-content-center">
+                  <img src={avt} className="rounded-circle" alt="User Avatar" />
+                </div>
+                <div className="col-6">
+                  <h2 className="text-center text-danger col-lg-12 col-12">
+                    Đăng Nhập
+                  </h2>
+
+                  {successMessage && (
+                    <div className="success-message">{successMessage}</div>
+                  )}
 
                                     <form onSubmit={handleSubmit(onSubmit)}>
                                         <div className="form-group">
                                             <label>Email</label>
                                             <input
                                                 type="email"
-                                                className="border-inputs"
+className="border-inputs"
                                                 {...register("email", {
                                                     required: "Email không được để trống.",
                                                     pattern: {
@@ -159,7 +178,7 @@ const Login = () => {
                                             <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button>
                                         </div>
                                         <div className="row">
-                                            <div className="col-4 p-0 pt-2">
+<div className="col-4 p-0 pt-2">
                                                 <a href="/register" className="quenmatkhau">Bạn chưa có tài khoản?</a>
                                             </div>
                                             <div className="col-4 p-0 pt-2">

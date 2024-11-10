@@ -36,12 +36,13 @@ export const logoutUser = async () => {
     }
 
     try {
-        await axios.post('http://127.0.0.1:8000/api/v1/auth/logout', {}, {
+        await axios.post('http://127.0.0.1:8000/api/auth/logout', {}, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` // Gửi token trong header
             }
         });
+
 
         // Xóa cookie khi đăng xuất
         Cookies.remove("userInfo");

@@ -88,7 +88,7 @@ const Header = () => {
                 </b>
                 <span className="logo-text"></span>
               </a>
-              <a
+<a
                 className="nav-toggler waves-effect waves-light text-white d-block d-md-none"
                 href="javascript:void(0)"
               >
@@ -159,7 +159,7 @@ const Header = () => {
         </header>
 
         <aside className="left-sidebar" data-sidebarbg="skin6">
-          <div className="scroll-sidebar">
+<div className="scroll-sidebar">
             <nav className="sidebar-nav">
               <ul id="sidebarnav">
                 <li className="sidebar-item">
@@ -229,7 +229,7 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <i className="mdi me-2 mdi-comment"></i>
-                    <span className="hide-menu">Bình luận</span>
+<span className="hide-menu">Bình luận</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
