@@ -3,11 +3,9 @@ import Header from '../layouts/header';
 import { Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
 
-// Đăng ký các thành phần cho Bar và Pie Chart
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
 const Dashboard = () => {
-  // Dữ liệu biểu đồ Bar
   const data = {
     labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
     datasets: [
@@ -43,16 +41,15 @@ const Dashboard = () => {
     datasets: [
       {
         label: 'Doanh số bán xe',
-        data: [300, 50, 150], // Dữ liệu cho các loại xe
+        data: [300, 50, 150], 
         backgroundColor: [
-          'blue',   // Xe số
-          'yellow', // Xe tay côn
-          'cyan',   // Xe ga
+          'blue',  
+          'yellow', 
+          'cyan',   
         ],
         borderColor: [
-          'darkblue',    // Xe số
-          'goldenrod',   // Xe tay côn
-          'darkcyan',    // Xe ga
+          'darkblue',    
+          'darkcyan',    
         ],
         borderWidth: 1,
       },
@@ -75,24 +72,24 @@ const Dashboard = () => {
             const data = tooltipItem.dataset.data;
             const total = data.reduce((acc, curr) => acc + curr, 0);
             const currentValue = data[tooltipItem.dataIndex];
-            const percentage = ((currentValue / total) * 100).toFixed(2); // Tính tỷ lệ phần trăm
-            return `${tooltipItem.label}: ${percentage}%`; // Hiển thị nhãn kèm theo tỷ lệ %
+            const percentage = ((currentValue / total) * 100).toFixed(2); 
+            return `${tooltipItem.label}: ${percentage}%`; 
           },
         },
       },
     },
   };
   const statistics = {
-    totalCategories: 10, // Số danh mục
-    totalProducts: 150,  // Số sản phẩm
-    totalOrders: 150,     // Số đơn hàng
-    totalComments: 50,   // Số bình luận
+    totalCategories: 10, 
+    totalProducts: 150,  
+    totalOrders: 150,     
+    totalComments: 50,   
   };
   const previous_period = {
-    totalCategories: 7, // Số danh mục
-    totalProducts: 90,  // Số sản phẩm
-    totalOrders: 90,     // Số đơn hàng
-    totalComments: 25,   // Số bình luận
+    totalCategories: 7, 
+    totalProducts: 90,  
+    totalOrders: 90,     
+    totalComments: 25,   
   };
   
 
@@ -191,7 +188,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Biểu đồ tròn cho doanh số đặt hàng */}
             <div className="col-lg-3">
               <div className="card">
                 <div className="card-body">
@@ -206,7 +202,7 @@ const Dashboard = () => {
                     </div>
                     <div className="col-12">
                       <div className="chart-container" style={{ height: '360px' }}>
-                        <Pie data={pieData} options={pieOptions} /> {/* Sử dụng Pie Chart */}
+                        <Pie data={pieData} options={pieOptions} />
                       </div>
                     </div>
                   </div>
