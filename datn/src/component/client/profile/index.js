@@ -1,14 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from '../../../assets/images/users/avt.png';
+import Cookies from "js-cookie";  // Import js-cookie để truy cập cookie
 
 const ProfileS = () => {
   const [editMode, setEditMode] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    fullName: "",
+    email: "",
+    address: "",
+    phone: "",
+  });
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode); // Chuyển trạng thái hiển thị form
+  // Cập nhật thông tin người dùng khi sửa thông tin
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      [name]: value, // Cập nhật thông tin người dùng vào state
+    }));
   };
+
+  // Chuyển đổi giữa chế độ chỉnh sửa và chế độ xem
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
+
+  useEffect(() => {
+    // Lấy thông tin người dùng từ cookie khi component được render
+    const fullName = Cookies.get("fullname");
+    const email = Cookies.get("email");
+    const address = Cookies.get("address");
+    const phone = Cookies.get("phone");
+
+    if (fullName && email && address && phone) {
+      setUserInfo({ fullName, email, address, phone });
+    }
+  }, []);
 
   return (
     <>
@@ -27,7 +56,7 @@ const ProfileS = () => {
       <div className="container">
         <div>
           <p>Thông tin tài khoản</p>
-          <span>Xin chào, </span> <span className="text-danger">Minh Trung</span>
+          <span>Xin chào, </span> <span className="text-danger">{userInfo.fullName}</span>
         </div>
       </div>
 
@@ -37,7 +66,7 @@ const ProfileS = () => {
             <div className="card-body profile-card">
               <center className="mt-4">
                 <img src={avt} className="rounded-circle" width="50" alt="User Avatar" />
-                <h4 className="card-title mt-2">Thanh Nhân</h4>
+                <h4 className="card-title mt-2">{userInfo.fullName}</h4>
                 <div className="row text-center justify-content-center">
                   <div className="col-8">
                     <a href="#home" className="link">
@@ -67,13 +96,13 @@ const ProfileS = () => {
                     <div className="form-group">
                       <label className="col-md-12 mb-0">Họ và tên</label>
                       <div className="col-md-12">
-                        <span>Huỳnh Minh Trung</span>
+                        <span>{userInfo.fullName}</span>
                       </div>
                     </div>
                     <div className="form-group">
                       <label htmlFor="example-email" className="col-md-12">Email</label>
                       <div className="col-md-12">
-                        <span>anhtrung738@gmail.com</span>
+                        <span>{userInfo.email}</span>
                       </div>
                     </div>
                   </div>
@@ -81,13 +110,13 @@ const ProfileS = () => {
                     <div className="form-group">
                       <label className="col-md-12 mb-0">Địa chỉ</label>
                       <div className="col-md-12">
-                        <span>Hẻm tổ 3, Nguyễn Văn Linh, An Khánh, Ninh Kiều, Cần Thơ</span>
+                        <span>{userInfo.address}</span>
                       </div>
                     </div>
                     <div className="form-group">
                       <label className="col-md-12 mb-0">Số điện thoại</label>
                       <div className="col-md-12">
-                        <span>0123456789</span>
+                        <span>{userInfo.phone}</span>
                       </div>
                     </div>
                   </div>
@@ -106,25 +135,49 @@ const ProfileS = () => {
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Họ và tên</label>
-                            <input type="text" className="form-control" defaultValue="Huỳnh Minh Trung" />
+                            <input 
+                              type="text" 
+                              className="form-control" 
+                              name="fullName"
+                              value={userInfo.fullName} 
+                              onChange={handleInputChange} 
+                            />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Email</label>
-                            <input type="email" className="form-control" defaultValue="anhtrung738@gmail.com" />
+                            <input 
+                              type="email" 
+                              className="form-control" 
+                              name="email"
+                              value={userInfo.email} 
+                              onChange={handleInputChange} 
+                            />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Địa chỉ</label>
-                            <input type="text" className="form-control" defaultValue="Hẻm tổ 3, Nguyễn Văn Linh, An Khánh, Ninh Kiều, Cần Thơ" />
+                            <input 
+                              type="text" 
+                              className="form-control" 
+                              name="address"
+                              value={userInfo.address} 
+                              onChange={handleInputChange} 
+                            />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Số điện thoại</label>
-                            <input type="text" className="form-control" defaultValue="0123456789" />
+                            <input 
+                              type="text" 
+                              className="form-control" 
+                              name="phone"
+                              value={userInfo.phone} 
+                              onChange={handleInputChange} 
+                            />
                           </div>
                         </div>
                       </div>
@@ -135,61 +188,6 @@ const ProfileS = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-12 col-xlg-12 col-md-12 ">
-                <div className="card">
-                    <div className="card-body">
-                    <span className="text-dark fw-bold d-flex justify-content-center">Đơn hàng của bạn</span>
-
-                        <table className=" mx-2 col-lg-12 col-12 mt-4">
-                            <thead className="table-light pt-4">
-                                <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Tên Sản Phẩm</th>
-                                <th scope="col">Giá</th>
-                                <th scope="col">Hình Ảnh</th>
-                                <th scope="col">Phiên Bản</th>
-                                <th scope="col">Màu Sắc</th>
-                                <th scope="col">Trạng thái đơn hàng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Sh i</td>
-                                    <td>25,000,000 VND</td>
-                                    <td>
-                                        <img
-                                        src="https://via.placeholder.com/100"
-                                        alt="Sản phẩm"
-                                        style={{ width: "100px" }}
-                                        />
-                                    </td>
-                                    <td>mới nhất</td>
-                                    <td>Đen</td>
-                                    <td>Đang giao hàng</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>janus</td>
-                                    <td>45,000,000 VND</td>
-                                    <td>
-                                        <img
-                                        src="https://via.placeholder.com/100"
-                                        alt="Sản phẩm"
-                                        style={{ width: "100px" }}
-                                        />
-                                    </td>
-                                    <td>mới nhất</td>
-                                    <td>Bạc</td>
-                                    <td>Đang giao hàng</td>
-
-                                </tr>
-                            </tbody>
-                            
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
       </div>
       
