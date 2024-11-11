@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getPosts } from "../../../services/client/blogs"; 
+import { getPosts } from "../../../services/posts"; // Đảm bảo đúng đường dẫn tới service của bạn
 import { Link } from "react-router-dom"; 
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
@@ -15,12 +15,12 @@ const Blog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       const result = await getPosts();
-      setPosts(result.posts);
-      setPagination(result.pagination);
-      setLoading(false);
+      setPosts(result.posts); // Gán danh sách bài viết vào state posts
+      setPagination(result.pagination); // Gán thông tin phân trang vào state pagination
+      setLoading(false); // Đã tải xong dữ liệu, dừng loading
     };
     fetchPosts();
-  }, []);
+  }, []); // useEffect chỉ chạy khi component mount lần đầu
 
   return (
     <>
@@ -56,7 +56,7 @@ const Blog = () => {
                         </div>
                         <div className="blog__sidebar__recent__item__text">
                           <h6>{post.title}</h6>
-                          <span>{post.created_at}</span>
+                          <span>{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>
                       </a>
                     ))}
@@ -70,56 +70,57 @@ const Blog = () => {
                 {loading ? (
                   <p>Đang tải bài viết...</p>
                 ) : (
-                  posts.map((post) => (<div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
-                    <div className="blog__item">
-                      <div className="blog__item__pic">
-                        <img src={Cart} alt="Post Image" />
-                      </div>
-                      <div className="blog__item__text">
-                        <ul>
-                          <li>
-                            <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
-                          </li>
-                          <li>
-                            <i className="fa fa-comment-o"></i> 5
-                          </li>
-                        </ul>
-                        <h5>
-                          <Link to={`/blog-details/${post.id}`}>{post.title}</Link>
-                        </h5>
-                        <p>{post.content}</p>
-                        <Link to={`/blog-details/${post.id}`} className="blog__btn">
-                          ĐỌC THÊM <span className="arrow_right"></span>
-                        </Link>
+                  posts.map((post) => (
+                    <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
+                      <div className="blog__item">
+                        <div className="blog__item__pic">
+                          <img src={Cart} alt="Post Image" />
+                        </div>
+                        <div className="blog__item__text">
+                          <ul>
+                            <li>
+                              <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
+                            </li>
+                            <li>
+                              <i className="fa fa-comment-o"></i> 5
+                            </li>
+                          </ul>
+                          <h5>
+                            <Link to={`/blog-details/${post.id}`}>{post.title}</Link>
+                          </h5>
+                          <p>{post.content}</p>
+                          <Link to={`/blog-details/${post.id}`} className="blog__btn">
+                            ĐỌC THÊM <span className="arrow_right"></span>
+                          </Link>
+                        </div>
                       </div>
                     </div>
+                  ))
+                )}
+                {/* Pagination */}
+                <div className="col-lg-12">
+                  <div className="product__pagination blog__pagination">
+                    {pagination.total > 1 && (
+                      <>
+                        {pagination.current_page > 1 && (
+                          <a href={pagination.links.prev}>« Trước</a>
+                        )}
+                        <span>{pagination.current_page}</span> {/* Hiển thị trang hiện tại */}
+                        {pagination.current_page < pagination.last_page && (
+                          <a href={pagination.links.next}>Tiếp theo »</a>
+                        )}
+                      </>
+                    )}
                   </div>
-                ))
-              )}
-              {/* Pagination */}
-              <div className="col-lg-12">
-                <div className="product__pagination blog__pagination">
-                  {pagination.total > 1 && (
-                    <>
-                      {pagination.current_page > 1 && (
-                        <a href={pagination.links.prev}>« Trước</a>
-                      )}
-                      <a href={pagination.links.first}>{pagination.current_page}</a>
-                      {pagination.current_page < pagination.last_page && (
-                        <a href={pagination.links.next}>Tiếp theo »</a>
-                      )}
-                    </>
-                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <Footer />
-  </>
-);
+      <Footer />
+    </>
+  );
 };
 
 export default Blog;

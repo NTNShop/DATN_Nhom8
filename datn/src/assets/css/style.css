@@ -8477,7 +8477,7 @@ html {
   min-height: 100%; }
 
 a {
-  color: #2962FF; }
+  color: #000; }
 
 a:hover,
 a:focus {
@@ -14867,4 +14867,262 @@ File: scss
 
 .user-menu li button:hover {
   color: #f56a6a;
+}
+
+
+
+
+/* demo
+*/
+/* Toàn bộ phần header */
+header {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+header .khungmenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+header .logo:hover {
+  color: #f57c00;
+}
+
+/* Phần navigation */
+nav.dmcc ul#main-menu {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.dmcc ul#main-menu li {
+  position: relative;
+  margin-right: 30px;
+}
+
+nav.dmcc ul#main-menu li a.ten-menu {
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+  transition: color 0.3s;
+}
+
+nav.dmcc ul#main-menu li a.ten-menu:hover {
+  color: #f57c00;
+}
+
+nav.dmcc ul#main-menu li .menu-con {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+nav.dmcc ul#main-menu li:hover .menu-con {
+  display: block;
+}
+
+nav.dmcc ul#main-menu li .menu-con li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+nav.dmcc ul#main-menu li .menu-con li:last-child {
+  border-bottom: none;
+}
+
+nav.dmcc ul#main-menu li .menu-con li a.name-menucon {
+  color: #333;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+nav.dmcc ul#main-menu li .menu-con li a.name-menucon:hover {
+  color: #f57c00;
+}
+
+nav.dmcc ul#main-menu li .menu-con li button.name-menucon {
+  background: none;
+  border: none;
+  font: inherit;
+  color: #333;
+  cursor: pointer;
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  width: 100%;
+}
+
+nav.dmcc ul#main-menu li .menu-con li button.name-menucon:hover {
+  color: #f57c00;
+}
+
+/* Phần Profile Menu */
+nav.dmcc ul#main-menu li .ten-menu {
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+nav.dmcc ul#main-menu li .ten-menu p {
+  margin: 0;
+  font-size: 14px;
+}
+
+nav.dmcc ul#main-menu li .ten-menu i {
+  font-size: 20px;
+}
+
+/* Icon tìm kiếm */
+.btn-bar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin-right: 20px;
+}
+
+.btn-bar i {
+  font-size: 30px;
+  color: black;
+  text-shadow: 0px 0px 3px rgb(255, 255, 255);
+}
+
+/* Phần giỏ hàng và yêu thích */
+nav.dmcc ul#main-menu li a {
+  font-size: 18px;
+  color: #333;
+}
+
+nav.dmcc ul#main-menu li a i {
+  margin-right: 5px;
+}
+
+nav.dmcc ul#main-menu li a span {
+  font-size: 12px;
+  background-color: #f57c00;
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 50%;
+}
+
+/* Phần tìm kiếm */
+.nav_pc {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 300px;
+  padding: 20px;
+  display: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav_pc .logointk {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nav_pc .nd-timkiem {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.nav_pc .timkiem-main {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.nav_pc .timkiem-main:focus {
+  border-color: #f57c00;
+  outline: none;
+}
+
+/* Phần Overplay */
+.nav_input:checked ~ .nav_overplay {
+  display: block;
+}
+
+.nav_overplay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.nav_pc input:checked ~ .nav_pc {
+  display: block;
+}
+
+@media screen and (max-width: 768px) {
+  /* Mobile menu */
+  nav.dmcc ul#main-menu {
+    display: none;
+    flex-direction: column;
+    margin-top: 60px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    width: 250px;
+    padding-top: 10px;
+  }
+
+  nav.dmcc ul#main-menu li {
+    margin-right: 0;
+    margin-top: 10px;
+  }
+
+  nav.dmcc ul#main-menu li a.ten-menu {
+    padding: 12px;
+    font-size: 18px;
+  }
+
+  .btn-bar {
+    display: block;
+  }
+
+  .nav_pc {
+    width: 100%;
+    top: 60px;
+  }
+
+  .nav_input:checked ~ .nav_overplay {
+    display: block;
+  }
 }

@@ -1,120 +1,406 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-// import "bootstrap/dist/css/bootstrap.min.css";
-import "../../../assets/css/styleEdit.css"
+import "../../../assets/css/styleEdit.css";
+import axios from 'axios';
+import { useParams } from 'react-router-dom';  // Import useParams
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const EditProduct = () => {
+    const { id } = useParams();  // Use useParams to get the product ID from the URL
+    const [categories, setCategories] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [product, setProduct] = useState({
+        name: '',
+        category_id: '',
+        brand_id: '',
+        price: '',
+        description: '',
+        short_description: '',
+        specifications: '',
+        status: 'in_stock',
+        warranty: '6',
+        images: [], // Images should be handled as files in the form
+        variants: []
+    });
+    // State cho variant đang nhập
+    const [currentVariant, setCurrentVariant] = useState({
+        color: '',
+        price: '',
+        code: ''
+    });
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        // Fetch categories and brands
+        const fetchCategoriesAndBrands = async () => {
+            try {
+                const categoryResponse = await axios.get('http://127.0.0.1:8000/api/v1/categories');
+                const brandResponse = await axios.get('http://127.0.0.1:8000/api/v1/brands');
+                setCategories(categoryResponse.data.data);
+                setBrands(brandResponse.data.data);
+            } catch (error) {
+                console.error("Error fetching categories and brands:", error);
+            }
+        };
+
+        // Fetch the product data by ID
+        const fetchProductData = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
+                setProduct(response.data.data); // Assuming the product data is under the `data` key
+            } catch (error) {
+                console.error("Error fetching product data:", error);
+            }
+        };
+
+        fetchCategoriesAndBrands();
+        fetchProductData();
+    }, [id]);  // Add `id` as a dependency to re-fetch when the product ID changes
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setProduct((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+    const handleVariantChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentVariant(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const addVariant = () => {
+        if (!currentVariant.color || !currentVariant.price) {
+            alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
+            return;
+        }
+        
+        const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        setProduct(prev => ({
+            ...prev,
+            variants: [...prev.variants, { ...currentVariant, code: variantCode }]
+        }));
+        
+        setCurrentVariant({
+            color: '',
+            price: '',
+            code: ''
+        });
+    };
+    const removeVariant = (index) => {
+        setProduct(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
+    };
+    const handleFileChange = (e) => {
+        setProduct((prevState) => ({
+            ...prevState,
+            images: e.target.files,
+        }));
+    };
+    const handleCKEditorChange = (event, editor) => {
+        const data = editor.getData();
+        setProduct((prevState) => ({
+            ...prevState,
+            specifications: data,
+        }));
+    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formErrors = validateForm();
+        if (Object.keys(formErrors).length > 0) {
+            setErrors(formErrors);
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            
+            // Append all product data
+            Object.keys(product).forEach(key => {
+                if (key === 'images') {
+                    if (product.images.length > 0) {
+                        Array.from(product.images).forEach(file => {
+                            formData.append('images[]', file);
+                        });
+                    }
+                } else if (key === 'variants') {
+                    formData.append('variants', JSON.stringify(product.variants));
+                } else {
+                    formData.append(key, product[key]);
+                }
+            });
+
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/v1/products/${id}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-HTTP-Method-Override': 'PUT'
+                    }
+                }
+            );
+
+            if (response.data.status === 'success') {
+                alert('Cập nhật sản phẩm thành công');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật sản phẩm");
+        }
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!product.name) errors.name = "Name is required";
+        if (!product.category_id) errors.category_id = "Category is required";
+        if (!product.price) errors.price = "Price is required";
+        if (!product.short_description) errors.short_description = "Short description is required";
+        if (!product.description) errors.description = "Description is required";
+        return errors;
+    };
     
     return (
-<div>
-<Header />
-<div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
-        <div className="page-breadcrumb">
-                <div className="row align-items-center">
-                    <div className="col-md-6 col-8 align-self-center">
-                        <div className="d-flex align-items-center">
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item"><a href="#">Danh sách sản phẩm</a></li>
-                                    <li className="breadcrumb-item active" aria-current="page">Sửa sản phẩm</li>
-                                </ol>
-                            </nav>
+        <div>
+            <Header />
+            <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
+                <div className="page-breadcrumb">
+                    <div className="row align-items-center">
+                        <div className="col-md-6 col-8 align-self-center">
+                            <div className="d-flex align-items-center">
+                                <nav aria-label="breadcrumb">
+                                    <ol className="breadcrumb">
+                                        <li className="breadcrumb-item"><a href="#">Danh sách sản phẩm</a></li>
+                                        <li className="breadcrumb-item active" aria-current="page">Sửa sản phẩm</li>
+                                    </ol>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
-          </div>
-        <div className="container-fluid">
-        <div class="col-sm-10">
-    <div className="card">
-        <div className="card-body">
-        <h4 className="card-title">Chỉnh sửa sản phẩm</h4>
-        <form class="form-horizontal form-material mx-2">
-                        <div className="form-group mb-3">
-                            <label className="col-md-12 mb-0">Tên sản phẩm</label>
-                            <div class="col-md-12">
-                            <input type="text" id="fullname"
-                                className=" form-control-line border-input"/>
+                <div className="container-fluid">
+                    <div className="col-sm-10">
+                        <div className="card">
+                            <div className="card-body">
+                                <h4 className="card-title">Chỉnh sửa sản phẩm</h4>
+                                <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Tên sản phẩm</label>
+                                        <div className="col-md-12">
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={product.name}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            />
+                                            {errors.name && <span className="text-danger">{errors.name}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Danh mục</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="category_id"
+                                                value={product.category_id}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            >
+                                                <option value="">Chọn danh mục</option>
+                                                {categories.map((category) => (
+                                                    <option key={category.id} value={category.id}>
+                                                        {category.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.category_id && <span className="text-danger">{errors.category_id}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thương hiệu</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="brand_id"
+                                                value={product.brand_id}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            >
+                                                <option value="">Chọn thương hiệu</option>
+                                                {brands.map((brand) => (
+                                                    <option key={brand.id} value={brand.id}>
+                                                        {brand.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Hình ảnh</label>
+                                        <div className="col-md-12">
+                                            <input
+                                                type="file"
+                                                name="images"
+                                                onChange={handleFileChange}
+                                                multiple
+                                                className="form-control-line border-input"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Giá</label>
+                                        <div className="col-md-12">
+                                            <input
+                                                type="text"
+                                                name="price"
+                                                value={product.price}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            />
+                                            {errors.price && <span className="text-danger">{errors.price}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Mô tả ngắn</label>
+                                        <div className="col-md-12">
+                                            <textarea
+                                                name="short_description"
+                                                value={product.short_description}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            />
+                                            {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Mô tả</label>
+                                        <div className="col-md-12">
+                                            <textarea
+                                                name="description"
+                                                value={product.description}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            />
+                                            {errors.description && <span className="text-danger">{errors.description}</span>}
+                                        </div>
+                                    </div>
+                                    {/* Phần variants */}
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
+                                        <div className="col-md-12">
+                                            <div className="d-flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    name="color"
+                                                    value={currentVariant.color}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập màu sắc"
+                                                    className="form-control"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    value={currentVariant.price}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập giá"
+                                                    className="form-control"
+                                                />
+                                                <button 
+                                                    type="button"
+                                                    onClick={addVariant}
+                                                    className="btn btn-primary"
+                                                >
+                                                    Thêm màu
+                                                </button>
+                                            </div>
+                                            
+                                            <div className="variants-list mt-2">
+                                                {product.variants.map((variant, index) => (
+                                                    <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                                        <span className='text-dark'>
+                                                            Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
+                                                        </span>
+                                                        <button 
+                                                            type="button" 
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => removeVariant(index)}
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thời gian bảo hành</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="warranty"
+                                                value={product.warranty}
+                                                onChange={handleInputChange}
+                                                className="form-control"
+                                            >
+                                                <option value="6">6 tháng</option>
+                                                <option value="12">12 tháng</option>
+                                            </select>
+                                        </div>
+                                    </div>           
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Trạng thái</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="status"
+                                                value={product.status}
+                                                onChange={handleInputChange}
+                                                className="form-control-line border-input"
+                                            >
+                                                <option value="in_stock">Còn hàng</option>
+                                                <option value="out_of_stock">Hết hàng</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
+                                        <div className="col-md-12">
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={product.specifications}  // Đưa dữ liệu vào CKEditor
+                                                onChange={handleCKEditorChange}  // Cập nhật dữ liệu khi thay đổi
+                                            />
+                                            {errors.specifications && <span className="text-danger">{errors.specifications}</span>}
+                                        </div>
+                                    </div>      
+                                    <div className="form-group">
+                                        <div className="col-sm-12 d-flex">
+                                            <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">
+                                                Cập nhật
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div className="form-group mb-3">
-                            <label className="col-md-12 mb-0">danh mục</label>
-                            <div className="col-md-12">
-                            <select
-                                id="role"
-                                className="form-control-line border-input"
-                            >
-                                <option value="">Chọn danh mục</option>
-                                <option value="">Xe tay ga</option>
-                                <option value="">Xe số</option>
-                                <option value="">Xe tay côn</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="example-email" className="col-md-12 font-weight-bold">Hình ảnh</label>
-                            <div class="col-md-12">
-                                <input type="file"
-                                    class="form-control-line border-input" name="example-email"
-                                    id="example-email"/>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-md-12 mb-0">Giá</label>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control-line border-input"/>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-md-12 mb-0">Giảm giá</label>
-                            <div class="col-md-12">
-                                <input type="text"  class="form-control-line border-input"/>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-md-12 mb-0">Màu sắc</label>
-                            <div class="col-md-12">
-                                <input type="text"  class="form-control-line border-input"/>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-md-12 mb-0">Mô tả ngắn</label>
-                            <div class="col-md-12">
-                                <textarea rows="1" class=" border-input2 form-control-line"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="col-md-12 mb-0">Mô tả</label>
-                            <div class="col-md-12">
-                                <textarea rows="3"  class=" border-input2 form-control-line"></textarea>
-                            </div>
-                        </div>
-                        <div className="form-group mb-3">
-                            <label className="col-md-12 mb-0">Trạng Thái</label>
-                            <div className="col-md-12">
-                            <select
-                                id="status"
-                                className="form-control-line border-input"
-                            >
-                                <option value="">Chọn trạng thái</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12 d-flex">
-                                <button class="btn btn-success mx-auto mx-md-0 text-white">Cập nhật</button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
+                </div>
+            </div>
+            <Footer />
         </div>
-        </div>
-        </div>
-    </div>
-</div>
-</div>
-);
+    );
 };
 
 export default EditProduct;

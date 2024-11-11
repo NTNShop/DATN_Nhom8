@@ -1130,6 +1130,7 @@ ol {
 }
 
 .header__menu ul li .header__menu__dropdown li:hover>a {
+	color: #1c1d1d;
 	color: #ff9911;
 }
 
@@ -4101,6 +4102,7 @@ ol {
 		-webkit-border-radius: 0;
 		border-radius: 0;
 		background: transparent;
+		color: #1c1d1d;
 		color: #ff9911;
 	}
 	.humberger__menu__wrapper .slicknav_nav .slicknav_row,

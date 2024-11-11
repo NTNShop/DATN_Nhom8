@@ -4,12 +4,11 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 
-const AddCategory = () => {
-    const [categoryData, setCategoryData] = useState({
+const AddBrand = () => {
+    const [brandData, setBrandData] = useState({
         name: "",
-        image_url: null,
+        logo: null,
         status: "1",
-        parent_id: ""
     });
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -17,11 +16,11 @@ const AddCategory = () => {
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-        setCategoryData({ ...categoryData, [id]: value });
+        setBrandData({ ...brandData, [id]: value });
     };
 
     const handleFileChange = (e) => {
-        setCategoryData({ ...categoryData, image_url: e.target.files[0] });
+        setBrandData({ ...brandData, logo: e.target.files[0] }); // Sửa thành logo
     };
 
     const handleSubmit = async (e) => {
@@ -30,17 +29,19 @@ const AddCategory = () => {
         setErrorMessage("");
 
         const formData = new FormData();
-        Object.keys(categoryData).forEach(key => formData.append(key, categoryData[key]));
+        formData.append('name', brandData.name);
+        formData.append('logo', brandData.logo); // Thêm logo vào FormData
+        formData.append('status', brandData.status);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/v1/categories', formData, {
+            const response = await axios.post('http://127.0.0.1:8000/api/v1/brands', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setSuccessMessage("Danh mục đã được thêm thành công!");
-            setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
-            setShowModal(true);  // Show the success modal
+            setSuccessMessage("Thương hiệu đã được thêm thành công!");
+            setBrandData({ name: "", logo: null, status: "1" });
+            setShowModal(true); // Hiển thị modal thành công
         } catch (error) {
-            setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
+            setErrorMessage("Có lỗi xảy ra khi thêm thương hiệu.");
             if (error.response) {
                 setErrorMessage("Có lỗi xảy ra: " + error.response.data.message);
             } else {
@@ -64,7 +65,7 @@ const AddCategory = () => {
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
                                         <li className="breadcrumb-item"><a href="#">Danh sách danh mục</a></li>
-                                        <li className="breadcrumb-item active" aria-current="page">Thêm danh mục</li>
+                                        <li className="breadcrumb-item active" aria-current="page">Thêm thương hiệu</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -75,40 +76,58 @@ const AddCategory = () => {
                     <div className="col-sm-10">
                         <div className="card">
                             <div className="card-body">
-                                <h4 className="card-title">Thêm danh mục</h4>
+                                <h4 className="card-title">Thêm thương hiệu</h4>
                                 {successMessage && <p className="text-success">{successMessage}</p>}
                                 {errorMessage && <p className="text-danger">{errorMessage}</p>}
                                 <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
                                     <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Tên danh mục</label>
+                                        <label className="col-md-12 mb-0">Tên thương hiệu</label>
                                         <div className="col-md-12">
-                                            <input type="text" id="name" value={categoryData.name} placeholder="Nhập tên danh mục" className="form-control-line border-input" onChange={handleChange} required />
+                                            <input
+                                                type="text"
+                                                id="name"
+                                                value={brandData.name}
+                                                placeholder="Nhập tên thương hiệu"
+                                                className="form-control-line border-input"
+                                                onChange={handleChange}
+                                                required
+                                            />
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Hình ảnh</label>
                                         <div className="col-md-12">
-                                            <input type="file" id="image_url" className="form-control-line border-input" onChange={handleFileChange} />
+                                            <input
+                                                type="file"
+                                                id="logo"
+                                                className="form-control-line border-input"
+                                                onChange={handleFileChange}
+                                            />
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
                                         <div className="col-md-12">
-                                            <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} required>
+                                            <select
+                                                id="status"
+                                                value={brandData.status}
+                                                className="form-control-line border-input"
+                                                onChange={handleChange}
+                                                required
+                                            >
                                                 <option value="1">Kích hoạt</option>
                                                 <option value="0">Không kích hoạt</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Danh mục cha</label>
-                                        <div className="col-md-12">
-                                            <input type="number" id="parent_id" value={categoryData.parent_id} placeholder="Nhập ID danh mục cha (hoặc để trống)" className="form-control-line border-input" onChange={handleChange} />
-                                        </div>
-                                    </div>
                                     <div className="form-group">
                                         <div className="col-sm-12 d-flex">
-                                            <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">Thêm danh mục</button>
+                                            <button
+                                                type="submit"
+                                                className="btn btn-success mx-auto mx-md-0 text-white"
+                                            >
+                                                Thêm thương hiệu
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -134,4 +153,4 @@ const AddCategory = () => {
     );
 };
 
-export default AddCategory;
+export default AddBrand;
