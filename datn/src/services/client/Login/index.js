@@ -12,8 +12,13 @@ export const loginUser = async (email, password) => {
             const token = data.data.token;
 
             // Lưu thông tin người dùng và token vào cookie
-            Cookies.set("userInfo", JSON.stringify(user), { expires: 1 }); // Lưu trong 7 ngày
+            Cookies.set("userInfo", JSON.stringify(user), { expires: 1 }); // Lưu trong 1 ngày
             Cookies.set("authToken", token, { expires: 1 });
+
+            // Lưu thêm các trường thông tin như email, full_name, và phone vào cookie
+            Cookies.set("email", user.email, { expires: 1 });
+            Cookies.set("full_name", user.full_name, { expires: 1 });
+            Cookies.set("phone", user.phone, { expires: 1 });
 
             return data; // Trả về dữ liệu từ API nếu cần dùng ở các nơi khác
         } else {
@@ -25,6 +30,7 @@ export const loginUser = async (email, password) => {
         return null;
     }
 };
+
 // Hàm đăng xuất người dùng
 export const logoutUser = async () => {
     const token = Cookies.get("authToken");
@@ -47,10 +53,13 @@ export const logoutUser = async () => {
         // Xóa tất cả cookie liên quan đến người dùng khi đăng xuất
         Cookies.remove("userInfo");
         Cookies.remove("authToken");
-        Cookies.remove("userRole");
+        Cookies.remove("email");
+        Cookies.remove("full_name");
+        Cookies.remove("phone");
+        Cookies.remove("userRole"); // Remove the userRole cookie
 
         // Điều hướng về trang đăng nhập hoặc trang chủ sau khi đăng xuất thành công
-        window.location.href = "/login"; 
+        window.location.href = "/login"; // Redirect to login page
 
     } catch (error) {
         // Xử lý lỗi và in thông báo lỗi cụ thể nếu có

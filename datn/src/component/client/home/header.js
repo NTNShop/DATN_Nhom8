@@ -14,7 +14,7 @@ const Header = () => {
   // Kiểm tra trạng thái đăng nhập khi component mount và khi cookies thay đổi
   useEffect(() => {
     const checkAuth = () => {
-      const userFullName = Cookies.get("userRole");
+      const userFullName = Cookies.get("full_name");
       const authToken = Cookies.get("authToken");
 
       console.log("fullName:", userFullName);  // Debugging

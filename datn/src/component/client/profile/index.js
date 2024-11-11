@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from '../../../assets/images/users/avt.png';
-import Cookies from "js-cookie";  // Import js-cookie để truy cập cookie
+import Cookies from "js-cookie";  // Import js-cookie to access cookies
 
 const ProfileS = () => {
   const [editMode, setEditMode] = useState(false);
@@ -11,31 +11,41 @@ const ProfileS = () => {
     email: "",
     address: "",
     phone: "",
+    userRole: "", // Role of the user
+    avatar: "", // Avatar of the user
   });
 
-  // Cập nhật thông tin người dùng khi sửa thông tin
+  // Handle input change when editing information
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prevState) => ({
       ...prevState,
-      [name]: value, // Cập nhật thông tin người dùng vào state
+      [name]: value, // Update user information in state
     }));
   };
 
-  // Chuyển đổi giữa chế độ chỉnh sửa và chế độ xem
+  // Toggle between edit and view mode
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
 
   useEffect(() => {
-    // Lấy thông tin người dùng từ cookie khi component được render
-    const fullName = Cookies.get("fullname");
+    // Get user information from cookies when component is rendered
     const email = Cookies.get("email");
-    const address = Cookies.get("address");
+    const fullName = Cookies.get("full_name");
     const phone = Cookies.get("phone");
-
-    if (fullName && email && address && phone) {
-      setUserInfo({ fullName, email, address, phone });
+    const userInfo = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")) : {};
+    
+    if (userInfo && email && fullName && phone) {
+      // If userInfo cookie exists, set all available user data
+      setUserInfo({
+        fullName: userInfo.full_name || fullName,
+        email: userInfo.email || email,
+        address: userInfo.address || "", // Set default as empty if not available
+        phone: userInfo.phone || phone,
+        userRole: userInfo.role || "", // Role from userInfo
+        avatar: userInfo.avatar || avt, // Avatar URL or default avatar
+      });
     }
   }, []);
 
@@ -65,7 +75,7 @@ const ProfileS = () => {
           <div className="card">
             <div className="card-body profile-card">
               <center className="mt-4">
-                <img src={avt} className="rounded-circle" width="50" alt="User Avatar" />
+                <img src={userInfo.avatar} className="rounded-circle" width="50" alt="User Avatar" />
                 <h4 className="card-title mt-2">{userInfo.fullName}</h4>
                 <div className="row text-center justify-content-center">
                   <div className="col-8">
@@ -110,7 +120,7 @@ const ProfileS = () => {
                     <div className="form-group">
                       <label className="col-md-12 mb-0">Địa chỉ</label>
                       <div className="col-md-12">
-                        <span>{userInfo.address}</span>
+                        <span>{userInfo.address || "Chưa có địa chỉ"}</span>
                       </div>
                     </div>
                     <div className="form-group">
@@ -119,11 +129,17 @@ const ProfileS = () => {
                         <span>{userInfo.phone}</span>
                       </div>
                     </div>
+                    <div className="form-group">
+                      <label className="col-md-12 mb-0">Vai trò người dùng</label>
+                      <div className="col-md-12">
+                        <span>{userInfo.userRole}</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
                     <button type="button" className="btn btn-danger text-light" onClick={toggleEditMode}>
-                      {editMode ? "Hủy chỉnh sửa" : "Chỉnh sửa địa chỉ"}
+                      {editMode ? "Hủy chỉnh sửa" : "Chỉnh sửa thông tin"}
                     </button>
                   </div>
                 </form>
@@ -176,6 +192,18 @@ const ProfileS = () => {
                               className="form-control" 
                               name="phone"
                               value={userInfo.phone} 
+                              onChange={handleInputChange} 
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <div className="form-group">
+                            <label>Vai trò người dùng</label>
+                            <input 
+                              type="text" 
+                              className="form-control" 
+                              name="userRole"
+                              value={userInfo.userRole} 
                               onChange={handleInputChange} 
                             />
                           </div>

@@ -25,19 +25,21 @@ const Header = () => {
     if (storedUserInfo) {
       const user = JSON.parse(storedUserInfo);
       setUserInfo(user);
+
+      // Check if the user is an admin
       if (user.role !== "admin") {
-        alert("Bạn cần quyền Admin để truy cập vào trang này.");
+        // If the user is not an admin, remove user info and redirect
         Cookies.remove("userInfo");
         removeAuthToken();  // Clear AuthToken when user is not admin
-        navigate("/admin/login");
+        navigate("/admin/warning");  // Redirect non-admin users to the warning page
       }
     } else {
       removeAuthToken();  // Clear AuthToken if no user info found
-      navigate("/admin/login");
+      navigate("/admin/login");  // Redirect to login if no user info is available
     }
   }, [navigate]);
 
-  // If no user is logged in, redirect to warning page
+  // If no user is logged in or if userInfo is not set, redirect to the warning page
   if (!userInfo) {
     navigate("/admin/warning");
     return null; // Don't render anything while redirecting
