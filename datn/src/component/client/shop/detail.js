@@ -11,7 +11,7 @@ import sp4 from "../../../assets/img/cart/sp4.webp";
 
 import sp1 from "../../../assets/img/cart/cart.png";
 import { FaStar } from 'react-icons/fa';
-
+import { toast } from 'react-toastify'; // Thêm thư viện này để hiển thị thông báo
 const Detail = () => {
 
     const [mainImage, setMainImage] = useState(sp);
@@ -58,8 +58,8 @@ const Detail = () => {
     }, [id]);
 
     if (loading) return <div>Loading...</div>;
-
-
+    // xử lý cart
+    
     return (
         <>
             <Header />
@@ -116,6 +116,7 @@ const Detail = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {/* cart api */}
                                 <a href="#" className="primary-btn">ADD TO CART</a>
                                 <a href="#" className="heart-icon">
                                     <span className="icon_heart_alt"></span>

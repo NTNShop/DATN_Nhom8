@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import sp from "../../../assets/img/cart/sp1.webp";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
+import { toast } from 'react-toastify'; // Thêm thư viện này để hiển thị thông báo
+
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true; // Quan trọng cho việc xử lý session/cookie
@@ -49,50 +51,6 @@ const Product = () => {
           setLoading(false);
       }
   };
-  
-  
-// xử lý thêm giỏ hàng
-const handleAddToCart = async (productId) => {
-  try {
-    // Kiểm tra xác thực trước khi thêm vào giỏ hàng
-    const token = localStorage.getItem('token'); // hoặc lấy từ context/redux
-    
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`, // Nếu API yêu cầu token
-      }
-    };
-
-    const response = await axios.post(
-      'http://127.0.0.1:8000/api/v1/cart/add',
-      {
-        product_id: productId,
-        quantity: 1
-      },
-      config
-    );
-
-    if (response.data.success) {
-      alert('Đã thêm sản phẩm vào giỏ hàng!');
-    } else {
-      throw new Error(response.data.message || 'Có lỗi xảy ra');
-    }
-  } catch (error) {
-    console.error('Error details:', error.response?.data || error.message);
-    
-    if (error.response?.status === 401) {
-      alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
-      // Có thể chuyển hướng đến trang đăng nhập
-      // window.location.href = '/login';
-    } else if (error.response?.status === 422) {
-      alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!');
-    } else if (error.response?.status === 500) {
-      alert('Lỗi server. Vui lòng thử lại sau!');
-    } else {
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
-    }
-  }
-};
 
   return (
     <>
@@ -237,7 +195,7 @@ const handleAddToCart = async (productId) => {
               <li><a href="#"><i className="fa fa-heart"></i></a></li>
               <li><Link to={`/product-details/${product.id}`}><i className="fa fa-retweet"></i></Link></li>
               <li>
-                  <a onClick={() => handleAddToCart(product.id)} style={{ cursor: 'pointer' }}>
+                  <a style={{ cursor: 'pointer' }} >
                     <i className="fa fa-shopping-cart"></i>
                   </a>
                 </li>
