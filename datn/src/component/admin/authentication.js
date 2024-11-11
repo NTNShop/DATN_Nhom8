@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { loginUser } from '../../services/login';
+import { loginUser } from '../../services/client/Login';
 import Cookies from "js-cookie";
 
 const Authentication = () => {
