@@ -12,8 +12,8 @@ export const loginUser = async (email, password) => {
             const token = data.data.token;
 
             // Lưu thông tin người dùng và token vào cookie
-            Cookies.set("userInfo", JSON.stringify(user), { expires: 7 }); // Lưu trong 7 ngày
-            Cookies.set("authToken", token, { expires: 7 });
+            Cookies.set("userInfo", JSON.stringify(user), { expires: 1 }); // Lưu trong 7 ngày
+            Cookies.set("authToken", token, { expires: 1 });
 
             return data; // Trả về dữ liệu từ API nếu cần dùng ở các nơi khác
         } else {
@@ -25,30 +25,35 @@ export const loginUser = async (email, password) => {
         return null;
     }
 };
-
 // Hàm đăng xuất người dùng
 export const logoutUser = async () => {
     const token = Cookies.get("authToken");
 
+    // Kiểm tra xem token có tồn tại không
     if (!token) {
-        console.error("No auth token found, unable to logout.");
+        console.error("Không tìm thấy token, không thể đăng xuất.");
         return;
     }
 
     try {
-        await axios.post('http://127.0.0.1:8000/api/auth/logout', {}, {
+        // Gửi yêu cầu đăng xuất đến API
+        await axios.post('http://127.0.0.1:8000/api/v1/auth/logout', {}, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` // Gửi token trong header
             }
         });
 
-
-        // Xóa cookie khi đăng xuất
+        // Xóa tất cả cookie liên quan đến người dùng khi đăng xuất
         Cookies.remove("userInfo");
         Cookies.remove("authToken");
+        Cookies.remove("userRole");
+
+        // Điều hướng về trang đăng nhập hoặc trang chủ sau khi đăng xuất thành công
+        window.location.href = "/login"; 
 
     } catch (error) {
-        console.error("Logout error:", error.response ? error.response.data : error.message);
+        // Xử lý lỗi và in thông báo lỗi cụ thể nếu có
+        console.error("Lỗi khi đăng xuất:", error.response ? error.response.data : error.message);
     }
 };

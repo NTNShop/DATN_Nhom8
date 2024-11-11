@@ -19,12 +19,39 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setError("");
+
+    // Kiểm tra nếu người dùng đã đăng nhập (có cookie authToken)
+    const authToken = Cookies.get("authToken");
+    if (authToken) {
+      // Nếu đã đăng nhập, kiểm tra quyền người dùng
+      const userRole = Cookies.get("userRole"); // Lấy role của người dùng từ cookie
+      if (userRole === 'admin') {
+        // Nếu là admin, cho phép đăng nhập lại
+        setError("Bạn đã đăng nhập với quyền Admin.");
+        setTimeout(() => {
+          window.location.href = "/admin"; // Điều hướng về trang quản lý admin
+        }, 2000);
+        return;
+      } else {
+        // Nếu là người dùng thông thường, yêu cầu đăng xuất
+        setError("Bạn đã đăng nhập rồi. Vui lòng đăng xuất trước khi tiếp tục.");
+        setTimeout(() => {
+          window.location.href = "/"; // Điều hướng về trang chủ sau khi thông báo
+        }, 2000);
+        return;
+      }
+    }
+
+    // Tiến hành đăng nhập cho người dùng
     try {
       const response = await loginUser(data.email, data.password);
       if (response?.status && response.data?.token) {
+        // Lưu token vào cookie
         Cookies.set("authToken", response.data.token, { expires: 7 });
-
+        // Lưu role người dùng vào cookie để tiện cho việc kiểm tra
         const userRole = response.data.user.role;
+        Cookies.set("userRole", userRole, { expires: 7 });
+
         setSuccessMessage(`Đăng nhập thành công${userRole === 'admin' ? ' với quyền Admin!' : '!'}`);
 
         setTimeout(() => {
@@ -90,6 +117,7 @@ const Login = () => {
                 <div className="col-6">
                   <h2 className="text-center text-danger">Đăng Nhập</h2>
                   {successMessage && <div className="success-message">{successMessage}</div>}
+                  {error && <div className="error-message">{error}</div>}
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">
                       <label>Email</label>
@@ -130,7 +158,6 @@ const Login = () => {
                       </div>
                       {errors.password && <p className="error-message">{errors.password.message}</p>}
                     </div>
-                    {error && <p className="text-danger">{error}</p>}
                     <div className="col-6 p-0">
                       <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button>
                     </div>

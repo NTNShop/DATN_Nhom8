@@ -15,7 +15,7 @@ import Contact from "./component/client/contact";
 import BlogDetails from "./component/client/blog/detail";
 import Favourites from "./component/client/favourites";
 import Introduce from "./component/client/introduce";
-
+import LoginWarning from "./component/admin/layouts/error";
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
 import './assets/css/font-awesome.min.css'
@@ -144,6 +144,7 @@ function App() {
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
+      <Route path="/admin/warring" element={<LoginWarning />} />
 
     
         

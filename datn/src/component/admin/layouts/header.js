@@ -1,75 +1,82 @@
 import React, { useState, useEffect } from "react";
-import Cookies from "js-cookie"; // Đảm bảo cài đặt thư viện này
-import { useNavigate } from "react-router-dom"; // Thay đổi từ useHistory thành useNavigate
+import Cookies from "js-cookie"; 
+import { useNavigate } from "react-router-dom"; 
 import logo from "../../../assets/img/logo.png";
 import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
+import { logoutUser } from "../../../services/login";  // Import the logoutUser function
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
-  const [userInfo, setUserInfo] = useState(null); // Thông tin người dùng
-  const navigate = useNavigate(); // Sử dụng useNavigate thay cho useHistory
+  const [userInfo, setUserInfo] = useState(null); 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // State for logout confirmation
+  const navigate = useNavigate(); 
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
   };
 
-  // Lấy thông tin người dùng từ Cookies khi component được render
+  // Function to remove the AuthToken from cookies
+  const removeAuthToken = () => {
+    Cookies.remove("AuthToken");
+  };
+
+  // Get user info from cookies
   useEffect(() => {
     const storedUserInfo = Cookies.get("userInfo");
     if (storedUserInfo) {
-      setUserInfo(JSON.parse(storedUserInfo));
+      const user = JSON.parse(storedUserInfo);
+      setUserInfo(user);
+      if (user.role !== "admin") {
+        alert("Bạn cần quyền Admin để truy cập vào trang này.");
+        Cookies.remove("userInfo");
+        removeAuthToken();  // Clear AuthToken when user is not admin
+        navigate("/admin/login");
+      }
+    } else {
+      removeAuthToken();  // Clear AuthToken if no user info found
+      navigate("/admin/login");
     }
-  }, []);
+  }, [navigate]);
 
-  // Hàm đăng xuất
-  const handleLogout = () => {
-    Cookies.remove("userInfo"); // Xóa cookie
-    setUserInfo(null); // Cập nhật lại trạng thái người dùng
-    navigate("/"); // Chuyển hướng về trang chủ
+  // If no user is logged in, redirect to warning page
+  if (!userInfo) {
+    navigate("/admin/warning");
+    return null; // Don't render anything while redirecting
+  }
+
+  // Logout function
+  const handleLogout = async () => {
+    try {
+      // Call the logoutUser function
+      await logoutUser();
+
+      // Remove cookies related to the user
+      Cookies.remove("userInfo");
+      removeAuthToken(); // Remove the AuthToken when logging out
+
+      // Clear user info from state
+      setUserInfo(null);
+
+      // Redirect to login page
+      navigate("/admin/login");
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      alert("Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại!");
+    }
+  };
+
+  // Function to handle logout confirmation
+  const confirmLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutConfirm(false);
   };
 
   return (
-    <div className="">
-      {/* Hiển thị thông báo khi chưa đăng nhập */}
-      {!userInfo && (
-        <div
-          style={{
-            position: "fixed", 
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgb(255, 255, 255)",
-
-            zIndex: 9999,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-          }}
-        >
-          <h1 style={{ color: "black", fontSize: "30px", marginBottom: "20px" }}>
-           VUI LÒNG ĐĂNG NHẬP BẰNG TÀI KHOẢN ADMIN
-          </h1>
-          <button
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              cursor: "pointer",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-            }}
-            onClick={() => navigate("/login")}
-          >
-            Đăng Nhập
-          </button>
-        </div>
-      )}
-
+    <div className="header-wrapper">
       <div
         id="main-wrapper"
         data-layout="vertical"
@@ -88,7 +95,7 @@ const Header = () => {
                 </b>
                 <span className="logo-text"></span>
               </a>
-<a
+              <a
                 className="nav-toggler waves-effect waves-light text-white d-block d-md-none"
                 href="javascript:void(0)"
               >
@@ -134,15 +141,15 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <img
-                      src={userInfo?.avatar || avt} // Sử dụng ảnh người dùng hoặc avt mặc định
+                      src={userInfo?.avatar || avt}
                       alt="người dùng"
                       className="profile-pic me-2"
                     />
-                    {userInfo?.full_name || "Người dùng"} {/* Hiển thị tên người dùng */}
+                    {userInfo?.full_name || "Người dùng"} 
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
-                      <a className="dropdown-item" href="#" onClick={handleLogout}>
+                      <a className="dropdown-item" href="#" onClick={confirmLogout}>
                         Đăng Xuất
                       </a>
                     </li>
@@ -158,97 +165,55 @@ const Header = () => {
           </nav>
         </header>
 
+        {/* Sidebar */}
         <aside className="left-sidebar" data-sidebarbg="skin6">
-<div className="scroll-sidebar">
+          <div className="scroll-sidebar">
             <nav className="sidebar-nav">
               <ul id="sidebarnav">
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/dashboard"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/dashboard">
                     <i className="mdi me-2 mdi-gauge"></i>
                     <span className="hide-menu">Bảng Điều Khiển</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/profile"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/profile">
                     <i className="mdi me-2 mdi-account-check"></i>
                     <span className="hide-menu">Hồ Sơ</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/category"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/category">
                     <i className="mdi me-2 mdi-table"></i>
                     <span className="hide-menu">Danh Mục</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/brand"
-                    aria-expanded="false"
-                  >
-                    <i className="mdi me-2 mdi-store"></i>
-                    <span className="hide-menu">Thương hiệu</span>
-                  </a>
-                </li>
-
-                <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/product"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/product">
                     <i className="mdi me-2 mdi-package-variant"></i>
                     <span className="hide-menu">Sản Phẩm</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/user"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/user">
                     <i className="mdi me-2 mdi-account"></i>
                     <span className="hide-menu">Người Dùng</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/order"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
                     <i className="mdi me-2 mdi-package"></i>
                     <span className="hide-menu">Đơn hàng</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/comment"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/comment">
                     <i className="mdi me-2 mdi-comment"></i>
-<span className="hide-menu">Bình luận</span>
+                    <span className="hide-menu">Bình luận</span>
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/blog"
-                    aria-expanded="false"
-                  >
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/blog">
                     <i className="mdi me-2 mdi-file-document"></i>
                     <span className="hide-menu">Bài viết</span>
                   </a>
@@ -267,6 +232,26 @@ const Header = () => {
           </div>
         </aside>
       </div>
+
+      {/* Skeleton loader */}
+      {userInfo === null && (
+        <div className="skeleton-loader">
+          {/* Skeleton elements here */}
+        </div>
+      )}
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="logout-confirmation">
+          <div className="confirmation-box">
+            <h4>Bạn có chắc chắn muốn đăng xuất không?</h4>
+            <div className="confirmation-actions">
+              <button className="btn btn-danger" onClick={handleLogout}>Đồng ý</button>
+              <button className="btn btn-secondary" onClick={cancelLogout}>Hủy</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
