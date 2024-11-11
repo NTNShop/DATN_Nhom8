@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/img/logo.png";
 import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
-import { logoutUser } from "../../../services/login";  // Import the logoutUser function
+import { logoutUser } from "../../../services/client/Login";  // Import the logoutUser function
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);

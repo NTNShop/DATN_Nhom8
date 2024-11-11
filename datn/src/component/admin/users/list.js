@@ -232,14 +232,14 @@ const ListUser = () => {
                               <td>{user.address}</td>
                               <td>{user.role}</td>
                               <td
-                                className={`text-center ${
-                                  user.status === 1
-                                    ? "text-success"
-                                    : "text-danger"
-                                }`}
-                              >
-                                {user.status === 1 ? "Hoạt động" : "Không hoạt động"}
-                              </td>
+  className={`text-center ${user.status === 1 ? "text-success" : "text-danger"}`}
+>
+  <span
+    className={`status-dot ${user.status === 1 ? "dot-success" : "dot-danger"}`}
+  ></span>
+  {user.status === 1 ? "Hoạt động" : "Không hoạt động"}
+</td>
+
                               <td>
                                 <button
                                   className="btn btn-danger"
