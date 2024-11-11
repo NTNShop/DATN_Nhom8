@@ -803,6 +803,11 @@ ol {
 .header__top__left {
 	padding: 10px 0 13px;
 }
+.dropdown-item:hover {
+	background-color: #f0f0f0; /* Màu nền khi hover */
+	color: #007bff; /* Màu chữ khi hover */
+  }
+  
 
 .header__top__left ul li {
 	font-size: 14px;

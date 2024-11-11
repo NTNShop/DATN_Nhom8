@@ -1,69 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';  // Make sure you import axios
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
 const EditUser = () => {
-  const { id } = useParams(); // Getting the user ID from the URL params
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState({
-    username: '',
-    name: '',
+    full_name: '',
     email: '',
     phone: '',
+    address: '',
     role: '',
-    status: ''
+    status: '',
+    password: ''
   });
 
   useEffect(() => {
-    // Fetch user data by ID
-    axios.get(`http://localhost:8000/api/users/${id}`)
+    // Fetch user data by id
+    axios.get(`http://localhost:8000/api/v1/users/${id}`)
       .then(response => {
-        setUser(response.data); // Populate form fields with user data
+        setUser(response.data);
       })
       .catch(error => {
-        console.error('There was an error fetching the user data:', error);
+        console.error('Error fetching user data:', error);
+        toast.error('Không thể tải thông tin người dùng.');
       });
   }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser((prevState) => ({
-      ...prevState,
-      [name]: value
-    }));
+    setUser(prevState => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Call the API to update user
-    axios.put(`http://localhost:8000/api/users/${id}`, user)
+    
+    // Prepare data for update
+    const updatedData = { ...user };
+    
+    // If the password field is empty, exclude it from the update request
+    if (!updatedData.password) {
+      delete updatedData.password;
+    }
+
+    axios.put(`http://localhost:8000/api/v1/users/${id}`, updatedData)
       .then(response => {
-        alert('User updated successfully');
-        navigate('/users'); // Redirect to user list page
+        toast.success('Cập nhật người dùng thành công!');
+        setTimeout(() => navigate('/users'), 2000); // Redirect after showing message
       })
       .catch(error => {
         console.error('Error updating user:', error);
+        toast.error('Không thể cập nhật người dùng.');
       });
   };
 
   return (
     <div>
       <Header />
+      <ToastContainer />
       <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
         <div className="page-breadcrumb">
           <div className="row align-items-center">
             <div className="col-md-6 col-8 align-self-center">
-              <div className="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="#">Danh sách người dùng</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Chỉnh sửa người dùng</li>
-                  </ol>
-                </nav>
-              </div>
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item"><a href="/users">Danh sách người dùng</a></li>
+                  <li className="breadcrumb-item active" aria-current="page">Chỉnh sửa người dùng</li>
+                </ol>
+              </nav>
             </div>
           </div>
         </div>
@@ -74,93 +83,53 @@ const EditUser = () => {
               <div className="card">
                 <div className="card-body">
                   <h4 className="card-title">Chỉnh Sửa Người Dùng</h4>
-
                   <form onSubmit={handleSubmit}>
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Tên Đăng Nhập</label>
-                      <input
-                        type="text"
-                        className="form-control-line border-input"
-                        name="username"
-                        value={user.username}
-                        onChange={handleChange}
-                        required
-                      />
+                      <input type="text" className="form-control" name="full_name" value={user.full_name} onChange={handleChange} required />
                     </div>
-                    <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Họ và tên</label>
-                      <input
-                        type="text"
-                        className="form-control-line border-input"
-                        name="name"
-                        value={user.name}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
+                    
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Email</label>
-                      <input
-                        type="email"
-                        className="form-control-line border-input"
-                        name="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        required
-                      />
+                      <input type="email" className="form-control" name="email" value={user.email} onChange={handleChange} required />
                     </div>
+                    
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Mật Khẩu</label>
-                      <input
-                        type="password"
-                        className="form-control-line border-input"
-                        name="password"
-                        onChange={handleChange}
-                      />
+                      <input type="password" className="form-control" name="password" value={user.password} onChange={handleChange} />
                     </div>
+                    
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Số điện thoại</label>
-                      <input
-                        type="text"
-                        className="form-control-line border-input"
-                        name="phone"
-                        value={user.phone}
-                        onChange={handleChange}
-                      />
+                      <input type="text" className="form-control" name="phone" value={user.phone} onChange={handleChange} />
                     </div>
+                    
+                    <div className="form-group mb-3">
+                      <label className="col-md-12 mb-0">Địa chỉ</label>
+                      <input type="text" className="form-control" name="address" value={user.address} onChange={handleChange} />
+                    </div>
+                    
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Vai Trò</label>
-                      <select
-                        className="form-control-line border-input"
-                        name="role"
-                        value={user.role}
-                        onChange={handleChange}
-                        required
-                      >
+                      <select className="form-control" name="role" value={user.role} onChange={handleChange} required>
                         <option value="">Chọn vai trò</option>
                         <option value="admin">Admin</option>
                         <option value="user">User</option>
                       </select>
                     </div>
+                    
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Trạng Thái</label>
-                      <select
-                        className="form-control-line border-input"
-                        name="status"
-                        value={user.status}
-                        onChange={handleChange}
-                        required
-                      >
+                      <select className="form-control" name="status" value={user.status} onChange={handleChange} required>
                         <option value="">Chọn trạng thái</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="inactive">Không hoạt động</option>
                       </select>
                     </div>
+                    
                     <div className="form-group">
                       <div className="col-sm-12 d-flex">
-                        <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">
-                          Cập nhật
-                        </button>
+                        <button type="submit" className="btn btn-success mx-auto text-white">Cập nhật</button>
                       </div>
                     </div>
                   </form>

@@ -5,7 +5,8 @@ import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
 import { registerUser } from "../../../services/client/register";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const {
@@ -17,13 +18,12 @@ const Register = () => {
   const navigate = useNavigate();
   const password = watch("password");
 
-  // Hàm xử lý đăng ký
   const onSubmit = async (data) => {
     try {
       const response = await registerUser(data);
       const successMessage = response.message || "Đăng ký thành công!";
       toast.success(successMessage);
-      navigate("/login"); // Chuyển hướng đến trang đăng nhập
+      navigate("/login");
     } catch (error) {
       toast.error(error.message || "Đăng ký thất bại");
     }
@@ -52,17 +52,41 @@ const Register = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group">
                     <label>
-                      Tài khoản <span style={{ color: "red" }}>*</span>
+                      Họ và tên <span style={{ color: "red" }}>*</span>
                     </label>
                     <input
                       type="text"
                       className="border-inputs"
                       {...register("full_name", {
-                        required: "Vui lòng nhập tài khoản",
+                        required: "Vui lòng nhập họ và tên",
+                        minLength: {
+                          value: 2,
+                          message: "Họ và tên phải có ít nhất 2 ký tự",
+                        },
                       })}
                     />
                     {errors.full_name && (
                       <p className="text-danger">{errors.full_name.message}</p>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      Email <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <input
+                      type="email"
+                      className="border-inputs"
+                      {...register("email", {
+                        required: "Vui lòng nhập email",
+                        pattern: {
+                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                          message: "Email không hợp lệ",
+                        },
+                      })}
+                    />
+                    {errors.email && (
+                      <p className="text-danger">{errors.email.message}</p>
                     )}
                   </div>
 
@@ -76,9 +100,14 @@ const Register = () => {
                       {...register("phone", {
                         required: "Vui lòng nhập số điện thoại",
                         pattern: {
-                          value: /^0[0-9]{9}$/, // Bắt đầu với "0" và theo sau là 9 chữ số khác
+                          value: /^0[0-9]{9}$/,
                           message:
-                            "Số điện thoại phải bắt đầu bằng 00"
+                            "Số điện thoại phải bắt đầu bằng 0 và chỉ chứa số",
+                        },
+                        validate: {
+                          onlyNumbers: (value) =>
+                            /^[0-9]+$/.test(value) ||
+                            "Số điện thoại chỉ được chứa số",
                         },
                       })}
                     />
@@ -127,26 +156,6 @@ const Register = () => {
                     )}
                   </div>
 
-                  <div className="form-group">
-                    <label>
-                      Email <span style={{ color: "red" }}>*</span>
-                    </label>
-                    <input
-                      type="email"
-                      className="border-inputs"
-                      {...register("email", {
-                        required: "Vui lòng nhập email",
-                        pattern: {
-                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                          message: "Email không hợp lệ",
-                        },
-                      })}
-                    />
-                    {errors.email && (
-                      <p className="text-danger">{errors.email.message}</p>
-                    )}
-                  </div>
-
                   <div className="col-6 p-0">
                     <button type="submit" className="btn btn-danger text-light">
                       Đăng Ký
@@ -164,6 +173,8 @@ const Register = () => {
         </div>
       </div>
       <Footer />
+
+      <ToastContainer />
     </>
   );
 };
