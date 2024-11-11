@@ -827,6 +827,22 @@ ol {
 	opacity: 0.1;
 	content: "";
 }
+.status-dot {
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	display: inline-block;
+	margin-right: 5px; /* Khoảng cách giữa dấu chấm và text */
+  }
+  
+  .dot-success {
+	background-color: #0fab33; /* Màu xanh */
+  }
+  
+  .dot-danger {
+	background-color: #dc3545; /* Màu đỏ */
+  }
+  
 
 .header__top__left ul li:last-child {
 	margin-right: 0;
