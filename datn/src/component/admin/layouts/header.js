@@ -27,19 +27,21 @@ const Header = () => {
     if (storedUserInfo) {
       const user = JSON.parse(storedUserInfo);
       setUserInfo(user);
+
+      // Check if the user is an admin
       if (user.role !== "admin") {
-        alert("Bạn cần quyền Admin để truy cập vào trang này.");
+        // If the user is not an admin, remove user info and redirect
         Cookies.remove("userInfo");
         removeAuthToken();  // Clear AuthToken when user is not admin
-        navigate("/admin/login");
+        navigate("/admin/warning");  // Redirect non-admin users to the warning page
       }
     } else {
       removeAuthToken();  // Clear AuthToken if no user info found
-      navigate("/admin/login");
+      navigate("/admin/login");  // Redirect to login if no user info is available
     }
   }, [navigate]);
 
-  // If no user is logged in, redirect to warning page
+  // If no user is logged in or if userInfo is not set, redirect to the warning page
   if (!userInfo) {
     navigate("/admin/warning");
     return null; // Don't render anything while redirecting
@@ -182,42 +184,7 @@ const Header = () => {
                     <span className="hide-menu">Hồ Sơ</span>
                   </a>
                 </li>
-                <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/category">
-                    <i className="mdi me-2 mdi-table"></i>
-                    <span className="hide-menu">Danh Mục</span>
-                  </a>
-                </li>
-                <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/product">
-                    <i className="mdi me-2 mdi-package-variant"></i>
-                    <span className="hide-menu">Sản Phẩm</span>
-                  </a>
-                </li>
-                <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/user">
-                    <i className="mdi me-2 mdi-account"></i>
-                    <span className="hide-menu">Người Dùng</span>
-                  </a>
-                </li>
-                <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
-                    <i className="mdi me-2 mdi-package"></i>
-                    <span className="hide-menu">Đơn hàng</span>
-                  </a>
-                </li>
-                <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/comment">
-                    <i className="mdi me-2 mdi-comment"></i>
-                    <span className="hide-menu">Bình luận</span>
-                  </a>
-                </li>
-                <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/blog">
-                    <i className="mdi me-2 mdi-file-document"></i>
-                    <span className="hide-menu">Bài viết</span>
-                  </a>
-                </li>
+                {/* Add other admin-related menu items here */}
               </ul>
             </nav>
           </div>
