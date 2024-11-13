@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 // Service xử lý các thao tác với giỏ hàng
 export const CartService = {
     // Thêm sản phẩm vào giỏ hàng
-    addToCart: async (productId, quantity, userInfo) => {
+    addToCart: async (productId, quantity, userInfo,variant_id) => {
         try {
           const token = Cookies.get('authToken');
       
@@ -15,6 +15,7 @@ export const CartService = {
           const response = await axios.post('http://127.0.0.1:8000/api/v1/cart/add', {
             product_id: productId,
             quantity: quantity,
+            variant_id: variant_id,
             user_id: userInfo.id // Sử dụng id của người dùng từ userInfo
           }, {
             headers: {
