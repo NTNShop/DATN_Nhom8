@@ -1,103 +1,154 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Header from "../home/header";
-import Footer from "../home/footer";
-import { Link } from "react-router-dom";
-import sp from "../../../assets/img/cart/sp1.webp";
-import banner from "../../../assets/img/hero/banner2.jpg";
-import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
-axios.defaults.headers.common['Accept'] = 'application/json';
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-axios.defaults.withCredentials = true; // Quan trọng cho việc xử lý session/cookie
+  import React, { useEffect, useState } from "react";
+  import axios from "axios";
+  import Header from "../home/header";
+  import Footer from "../home/footer";
+  import { Link } from "react-router-dom";
+  import banner from "../../../assets/img/hero/banner2.jpg";
+  import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
+  import sp from "../../../assets/img/cart/sp1.webp";
+  import { getCategories } from "../../../services/client/Product";
+  axios.defaults.headers.common['Accept'] = 'application/json';
+  axios.defaults.headers.common['Content-Type'] = 'application/json';
+  axios.defaults.withCredentials = true;
 
-const Product = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
-  const [pagination, setPagination] = useState({
-      currentPage: 1,
-      totalPages: 1,
-      perPage: 10,
-  });
+  const Product = () => {
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [categories, setCategories] = useState([]); // State để lưu danh mục
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 9; // Số sản phẩm mỗi trang
+    const [priceRange, setPriceRange] = useState([0, 1000000]); // [min, max]
+    const [sortOrder, setSortOrder] = useState("asc");
+    const [cart, setCart] = useState([]); // Trạng thái giỏ hàng
 
+
+
+
+      // Fetch danh mục sản phẩm
   useEffect(() => {
-      fetchProducts();
-  }, [pagination.currentPage]);
-
-  const fetchProducts = async () => {
-      setLoading(true);
+    const fetchCategories = async () => {
       try {
-          const response = await axios.get('http://127.0.0.1:8000/api/v1/products', {
-              params: {
-                  page: pagination.currentPage,
-                  per_page: pagination.perPage
-              }
-          });
-          // console.log(response.data); // In cấu trúc phản hồi để xác nhận
-          setProducts(response.data.data.data); // Truy cập vào mảng 'data' bên trong 'data'
-          setPagination({
-              ...pagination,
-              totalPages: response.data.data.last_page
-          });
-      } catch (error) {
-          console.error("Lỗi khi tải sản phẩm:", error);
-          setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+        const data = await getCategories();
+        setCategories(data); // Lưu dữ liệu danh mục vào state
+      } catch (err) {
+        setError("Không thể tải danh mục");
       } finally {
-          setLoading(false);
-      }
-  };
-  
-  
-// xử lý thêm giỏ hàng
-const handleAddToCart = async (productId) => {
-  try {
-    // Kiểm tra xác thực trước khi thêm vào giỏ hàng
-    const token = localStorage.getItem('token'); // hoặc lấy từ context/redux
-    
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`, // Nếu API yêu cầu token
+        setLoading(false);
       }
     };
 
-    const response = await axios.post(
-      'http://127.0.0.1:8000/api/v1/cart/add',
-      {
-        product_id: productId,
-        quantity: 1
-      },
-      config
+    fetchCategories();
+  }, []);
+    // Fetch sản phẩm ban đầu
+    useEffect(() => {
+      fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
+        
+        if (response.data?.data?.data) {
+          const allProducts = response.data.data.data;
+          setProducts(allProducts);
+          setFilteredProducts(allProducts); // Khởi tạo filteredProducts với tất cả sản phẩm
+        } else {
+          throw new Error("Định dạng dữ liệu không hợp lệ");
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải sản phẩm:", error);
+        setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Xử lý lọc theo giá
+    const handlePriceChange = () => {
+      const [minPrice, maxPrice] = priceRange;
+      const filtered = products.filter((product) => {
+        const price = parseFloat(product.price.replace(/[^\d.-]/g, '')); // Chuyển đổi giá thành số
+        return price >= minPrice && price <= maxPrice;
+      });
+      setFilteredProducts(filtered);
+      setCurrentPage(1); // Reset về trang 1 khi lọc
+    };
+
+    // Xử lý thay đổi giá trị thanh trượt
+    const handleSliderChange = (value) => {
+      setPriceRange(value);
+    };
+
+    // Xử lý sắp xếp
+    const handleSortChange = (event) => {
+      const newSortOrder = event.target.value;
+      setSortOrder(newSortOrder);
+      
+      const sorted = [...filteredProducts].sort((a, b) => {
+        // Chuyển đổi giá thành số thực
+        const priceA = parseFloat(a.price.replace(/[^\d.-]/g, '')) || 0;
+        const priceB = parseFloat(b.price.replace(/[^\d.-]/g, '')) || 0;
+        
+        // Sắp xếp theo giá
+        return newSortOrder === 'asc' ? priceA - priceB : priceB - priceA;
+      });
+      
+      setFilteredProducts(sorted);
+    };
+
+    // Reset bộ lọc
+    const clearFilter = () => {
+      setPriceRange([0, 1000000]);
+      setFilteredProducts(products);
+      setCurrentPage(1);
+    };
+
+    // Tính toán phân trang
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const paginatedProducts = filteredProducts.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
     );
 
-    if (response.data.success) {
-      alert('Đã thêm sản phẩm vào giỏ hàng!');
-    } else {
-      throw new Error(response.data.message || 'Có lỗi xảy ra');
-    }
-  } catch (error) {
-    console.error('Error details:', error.response?.data || error.message);
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+      }).format(price);
+    };
     
-    if (error.response?.status === 401) {
-      alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
-      // Có thể chuyển hướng đến trang đăng nhập
-      // window.location.href = '/login';
-    } else if (error.response?.status === 422) {
-      alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!');
-    } else if (error.response?.status === 500) {
-      alert('Lỗi server. Vui lòng thử lại sau!');
-    } else {
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
-    }
-  }
-};
 
-  return (
-    <>
-      <Header />
-      <section 
+    // Hàm thêm sản phẩm vào giỏ hàng
+    const handleAddToCart = (productId) => {
+      // Tìm sản phẩm trong danh sách
+      const product = products.find((item) => item.id === productId);
+      
+      if (product) {
+        // Cập nhật giỏ hàng, thêm sản phẩm vào giỏ hàng (trong state)
+        setCart((prevCart) => {
+          // Kiểm tra nếu sản phẩm đã có trong giỏ hàng
+          const productIndex = prevCart.findIndex((item) => item.id === productId);
+          if (productIndex >= 0) {
+            // Nếu có, tăng số lượng sản phẩm lên
+            const updatedCart = [...prevCart];
+            updatedCart[productIndex].quantity += 1;
+            return updatedCart;
+          } else {
+            // Nếu chưa có, thêm mới sản phẩm vào giỏ hàng
+            return [...prevCart, { ...product, quantity: 1 }];
+          }
+        });
+      }
+    };
+
+    return (
+      <>
+        <Header />
+        <section 
         className="breadcrumb-section set-bg" 
         style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
@@ -116,18 +167,24 @@ const handleAddToCart = async (productId) => {
         </div>
       </section>
 
-      <section className="product spad">
-        <div className="container">
-          <div className="row pt-5">
+        <section className="product spad">
+          
+          <div className="container">
+            <div className="row pt-5">
             <div className="col-lg-3 col-md-5">
               <div className="sidebar">
-                <div className="sidebar__item">
+              <div className="sidebar__item">
                   <h4>Các loại</h4>
                   <ul>
-                    <li><Link to="/">Xe đạp trẻ em</Link></li>
-                    <li><Link to="/">Xe đạp thể thao</Link></li>
-                    <li><Link to="/">Xe đạp Fixed Gear</Link></li>
-                    <li><Link to="/">Xe đạp địa hình</Link></li>
+                    {categories && categories.length > 0 ? (
+                      categories.map((category) => (
+                        <li key={category.id}>
+                          <Link to={`/category/${category.id}`}>{category.name}</Link>
+                        </li>
+                      ))
+                    ) : (
+                      <p>Không có danh mục nào</p>
+                    )}
                   </ul>
                 </div>
                 <div className="sidebar__item sidebar__item__color--option">
@@ -151,16 +208,42 @@ const handleAddToCart = async (productId) => {
                     <label htmlFor="green">Xanh lá</label>
                   </div>
                 </div>
+            <div className="">
                 <div className="sidebar__item sidebar__item__price--option">
-                  <h4>Lọc theo giá</h4>
                   <div className="sidebar__item__price">
-                    <label htmlFor="priceRange">Chọn khoảng giá:</label>
-                    <input type="range" id="priceRange" min="0" max="100000" step="1000" />
-                    <div className="price-range-display">
-                      <span>0 đ</span> - <span>100000 đ</span>
+                  <label htmlFor="priceRange">Chọn khoảng giá:</label>
+                    <div className="price-filter">
+                      <div className="sidebar__item__price">
+                        <input
+                          type="range"
+                          min="0"
+                          max="1000000"
+                          step="1000  000"
+                          value={priceRange[1]}
+                          onChange={(e) => handleSliderChange([priceRange[0], parseInt(e.target.value)])}
+                          className=""
+                        />
+                      </div>
+                      <div className="price-range-display">
+                        <span>{formatPrice(priceRange[0])}</span>
+                        <span>{formatPrice(priceRange[1])}</span>
+                      </div>
+                      <button 
+                        onClick={handlePriceChange}
+                        className="btn btn-primary mt-2 w-500"
+                      >
+                        Lọc
+                      </button>
+                      <button 
+                        onClick={clearFilter}
+                        className="btn btn-outline-secondary mt-2 w-500"
+                      >
+                        Xóa bộ lọc
+                      </button>
                     </div>
                   </div>
                 </div>
+              </div>
                 <div className="sidebar__item">
                   <div className="latest-product__text">
                     <h4>SẢN PHẨM MỚI NHẤT</h4>
@@ -181,6 +264,7 @@ const handleAddToCart = async (productId) => {
                 </div>
               </div>
             </div>
+
             <div className="col-lg-9 col-md-7">
               <div className="product__discount">
                 <div className="section-title product__discount__title">
@@ -206,57 +290,128 @@ const handleAddToCart = async (productId) => {
                   </div>
                 </div>
               </div>
-              <div className="filter__item">
-                <div className="row">
-                  <div className="col-lg-4 col-md-5">
-                    <div className="filter__sort">
-                      <span>Sắp xếp theo</span>
-                      <select>
-                        <option value="0">Giá tăng dần</option>
-                        <option value="0">Giá giảm dần</option>
-                      </select>
+
+              <div className="col-lg-9 col-md-7">
+                {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
+
+                <div className="filter__item">
+                  <div className="row">
+                    <div className="col-lg-4 col-md-5">
+                      <div className="filter__sort">
+                        <span>Sắp xếp theo</span>
+                        <select 
+                          value={sortOrder} 
+                          onChange={handleSortChange}
+                          className="form-select"
+                        >
+                          <option value="asc">Giá tăng dần</option>
+                          <option value="desc">Giá giảm dần</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-lg-8 col-md-7 text-end">
+                      <p>Hiển thị {filteredProducts.length} sản phẩm</p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="row">
-  {products.length > 0 ? (
-    products.map((product) => (
-      <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
-        <div className="product__item">
-          <div className="product__item__pic">
-            {/* Hiển thị hình ảnh sản phẩm */}
-            {product.images.length > 0 ? (
-              <img
-                src={`http://127.0.0.1:8000${product.images[0].image_url}`}
-                alt={product.name}
-                width="300"
-              />
-            ) : ("Không có hình ảnh")}
-            <ul className="product__item__pic__hover">
-              <li><a href="#"><i className="fa fa-heart"></i></a></li>
-              <li><Link to={`/product-details/${product.id}`}><i className="fa fa-retweet"></i></Link></li>
-              <li>
-                  <a onClick={() => handleAddToCart(product.id)} style={{ cursor: 'pointer' }}>
-                    <i className="fa fa-shopping-cart"></i>
-                  </a>
-                </li>
-            </ul>
-          </div>
-          <div className="product__item__text">
-            <h5><Link to={`/product-details/${product.id}`}>{product.name}</Link></h5>
-            <h5>{product.price}đ</h5>
-          </div>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="col-12">Không có sản phẩm nào.</div>
-  )}
-</div>
 
+                {loading ? (
+                  <div className="text-center">
+                    <div className="spinner-border" role="status">
+                      <span className="visually-hidden">Đang tải...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="row">
+                      {paginatedProducts.length > 0 ? (
+                        paginatedProducts.map((product) => (
+                          <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
+                            <div className="product__item">
+                              <div className="product__item__pic">
+                                {product.images && product.images.length > 0 ? (
+                                  <img
+                                    src={`http://127.0.0.1:8000${product.images[0].image_url}`}
+                                    alt={product.name}
+                                    className="img-fluid"
+                                  />
+                                ) : (
+                                  <div className="no-image">Không có hình ảnh</div>
+                                )}
+                                <ul className="product__item__pic__hover">
+                                  <li><a href="#"><i className="fa fa-heart"></i></a></li>
+                                  <li>
+                                    <Link to={`/product-details/${product.id}`}>
+                                      <i className="fa fa-retweet"></i>
+                                    </Link>
+                                  </li>
+                                  <li>
+                                    <button 
+                                      className="btn-cart"
+                                      onClick={() => handleAddToCart(product.id)}
+                                    >
+                                      <i className="fa fa-shopping-cart"></i>
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div className="product__item__text">
+                                <h5>
+                                  <Link to={`/product-details/${product.id}`}>
+                                    {product.name}
+                                  </Link>
+                                </h5>
+                                <h5>{formatPrice(product.price)}</h5>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="col-12 text-center">
+                          <p>Không tìm thấy sản phẩm nào trong khoảng giá này.</p>
+                        </div>
+                      )}
+                    </div>
 
-              <div className="product__pagination d-flex justify-content-center pb-5">
+                    {/* Phân trang */}
+                    {totalPages > 1 && (
+                      <div className="row mt-5">
+                        <div className="col-12">
+                          <div className="product__pagination text-center">
+                            <button
+                              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                              disabled={currentPage === 1}
+                              className="btn btn-outline-secondary me-2"
+                            >
+                              &lt;
+                            </button>
+                            {Array.from({ length: totalPages }, (_, i) => (
+                              <button
+                                key={i + 1}
+                                onClick={() => setCurrentPage(i + 1)}
+                                className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline-secondary'} me-2`}
+                              >
+                                {i + 1}
+                              </button>
+                            ))}
+                            <button
+                              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                              disabled={currentPage === totalPages}
+                              className="btn btn-outline-secondary"
+                            >
+                              &gt;
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+                  <div className="product__pagination d-flex justify-content-center pb-5">
                 <a href="#" className="mx-2">1</a>
                 <a href="#" className="mx-2">2</a>
                 <a href="#" className="mx-2">3</a>
@@ -264,13 +419,13 @@ const handleAddToCart = async (productId) => {
                   <i className="bi bi-arrow-right"></i>
                 </a>
               </div>
+              </div>
             </div>
+           </div>
           </div>
-        </div>
-      </section>
-      <Footer />
-    </>
-  );
-};
-
-export default Product;
+        </section>
+        <Footer />
+      </>
+    );
+  };
+  export default Product;
