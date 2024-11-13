@@ -25,7 +25,7 @@ import imgCategory from "../../../assets/img/hero/cateimg1.jpg"
 import logo from "../../../assets/img/logo.png";
 import videoBanner from "../../../assets/img/hero/video-header.mp4";
 import blog1 from "../../../assets/img/hero/blog1.jpg"
-
+import Header from './header';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 const Home = () => {
@@ -59,9 +59,9 @@ const Home = () => {
   };
   return (
     <div>
-      
-      <header>
-        <section className="header sticky">
+     <Header/>
+     
+        {/* <section className="header sticky">
           <div className="khungmenu">
             <Link to="/" className="logo">BIKESCHOOL</Link>
             <nav className="dmcc">
@@ -111,7 +111,7 @@ const Home = () => {
               </ul>
             </nav>
           </div>
-        </section>
+        </section> */}
 
         <section className="video">
           <video className="videoheader" src={videoBanner} width="100%" autoPlay muted loop />
@@ -123,7 +123,7 @@ const Home = () => {
           Là những người đam mê đạp xe, chúng tôi hiểu được niềm vui và sự tự do khi đạp xe trên hai bánh xe
           </div>
         </section>
-      </header>
+      
       <section className="hero hero-normal">
         <div className="container">
           <div className="row">

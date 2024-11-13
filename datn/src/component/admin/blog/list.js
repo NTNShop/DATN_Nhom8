@@ -30,6 +30,7 @@ const Blog = () => {
   return (
     <div>
       <Header />
+
       <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
         <div className="page-breadcrumb">
           <div className="row align-items-center">
