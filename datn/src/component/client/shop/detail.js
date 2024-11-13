@@ -3,16 +3,42 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../home/header";
 import Footer from "../home/footer";
-import { Link } from "react-router-dom";
 import sp from "../../../assets/img/cart/sp1.webp";
 import sp2 from "../../../assets/img/cart/sp2.webp";
 import sp3 from "../../../assets/img/cart/sp3.webp";
 import sp4 from "../../../assets/img/cart/sp4.webp";
 
-import sp1 from "../../../assets/img/cart/cart.png";
-import { FaStar } from 'react-icons/fa';
-
 const Detail = () => {
+    const [reviews, setReviews] = useState([]);
+    const [loadingReviews, setLoadingReviews] = useState(true);
+    const [error, setError] = useState(null);
+    
+    // Thêm useEffect để fetch reviews
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/v1/reviews');
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+                }
+                const data = await response.json();
+    
+                if (data && data.data && data.data.data) {
+                    setReviews(data.data.data);
+                } else {
+                    console.error('Cấu trúc dữ liệu không như mong đợi:', data);
+                    setError('Định dạng dữ liệu không hợp lệ');
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy bình luận:", error);
+                setError("Không thể tải bình luận. Vui lòng thử lại sau.");
+            } finally {
+                setLoadingReviews(false);
+            }
+        };
+    
+        fetchReviews();
+    }, []);
 
     const [mainImage, setMainImage] = useState(sp);
 
@@ -90,13 +116,6 @@ const Detail = () => {
                             <div className="product__details__text">
                             <h3>{product.name}</h3>
                                 <div className="product__details__rating mb-3">
-                                    <span className="text-warning me-1">
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star-half-o"></i>
-                                    </span>
                                     <span>(18 reviews)</span>
                                 </div>
                                 <div className="product__details__price fs-4 mb-3 text-danger">{product.price}đ</div>
@@ -169,85 +188,67 @@ const Detail = () => {
 
                     {/* Giao diện phần đánh giá */}
                     <div className="row mt-5">
-                        <div className="col-12">
-                            <div className="card">
-                                <div className="card-header">
-                                    <h4>Đánh giá sản phẩm</h4>
+    <div className="col-12">
+        <div className="card">
+            <div className="card-header">
+                <h4>Đánh giá sản phẩm</h4>
+            </div>
+            <div className="card-body">
+                {loadingReviews ? (
+                    <div>Đang tải bình luận...</div>
+                ) : error ? (
+                    <div className="text-danger">{error}</div>
+                ) : reviews && reviews.length > 0 ? (
+                    reviews.map((review) => (
+                        <div key={review.id} className="mb-4">
+                            <div className="d-flex justify-content-between">
+                                <div>
+                                    <strong>khách hàng có ID:{review.user_id}</strong>
                                 </div>
-                                <div className="card-body">
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between">
-                                            <div><strong>Nguyễn Văn A</strong></div>
-                                            <div><span className="text-warning">★★★★★</span></div>
-                                        </div>
-                                        <p>Xe chạy rất êm, thiết kế đẹp, đáng tiền mua.</p>
-                                    </div>
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between">
-                                            <div><strong>Trần B</strong></div>
-                                            <div><span className="text-warning">★★★★☆</span></div>
-                                        </div>
-                                        <p>Tiết kiệm nhiên liệu và dễ điều khiển.</p>
-                                    </div>
-
-                                    {/* Phần bình luận */}
-                                    <div>
-                                        <h5>Viết bình luận</h5>
-
-                                        {/* Hiển thị đánh giá sao */}
-                                        <div className="mb-3">
-                                            {[...Array(5)].map((star, index) => {
-                                                const ratingValue = index + 1;
-                                                return (
-                                                    <label key={index}>
-                                                        <input
-                                                            type="radio"
-                                                            name="rating"
-                                                            value={ratingValue}
-                                                            onClick={() => setRating(ratingValue)}
-                                                            style={{ display: 'none' }} // Ẩn radio button
-                                                        />
-                                                        <FaStar
-                                                            className="star"
-                                                            color={ratingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
-                                                            size={30}
-                                                            onMouseEnter={() => setHover(ratingValue)}
-                                                            onMouseLeave={() => setHover(null)}
-                                                            style={{ cursor: "pointer" }}
-                                                        />
-                                                    </label>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {/* Textarea để nhập bình luận */}
-                                        <textarea
-                                            className="form-control"
-                                            rows="4"
-                                            placeholder="Nhập bình luận của bạn..."
-                                            value={comment}
-                                            onChange={(e) => setComment(e.target.value)}
-                                        ></textarea>
-
-                                        {/* Nút gửi bình luận */}
-                                        <button
-                                            className="btn btn-primary mt-3"
-                                            onClick={() => {
-                                                if (!comment) {
-                                                    alert("Vui lòng nhập bình luận.");
-                                                    return;
-                                                }
-                                                alert(`Bình luận: ${comment}\nĐánh giá: ${rating} sao`);
-                                            }}
-                                        >
-                                            Gửi bình luận
-                                        </button>
-                                    </div>
-
+                                <div>
+                                    <small className="text-muted">
+                                        {new Date(review.created_at).toLocaleDateString('vi-VN')}
+                                    </small>
                                 </div>
                             </div>
+                            <p>{review.review_content}</p>
+                           
                         </div>
-                    </div>
+                    ))
+                ) : (
+                    <div>Chưa có bình luận nào</div>
+                )}
+
+                {/* Phần nhập bình luận mới */}
+                <div className="mt-4">
+                    <h5>Viết bình luận</h5>
+                    <textarea
+                        className="form-control"
+                        rows="4"
+                        placeholder="Nhập bình luận của bạn..."
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    ></textarea>
+
+                   
+
+                    <button
+                        className="btn btn-primary mt-3"
+                        onClick={() => {
+                            if (!comment) {
+                                alert("Vui lòng nhập bình luận.");
+                                return;
+                            }
+                            alert(`Bình luận: ${comment}`);
+                        }}
+                    >
+                        Gửi bình luận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 </div>
             </section>
             <Footer />

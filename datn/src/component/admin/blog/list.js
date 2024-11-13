@@ -1,116 +1,121 @@
-import React, { useEffect, useState } from "react";
-import { getPosts } from "../../../services/posts"; // Đảm bảo đúng đường dẫn tới service của bạn
-import { Link } from "react-router-dom"; 
-import Header from "../../../component/client/home/header";
-import Footer from "../../../component/client/home/footer";
-import Cart from "../../../assets/img/cart/cart.png";
-import Cart1 from "../../../assets/img/cart/cart1.png";
-import banner from "../../../assets/img/hero/banner2.jpg";
+import React, { useState, useEffect } from "react";
+import Header from "../layouts/header";
+import Footer from "../layouts/footer";
 
 const Blog = () => {
-  const [posts, setPosts] = useState([]);
-  const [pagination, setPagination] = useState({});
+  const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const result = await getPosts();
-      setPosts(result.posts);
-      setPagination(result.pagination);
-      setLoading(false);
-    };
-    fetchPosts();
+    fetchBlogs();
   }, []);
 
+  const fetchBlogs = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/v1/posts/");
+      if (!response.ok) {
+        throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+      }
+      const data = await response.json();
+      setBlogs(data.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách bài viết:", error);
+      setError("Không thể tải danh sách bài viết. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
+    <div>
       <Header />
-      <section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12 text-center">
-              <div className="breadcrumb__text">
-                <h2>BÀI VIẾT</h2>
-                <div className="breadcrumb__option">
-                  <a href="./index.html">TRANG CHỦ</a>
-                  <span>BÀI VIẾT</span>
-                </div>
+      <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
+        <div className="page-breadcrumb">
+          <div className="row align-items-center">
+            <div className="col-md-6 col-8 align-self-center">
+              <div className="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                  <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li className="breadcrumb-item active" aria-current="page">Danh sách bài viết</li>
+                  </ol>
+                </nav>
               </div>
             </div>
           </div>
         </div>
-      </section>
-      <div className="blog spad text-center">
-        <div className="container">
+        <div className="container-fluid">
           <div className="row">
-            <div className="col-lg-4 col-md-5">
-              <div className="blog__sidebar">
-                <div className="blog__sidebar__item">
-                  <h4>Tin tức xe máy gần đây</h4>
-                  <div className="blog__sidebar__recent">
-                    {/* Danh sách bài viết mới */}
-                    {posts.slice(0, 3).map((post) => (
-                      <a href="#" className="blog__sidebar__recent__item" key={post.id}>
-                        <div className="blog__sidebar__recent__item__pic">
-                          <img src={Cart1} width={100} alt="thumbnail" />
-                        </div>
-                        <div className="blog__sidebar__recent__item__text">
-                          <h6>{post.title}</h6>
-                          <span>{post.created_at}</span>
-                        </div>
-                      </a>
-                    ))}
+            <div className="col-sm-10">
+              <div className="card">
+                <div className="card-body">
+                  <h4 className="card-title">Danh sách bài viết</h4>
+                  <span>
+                    <a href="/admin/addBlog" className="btn btn-primary mb-3">Thêm bài viết</a>
+                  </span>
+
+                  <div className="table-responsive">
+                    <table className="table user-table">
+                      <thead>
+                        <tr className="table-light">
+                          <th className="border-top-0">ID</th>
+                          <th className="border-top-0">Tiêu đề</th>
+                          <th className="border-top-0">Link đường dẫn</th>
+                          <th className="border-top-0">Nội dung</th>
+                          <th className="border-top-0">Hình Ảnh</th>
+                          <th className="border-top-0">Trạng thái</th>
+                          <th className="border-top-0">Ngày tạo</th>
+                          <th className="border-top-0">Ngày cập nhật</th>
+                          <th className="border-top-0">Hành động</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {loading ? (
+                          <tr>
+                            <td colSpan="9" className="text-center">Đang tải...</td>
+                          </tr>
+                        ) : error ? (
+                          <tr>
+                            <td colSpan="9" className="text-center">{error}</td>
+                          </tr>
+                        ) : blogs.length > 0 ? (
+                          blogs.map((blog) => (
+                            <tr key={blog.id}>
+                              <td>{blog.id}</td>
+                              <td className="text-truncate" style={{ maxWidth: '150px' }}>{blog.title}</td>
+                              <td className="text-truncate" style={{ maxWidth: '150px' }}>{blog.slug}</td>
+                              <td className="text-truncate" style={{ maxWidth: '150px' }}>{blog.content}</td>
+                              <td>
+                                <img
+                                  width="150px"
+                                  src={`http://127.0.0.1:8000${blog.featured_image}`}
+                                  alt={blog.title}
+                                />
+                              </td>
+                              <td className="text-truncate" style={{ maxWidth: '100px' }}>{blog.status === 1 ? "Hoạt động" : "Không hoạt động"}</td>
+                              <td className="text-truncate" style={{ maxWidth: '100px' }}>{blog.created_at}</td>
+                              <td className="text-truncate" style={{ maxWidth: '170px' }}>{blog.updated_at}</td>
+                              <td className="text-truncate" style={{ maxWidth: '130px' }}>
+                                <div className="d-flex gap-2">
+                                  <a href={`/admin/editBlog/${blog.id}`} className="btn btn-primary">Sửa</a>
+                                  <button className="btn btn-danger">Xóa</button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="9" className="text-center">Không có bài viết nào</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-8 col-md-7">
-              <div className="row">
-                {/* Hiển thị các bài viết */}
-                {loading ? (
-                  <p>Đang tải bài viết...</p>
-                ) : (
-                  posts.map((post) => (
-<div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
-                      <div className="blog__item">
-                        <div className="blog__item__pic">
-                          <img src={Cart} alt="Post Image" />
-                        </div>
-                        <div className="blog__item__text">
-                          <ul>
-                            <li>
-                              <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
-                            </li>
-                            <li>
-                              <i className="fa fa-comment-o"></i> 5
-                            </li>
-                          </ul>
-                          <h5>
-                            <Link to={`/blog-details/${post.id}`}>{post.title}</Link>
-                          </h5>
-                          <p>{post.content}</p>
-                          <Link to={`/blog-details/${post.id}`} className="blog__btn">
-                            ĐỌC THÊM <span className="arrow_right"></span>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-                {/* Pagination */}
-                <div className="col-lg-12">
-                  <div className="product__pagination blog__pagination">
-                    {pagination.total > 1 && (
-                      <>
-                        {pagination.current_page > 1 && (
-                          <a href={pagination.links.prev}>« Trước</a>
-                        )}
-                        <a href={pagination.links.first}>{pagination.current_page}</a>
-                        {pagination.current_page < pagination.last_page && (
-                          <a href={pagination.links.next}>Tiếp theo »</a>
-                        )}
-                      </>
-                    )}
+                  <div className="pagination">
+                    <button className="btn btn-primary mx-3">&lt; Trước</button>
+                    <span>Trang 1 of 2</span>
+                    <button className="btn btn-primary mx-3">Sau &gt;</button>
                   </div>
                 </div>
               </div>
@@ -119,7 +124,7 @@ const Blog = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

@@ -34,6 +34,8 @@ import './assets/css/style2.css'
 import Dashboard from "./component/admin/dashboard/index";
 import Profile from "./component/admin/profile/index";
 import Categories from "./component/admin/categories/list";
+import Contacts from "./component/admin/contact/list";
+
 import EditCategories from "./component/admin/categories/edit";
 import AddCategories from "./component/admin/categories/add";
 import ListBrand from "./component/admin/brand/list";
@@ -96,7 +98,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog-details/:id" element={<BlogDetails />} />
-
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
         <Route path="/product" element={<Product/>}/>
@@ -128,6 +129,7 @@ function App() {
       <Route path="/admin/dashboard" element={<Dashboard />} />
       <Route path="/admin/profile" element={<Profile />} />
       <Route path="/admin/category" element={<Categories />} />
+      <Route path="/admin/contact" element={<Contacts />} />
       <Route path="/admin/category/edit/:id" element={<EditCategories />} />
       <Route path="/admin/category/add" element={<AddCategories />} />
       <Route path="/admin/brand" element={<ListBrand />} />
