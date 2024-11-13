@@ -33,7 +33,7 @@
         const data = await getCategories();
         setCategories(data); // Lưu dữ liệu danh mục vào state
       } catch (err) {
-        setError("Không thể tải danh mục");
+        setError("");
       } finally {
         setLoading(false);
       }
