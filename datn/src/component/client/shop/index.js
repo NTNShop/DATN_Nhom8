@@ -61,28 +61,6 @@ const Product = () => {
       setLoading(false);
     }
   };
-
-      setLoading(true);
-      try {
-          const response = await axios.get('http://127.0.0.1:8000/api/v1/products', {
-              params: {
-                  page: pagination.currentPage,
-                  per_page: pagination.perPage
-              }
-          });
-          // console.log(response.data); // In cấu trúc phản hồi để xác nhận
-          setProducts(response.data.data.data); // Truy cập vào mảng 'data' bên trong 'data'
-          setPagination({
-              ...pagination,
-              totalPages: response.data.data.last_page
-          });
-      } catch (error) {
-          console.error("Lỗi khi tải sản phẩm:", error);
-          setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
-      } finally {
-          setLoading(false);
-      }
-  };
 // xử lý cart
 const { id } = useParams(); // Lấy id sản phẩm từ URL
 const [quantity, setQuantity] = useState(1);
@@ -263,39 +241,6 @@ const handleAddToCart = async () => {
                   <div className="col-12">Không có sản phẩm nào.</div>
                 )}
               </div>
-  {products.length > 0 ? (
-    products.map((product) => (
-      <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
-        <div className="product__item">
-          <div className="product__item__pic">
-            {/* Hiển thị hình ảnh sản phẩm */}
-            {product.images.length > 0 ? (
-              <img
-                src={`http://127.0.0.1:8000${product.images[0].image_url}`}
-                alt={product.name}
-                width="300"
-              />
-            ) : ("Không có hình ảnh")}
-            <ul className="product__item__pic__hover">
-              <li><a href="#"><i className="fa fa-heart"></i></a></li>
-              <li><Link to={`/product-details/${product.id}`}><i className="fa fa-retweet"></i></Link></li>
-              <li>
-                  <a style={{ cursor: 'pointer' }}  onClick={handleAddToCart}>
-                    <i className="fa fa-shopping-cart"></i>
-                  </a>
-                </li>
-            </ul>
-          </div>
-          <div className="product__item__text">
-            <h5><Link to={`/product-details/${product.id}`}>{product.name}</Link></h5>
-            <h5>{product.price}đ</h5>
-          </div>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="col-12">Không có sản phẩm nào.</div>
-  )}
 </div>
 
 
@@ -309,7 +254,6 @@ const handleAddToCart = async () => {
               </div>
             </div>
           </div>
-        </div>
       </section>
       <Footer />
     </>
