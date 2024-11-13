@@ -3,51 +3,29 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../home/header";
 import Footer from "../home/footer";
-import { Link } from "react-router-dom";
-import sp from "../../../assets/img/cart/sp1.webp";
-import sp2 from "../../../assets/img/cart/sp2.webp";
-import sp3 from "../../../assets/img/cart/sp3.webp";
-import sp4 from "../../../assets/img/cart/sp4.webp";
-
-import sp1 from "../../../assets/img/cart/cart.png";
 import { FaStar } from 'react-icons/fa';
 
 const Detail = () => {
-
-    const [mainImage, setMainImage] = useState(sp);
-
-
-    const handleThumbnailClick = (image) => {
-        setMainImage(image);
-    };
-
+    const [mainImage, setMainImage] = useState(null);
     const [quantity, setQuantity] = useState(1);
-
-    const incrementQuantity = () => {
-        setQuantity((prevQuantity) => prevQuantity + 1);
-    };
-
-    const decrementQuantity = () => {
-        setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1)); // Prevents quantity from being less than 1
-    };
-
-    const handleQuantityChange = (e) => {
-        const value = Math.max(1, parseInt(e.target.value) || 1); // Ensures the input stays above 0
-        setQuantity(value);
-    };
-    const { id } = useParams(); // Lấy id sản phẩm từ URL
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(null);
     const [comment, setComment] = useState('');
+    const { id } = useParams();
 
     useEffect(() => {
-        // Fetch sản phẩm theo ID
         const fetchProductDetail = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
                 setProduct(response.data.data);
+
+                // Set the initial main image to the first product image if available
+                if (response.data.data.images.length > 0) {
+                    setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
+                }
+                
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching product details:", error);
@@ -59,6 +37,13 @@ const Detail = () => {
 
     if (loading) return <div>Loading...</div>;
 
+    const handleThumbnailClick = (image) => {
+        setMainImage(image); // Set the main image to the selected thumbnail
+    };
+
+    const incrementQuantity = () => setQuantity((prev) => prev + 1);
+    const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+    const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
 
     return (
         <>
@@ -68,17 +53,20 @@ const Detail = () => {
                     <div className="row">
                         <div className="col-lg-6 col-md-6 mb-4">
                             <div className="product__details__pic">
+                                {/* Main Image */}
                                 <div className="product__details__pic__item mb-3">
-                                <img className="img-fluid w-100" src={`http://127.0.0.1:8000${product.images[0].image_url}`} alt="Product" />
+                                    <img className="img-fluid w-100" src={mainImage} alt="Product" />
                                 </div>
+
+                                {/* Thumbnails */}
                                 <div className="row">
-                                    {[sp, sp2, sp3, sp4].map((image, index) => (
+                                    {product.images.map((imageObj, index) => (
                                         <div className="col-3" key={index}>
                                             <img
-                                                src={image}
+                                                src={`http://127.0.0.1:8000${imageObj.image_url}`}
                                                 alt={`Thumbnail ${index + 1}`}
-                                                className={`img-thumbnail ${mainImage === image ? 'border-primary' : ''}`}
-                                                onClick={() => handleThumbnailClick(image)}
+                                                className={`img-thumbnail ${mainImage === `http://127.0.0.1:8000${imageObj.image_url}` ? 'border-primary' : ''}`}
+                                                onClick={() => handleThumbnailClick(`http://127.0.0.1:8000${imageObj.image_url}`)}
                                                 style={{ cursor: "pointer" }}
                                             />
                                         </div>
@@ -86,9 +74,11 @@ const Detail = () => {
                                 </div>
                             </div>
                         </div>
+                        {/* Other Product Details */}
+                 
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__text">
-                            <h3>{product.name}</h3>
+                                <h3>{product.name}</h3>
                                 <div className="product__details__rating mb-3">
                                     <span className="text-warning me-1">
                                         <i className="fa fa-star"></i>
@@ -101,7 +91,7 @@ const Detail = () => {
                                 </div>
                                 <div className="product__details__price fs-4 mb-3 text-danger">{product.price}đ</div>
                                 <p className="mb-4">
-                                {product.description}
+                                    {product.description}
                                 </p>
                                 <div className="product__details__quantity">
                                     <div className="quantity">
@@ -122,7 +112,7 @@ const Detail = () => {
                                 </a>
 
 
-                                <ul className="list-group list-group-flush mb-4">
+                                {/* <ul className="list-group list-group-flush mb-4">
                                     <li className="list-group-item">
                                         <strong>Động cơ:</strong> Động cơ eSP+ 4 van
                                     </li>
@@ -132,19 +122,25 @@ const Detail = () => {
                                     <li className="list-group-item">
                                         <strong>An toàn:</strong> Hệ thống chống bó cứng phanh (ABS)...
                                     </li>
-                                </ul>
+                                </ul> */}
                             </div>
                         </div>
 
                         {/* Bảng thông số kỹ thuật */}
                         <div className="col-lg-12 mt-5">
-                        <div 
-                            className="specifications-content mt-3"
-                            dangerouslySetInnerHTML={{ __html: product.specifications }}
-                        />
-                        
-                        {/* Hoặc nếu bạn muốn hiển thị dưới dạng bảng có style, bạn có thể thêm CSS */}
-                        <style>{`
+                        <ul className="list-group list-group-flush mb-4">
+                                    <li className="list-group-item">
+                                        <strong>Thông số kĩ thuật</strong> 
+                                    </li>
+                                   
+                                </ul>
+                            <div
+                                className="specifications-content mt-3"
+                                dangerouslySetInnerHTML={{ __html: product.specifications }}
+                            />
+
+                            {/* Hoặc nếu bạn muốn hiển thị dưới dạng bảng có style, bạn có thể thêm CSS */}
+                            <style>{`
                             .specifications-content ul {
                                 list-style: none;
                                 padding: 0;
@@ -164,7 +160,7 @@ const Detail = () => {
                                 font-weight: bold;
                             }
                         `}</style>
-                    </div>
+                        </div>
                     </div>
 
                     {/* Giao diện phần đánh giá */}
