@@ -5,9 +5,45 @@ import Header from '../home/header';
 import Footer from '../home/footer';
 import sp from "../../../assets/img/cart/sp1.png";
 import banner from "../../../assets/img/hero/banner2.jpg";
-
+import { toast } from 'react-toastify';
+import { CartService } from '../../../services/client/Cart';
 const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
 
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await CartService.getCartItems();
+        setCartItems(response.data);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+        toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
+      }
+    };
+
+    fetchCartItems();
+  }, []);
+  const handleUpdateQuantity = async (cartItemId, newQuantity) => {
+    try {
+      await CartService.updateCartItem(cartItemId, newQuantity);
+      // Cập nhật lại giỏ hàng
+      // await updateCartItems();
+    } catch (error) {
+      console.error('Error updating cart item quantity:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật số lượng');
+    }
+  };
+  // Hàm xử lý xóa sản phẩm khỏi giỏ hàng
+  const handleRemoveItem = async (cartItemId) => {
+    try {
+        await CartService.removeFromCart(cartItemId);
+        // Cập nhật lại state để re-render giao diện
+        setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
+        toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
+    } catch (error) {
+        toast.error('Có lỗi xảy ra khi xóa sản phẩm');
+    }
+};
   return(
     <>
     <Header/>
@@ -46,39 +82,48 @@ const Cart = () => {
                   </tr>
                 </thead>
                 <tbody>
-      <tr>
-          <td className="shoping__cart__item">
-              <img src='' alt='' style={{ width: '150px' }} />
-              <h5>sp1</h5>
-          </td>
-          <td className="shoping__cart__price">200đ</td>
-          <td className="shoping__cart__quantity">
-              <div className="quantity">
-                  <div className="pro-qty">
-                      <button
-                          className="btn btn-sm btn-outline-secondary"
-                      >-</button>
-                      <input
-                          type="text"
-                          value={1}
-                          readOnly
-                          className="mx-2"
-                      />
-                      <button
-                          className="btn btn-sm btn-outline-secondary"
-                      >+</button>
-                  </div>
-              </div>
-          </td>
-          <td className="shoping__cart__total">200đ</td>
-          <td className="shoping__cart__item__close">
-          <span
-        className="icon_close"
-        style={{ cursor: 'pointer' }}
-    ></span>
-          </td>
-      </tr>
-</tbody>
+                  {cartItems.map(item => (
+                    <tr key={item.id}>
+                      <td className="shoping__cart__item">
+                        <img src={item.product.image.url} alt={item.product.name} style={{ width: '150px' }} />
+                        <h5>{item.product.name}</h5>
+                      </td>
+                      <td className="shoping__cart__price">{item.unit_price}đ</td>
+                      <td className="shoping__cart__quantity">
+                        <div className="quantity">
+                          <div className="pro-qty">
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                            >
+                              -
+                            </button>
+                            <input
+                              type="text"
+                              value={item.quantity}
+                              readOnly
+                              className="mx-2"
+                            />
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="shoping__cart__total">{item.total_price}đ</td>
+                      <td className="shoping__cart__item__close">
+                        <span
+                          className="icon_close"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleRemoveItem(item.id)}
+                        ></span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
 
 
               </table>

@@ -7,7 +7,8 @@ import sp from "../../../assets/img/cart/sp1.webp";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
 import { toast } from 'react-toastify'; // Thêm thư viện này để hiển thị thông báo
-
+import { CartService } from "../../../services/client/Cart";
+import { useParams } from "react-router-dom";
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true; // Quan trọng cho việc xử lý session/cookie
@@ -51,7 +52,25 @@ const Product = () => {
           setLoading(false);
       }
   };
+// xử lý cart
+const { id } = useParams(); // Lấy id sản phẩm từ URL
+const [quantity, setQuantity] = useState(1);
 
+const handleAddToCart = async () => {
+  try {
+      const result = await CartService.addToCart(id, quantity);
+      toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+      // Có thể thêm callback để cập nhật số lượng sản phẩm trong giỏ hàng ở header
+  } catch (error) {
+      if (error.message === 'Vui lòng đăng nhập để thêm vào giỏ hàng') {
+          toast.error(error.message);
+          // Có thể chuyển hướng đến trang đăng nhập
+          window.location.href = '/login';
+      } else {
+          toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+      }
+  }
+};
   return (
     <>
       <Header />
@@ -195,7 +214,7 @@ const Product = () => {
               <li><a href="#"><i className="fa fa-heart"></i></a></li>
               <li><Link to={`/product-details/${product.id}`}><i className="fa fa-retweet"></i></Link></li>
               <li>
-                  <a style={{ cursor: 'pointer' }} >
+                  <a style={{ cursor: 'pointer' }}  onClick={handleAddToCart}>
                     <i className="fa fa-shopping-cart"></i>
                   </a>
                 </li>
