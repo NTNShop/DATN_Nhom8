@@ -139,4 +139,19 @@ body {
   .promotion-item p:last-of-type {
     margin-bottom: 0; /* Xóa khoảng cách dưới cùng của đoạn cuối */
   }
+  .error {
+    border: 1px solid #ff0000 !important;
+  }
   
+  .error-message {
+    color: #ff0000;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+  }
+  
+  .payment-error {
+    margin: 10px 0;
+    text-align: center;
+    display: block;
+  }

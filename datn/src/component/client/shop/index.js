@@ -169,7 +169,7 @@ const handleAddToCart = async () => {
               </div>
             </div>
             <div className="col-lg-9 col-md-7">
-              <div className="product__discount">
+              {/* <div className="product__discount">
                 <div className="section-title product__discount__title">
                   <h2>ĐANG GIẢM GIÁ</h2>
                 </div>
@@ -192,7 +192,7 @@ const handleAddToCart = async () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="filter__item">
                 <div className="row">
                   <div className="col-lg-4 col-md-5">

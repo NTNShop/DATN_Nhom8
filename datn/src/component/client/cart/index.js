@@ -9,11 +9,12 @@ import { toast } from 'react-toastify';
 import { CartService } from '../../../services/client/Cart';
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-
+  const [totalAmount, setTotalAmount] = useState(0);
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const response = await CartService.getCartItems();
+        console.log('Cart items:', response.data);
         setCartItems(response.data);
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -23,27 +24,73 @@ const Cart = () => {
 
     fetchCartItems();
   }, []);
+  useEffect(() => {
+    calculateTotal();
+  }, [cartItems]);
+  const calculateTotal = () => {
+    const total = cartItems.reduce((sum, item) => {
+      return sum + (parseFloat(item.unit_price) * item.quantity);
+    }, 0);
+    setTotalAmount(total);
+  };
+  // Xử lý cập nhật số lượng
   const handleUpdateQuantity = async (cartItemId, newQuantity) => {
     try {
+      if (newQuantity < 1) {
+        toast.error('Số lượng không thể nhỏ hơn 1');
+        return;
+      }
+  
+      // Gọi API cập nhật trước
       await CartService.updateCartItem(cartItemId, newQuantity);
-      // Cập nhật lại giỏ hàng
-      // await updateCartItems();
+      
+      // Sau khi API thành công, cập nhật UI
+      const updatedItems = cartItems.map(item => {
+        if (item.id === cartItemId) {
+          const newTotalPrice = parseFloat(item.unit_price) * newQuantity;
+          return {
+            ...item,
+            quantity: newQuantity,
+            total_price: newTotalPrice
+          };
+        }
+        return item;
+      });
+      
+      setCartItems(updatedItems);
+      toast.success('Cập nhật số lượng thành công');
+      
     } catch (error) {
       console.error('Error updating cart item quantity:', error);
       toast.error('Có lỗi xảy ra khi cập nhật số lượng');
+      
+      // Nếu có lỗi, fetch lại data từ server
+      try {
+        const response = await CartService.getCartItems();
+        setCartItems(response.data);
+      } catch (fetchError) {
+        console.error('Error fetching updated cart items:', fetchError);
+        toast.error('Không thể đồng bộ dữ liệu với server');
+      }
     }
   };
   // Hàm xử lý xóa sản phẩm khỏi giỏ hàng
   const handleRemoveItem = async (cartItemId) => {
     try {
-        await CartService.removeFromCart(cartItemId);
-        // Cập nhật lại state để re-render giao diện
-        setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
-        toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
+      await CartService.removeFromCart(cartItemId);
+      setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
+      toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
     } catch (error) {
-        toast.error('Có lỗi xảy ra khi xóa sản phẩm');
+      toast.error('Có lỗi xảy ra khi xóa sản phẩm');
     }
-};
+  };
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
   return(
     <>
     <Header/>
@@ -84,8 +131,8 @@ const Cart = () => {
                 <tbody>
                   {cartItems.map(item => (
                     <tr key={item.id}>
-                      <td className="shoping__cart__item">
-                        <img src={item.product.image.url} alt={item.product.name} style={{ width: '150px' }} />
+                      <td className="shoping__cart__item"> 
+                        <img src={`http://127.0.0.1:8000${item.product.image.url}`}   alt={item.product.name} style={{ width: '150px' }} />
                         <h5>{item.product.name}</h5>
                       </td>
                       <td className="shoping__cart__price">{item.unit_price}đ</td>
@@ -113,7 +160,7 @@ const Cart = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="shoping__cart__total">{item.total_price}đ</td>
+                      <td className="shoping__cart__total">{formatCurrency(parseFloat(item.unit_price) * item.quantity)}đ</td>
                       <td className="shoping__cart__item__close">
                         <span
                           className="icon_close"
@@ -155,7 +202,7 @@ const Cart = () => {
     <li>
       Tổng cộng{" "}
       <span>
-        200đ
+      {formatCurrency(totalAmount)}
       </span>
     </li>
   </ul>
