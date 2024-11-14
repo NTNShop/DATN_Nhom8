@@ -23,9 +23,29 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [cart, setCart] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 9;
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    perPage: 10,
+  });
 
+  // Fetch products and categories on initial load
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, [pagination.currentPage]);
+
+  // Fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/v1/categories');
+      setCategories(response.data.data); // Assuming `data` holds the category list
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
   // Format price to VND currency
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -70,7 +90,31 @@ const Product = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
-
+  // Handle search
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const searchResults = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(searchResults);
+    setCurrentPage(1);
+  };
+  // Handle search input change
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
+    // Nếu muốn tìm kiếm realtime, bỏ comment đoạn code dưới đây
+    const searchResults = products.filter(product =>
+      product.name.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredProducts(searchResults);
+    setCurrentPage(1);
+  };
+  // Clear search
+  const clearSearch = () => {
+    setSearchTerm("");
+    setFilteredProducts(products);
+    setCurrentPage(1);
+  };
   // Handle price filter
   const handlePriceChange = () => {
     const [minPrice, maxPrice] = priceRange;
@@ -113,7 +157,11 @@ const Product = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
   return (
     <>
       <Header />
@@ -137,11 +185,20 @@ const Product = () => {
             <div className="col-8">
               <div className="hero__search">
                 <div className="hero__search__form">
-                  <form action="#">
-                    <input type="text" placeholder="What do you need?" />
+                  <form action="#" onSubmit={handleSearch}>
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..."  value={searchTerm}
+                      onChange={handleSearchInputChange}/>
                     <button type="submit" className="site-btn">SEARCH</button>
                   </form>
                 </div>
+                {searchTerm && (
+                  <button 
+                    onClick={clearSearch}
+                    className="btn btn-outline-secondary mt-2"
+                  >
+                    Xóa tìm kiếm
+                  </button>
+                )}
                 <div className="hero__search__phone">
                   <div className="hero__search__phone__icon">
                     <i className="fa fa-phone"></i>

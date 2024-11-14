@@ -160,7 +160,7 @@ const Cart = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="shoping__cart__total">{formatCurrency(parseFloat(item.unit_price) * item.quantity)}đ</td>
+                      <td className="shoping__cart__total">{formatCurrency(parseFloat(item.unit_price) * item.quantity)}</td>
                       <td className="shoping__cart__item__close">
                         <span
                           className="icon_close"

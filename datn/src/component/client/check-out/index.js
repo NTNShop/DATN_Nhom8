@@ -204,14 +204,6 @@ const CheckoutSection = () => {
       </div>
     </div>
     <div className="checkout__form">
-      <h4>Chi tiết thanh toán</h4>
-      <p>
-  Already have an account? - Bạn đã có tài khoản? 
-  <Link to="/login" style={{ marginLeft: '5px', textDecoration: 'none', color: '#007bff' }}>
-    Sign in - Đăng nhập
-  </Link>
-</p>
-
       <form onSubmit={handlePlaceOrder}>
         <div className="row">
           {/* Adjusting both columns to be equally sized */}

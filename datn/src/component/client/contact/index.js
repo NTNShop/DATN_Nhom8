@@ -85,7 +85,7 @@ const Contact = () => {
             setMessageError("Vui lòng nhập lời nhắn.");
             isValid = false;
         } else {
-            setMessageError('');
+setMessageError('');
         }
 
         return isValid;
@@ -163,7 +163,7 @@ const Contact = () => {
         </div>
       </section>
             {/* Breadcrumb Section Begin */}
-            <section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+<section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12 text-center">
@@ -215,9 +215,7 @@ const Contact = () => {
                                 />
                                 {phoneError && <p className="text-danger">{phoneError}</p>}
                             </div>
-
-
-                            <div className="col-lg-6 col-md-6">
+<div className="col-lg-6 col-md-6">
                                 <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                                 {emailError && <p className="text-danger">{emailError}</p>}
                             </div>
@@ -271,7 +269,7 @@ const Contact = () => {
             {/* Map Begin */}
             <div className="map">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.732825072662!2d105.74000587484636!3d10.03889199006856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08866bfd1b2b9%3A0xdf03e748a7072048!2zNTAgxJAuIE5ndXnhu4VuIFbEg24gTGluaCwgTG9uZyBIb8OgLCBOaW5oIEtp4buBdSwgQ-G6p24gVGjGoSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1726290869193!5m2!1svi!2s"
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.732825072662!2d105.74000587484636!3d10.03889199006856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08866bfd1b2b9%3A0xdf03e748a7072048!2zNTAgxJAuIE5ndXnhu4VuIFbEg24gTGluaCwgTG9uZyBIb8OgLCBOaW5oIEtp4buBdSwgQ-G6p24gVGjGoSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1726290869193!5m2!1svi!2s"
                     height="500"
                     style={{ border: 0 }}
                     allowFullScreen=""

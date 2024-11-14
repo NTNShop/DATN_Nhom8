@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import logo from "../../../assets/img/logo.png";
-
+import Header from "../home/header";
 import Footer from '../home/footer';
 import videoBanner from "../../../assets/img/hero/video-header2.mp4";
 import intro1 from "../../../assets/img/hero/img-intro1.jpg"
@@ -15,7 +15,8 @@ const introduce = () => {
 
     return (
         <>
-       <header>
+        <Header />
+       {/* <header>
         <section className="header sticky">
           <div className="khungmenu">
             <Link to="/" className="logo ">BIKESCHOOL</Link>
@@ -67,7 +68,7 @@ const introduce = () => {
             </nav>
           </div>
         </section>
-      </header>
+      </header> */}
         <section className="video">
           <video className="videoheader" src={videoBanner} width="100%" autoPlay muted loop />
           <div className="tieude1">

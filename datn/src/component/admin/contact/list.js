@@ -97,7 +97,7 @@ const Contacts = () => {
     <div>
       <Header />
       <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
-        <div className="page-breadcrumb">
+<div className="page-breadcrumb">
           <div className="row align-items-center">
             <div className="col-md-6 col-8 align-self-center">
               <div className="d-flex align-items-center">
@@ -161,7 +161,7 @@ const Contacts = () => {
                               </td>
                             </tr>
                           ))
-                        ) : (
+) : (
                           <tr>
                             <td colSpan="5">Không có phản hồi nào</td>
                           </tr>

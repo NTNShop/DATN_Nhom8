@@ -97,6 +97,11 @@ const Header = () => {
                 <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
                 <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
                 <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
+                <li>
+                      <a href="/cart">
+                        <i className="fa fa-shopping-cart"></i>
+                      </a>
+                    </li>
                 <ProfileMenu />
               </ul>
             </nav>

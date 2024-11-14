@@ -4,7 +4,6 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 
-
 const AddCategory = () => {
     const [categoryData, setCategoryData] = useState({
         name: "",
@@ -30,6 +29,18 @@ const AddCategory = () => {
         setSuccessMessage("");
         setErrorMessage("");
 
+        // Check if file is selected
+        if (!categoryData.image_url) {
+            setErrorMessage("Vui lòng chọn hình ảnh.");
+            return;
+        }
+
+        // Check if name is empty
+        if (!categoryData.name) {
+            setErrorMessage("Vui lòng nhập tên danh mục.");
+            return;
+        }
+
         const formData = new FormData();
         Object.keys(categoryData).forEach(key => formData.append(key, categoryData[key]));
 
@@ -42,6 +53,7 @@ const AddCategory = () => {
             setShowModal(true);  // Show the success modal
         } catch (error) {
             setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
+            console.error("Error response:", error.response);
             if (error.response) {
                 setErrorMessage("Có lỗi xảy ra: " + error.response.data.message);
             } else {
@@ -53,7 +65,6 @@ const AddCategory = () => {
     const handleCloseModal = () => {
         setShowModal(false);
     };
-    const [selectedColor, setSelectedColor] = useState ("");
 
     return (
         <div>
@@ -66,7 +77,7 @@ const AddCategory = () => {
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
                                         <li className="breadcrumb-item"><a href="#">Danh sách danh mục</a></li>
-                                        <li className="breadcrumb-item active" aria-current="page">Thêm danh mục</li>
+<li className="breadcrumb-item active" aria-current="page">Thêm danh mục</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -84,29 +95,28 @@ const AddCategory = () => {
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Tên danh mục</label>
                                         <div className="col-md-12">
-                                            <input type="text" id="name" value={categoryData.name} placeholder="Nhập tên danh mục" className="form-control-line border-input" onChange={handleChange} required />
+                                            <input type="text" id="name" value={categoryData.name} placeholder="Nhập tên danh mục" className="form-control-line border-input" onChange={handleChange}  />
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Hình ảnh</label>
                                         <div className="col-md-12">
-                                            <input type="file" id="image_url" className="form-control-line border-input" onChange={handleFileChange} />
+                                            <input type="file" id="image_url" className="form-control-line border-input" onChange={handleFileChange}  />
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
                                         <div className="col-md-12">
-                                            <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} required>
+                                            <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} >
                                                 <option value="1">Kích hoạt</option>
                                                 <option value="0">Không kích hoạt</option>
-                                                
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Danh mục cha</label>
                                         <div className="col-md-12">
-                                            <input type="number" id="parent_id" value={categoryData.parent_id} placeholder="Nhập ID danh mục cha (hoặc để trống)" className="form-control-line border-input" onChange={handleChange} />
+<input type="number" id="parent_id" value={categoryData.parent_id} placeholder="Nhập ID danh mục cha (hoặc để trống)" className="form-control-line border-input" onChange={handleChange} />
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -114,50 +124,13 @@ const AddCategory = () => {
                                             <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">Thêm danh mục</button>
                                         </div>
                                     </div>
-                                    <div>
-            <h4>Chọn màu:</h4>
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <input 
-                    type="radio" 
-                    name="color" 
-                    value="black" 
-                    checked={selectedColor === 'black'}
-                    onChange={() => setSelectedColor('black')}
-                    style={{ accentColor: '#000000' }}
-                />
-            </label>
-            
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <input 
-                    type="radio" 
-                    name="color" 
-                    value="red" 
-                    checked={selectedColor === 'red'}
-                    onChange={() => setSelectedColor('red')}
-                    style={{ accentColor: '#FF0000' }}
-                />
-            </label>
-            
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <input 
-                    type="radio" 
-                    name="color" 
-                    value="blue" 
-                    checked={selectedColor === 'blue'}
-                    onChange={() => setSelectedColor('blue')}
-                    style={{ accentColor: '#0000FF' }}
-                />
-            </label>
-        </div>
                                 </form>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
-                
             </div>
-            
+
             {/* Success Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
