@@ -23,7 +23,11 @@ const Register = () => {
       const response = await registerUser(data);
       const successMessage = response.message || "Đăng ký thành công!";
       toast.success(successMessage);
-      navigate("/login");
+  
+      
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       toast.error(error.message || "Đăng ký thất bại");
     }
@@ -63,6 +67,11 @@ const Register = () => {
                           value: 2,
                           message: "Họ và tên phải có ít nhất 2 ký tự",
                         },
+                        pattern: {
+                          value: /^[A-Za-zÀ-ỹ\s]+$/u,
+                          message:
+                            "Họ và tên chỉ được bao gồm chữ cái và không chứa số hoặc ký tự đặc biệt",
+                        },
                       })}
                     />
                     {errors.full_name && (
@@ -100,14 +109,9 @@ const Register = () => {
                       {...register("phone", {
                         required: "Vui lòng nhập số điện thoại",
                         pattern: {
-                          value: /^0[0-9]{9}$/,
+                          value: /^0\d{9,10}$/, // 
                           message:
                             "Số điện thoại phải bắt đầu bằng 0 và chỉ chứa số",
-                        },
-                        validate: {
-                          onlyNumbers: (value) =>
-                            /^[0-9]+$/.test(value) ||
-                            "Số điện thoại chỉ được chứa số",
                         },
                       })}
                     />
@@ -144,7 +148,7 @@ const Register = () => {
                       type="password"
                       className="border-inputs"
                       {...register("confirmPassword", {
-                        required: "Vui lòng nhập lại mật khẩu",
+                        required: "Vui lòng xác nhận lại mật khẩu",
                         validate: (value) =>
                           value === password || "Mật khẩu không khớp",
                       })}
