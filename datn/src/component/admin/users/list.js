@@ -124,7 +124,9 @@ const ListUser = () => {
             <div className="col-sm-10">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title text-primary">Danh sách người dùng</h4>
+                  <h4 className="card-title text-primary">
+                    Danh sách người dùng
+                  </h4>
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <button
                       onClick={handleDownloadExcel}
@@ -208,11 +210,12 @@ const ListUser = () => {
                   {error && <div className="alert alert-danger">{error}</div>}
 
                   <div className="table-responsive">
-                    <table className="table table-striped table-bordered mt-2">
+                    <table className="table table-bordered mt-2">
                       <thead>
                         <tr className="table-light">
                           <th className="border-top-0">ID</th>
                           <th className="border-top-0">Họ và tên</th>
+                          <th className="border-top-0">Avatar</th> 
                           <th className="border-top-0">Email</th>
                           <th className="border-top-0">Số điện thoại</th>
                           <th className="border-top-0">Địa chỉ</th>
@@ -227,19 +230,42 @@ const ListUser = () => {
                             <tr key={index}>
                               <td>{user.id}</td>
                               <td>{user.full_name}</td>
+                              <td>
+                                <img
+                                  src={user.avatar || "default-avatar-url"} 
+                                  alt={user.full_name}
+                                  style={{
+                                    width: "50px",
+                                    height: "50px",
+                                    borderRadius: "50%",
+                                  }}
+                                />
+                              </td>
                               <td>{user.email}</td>
                               <td>{user.phone}</td>
                               <td>{user.address}</td>
                               <td>{user.role}</td>
                               <td
-  className={`text-center ${user.status === 1 ? "text-success" : "text-danger"}`}
->
-  <span
-    className={`status-dot ${user.status === 1 ? "dot-success" : "dot-danger"}`}
-  ></span>
-  {user.status === 1 ? "Hoạt động" : "Không hoạt động"}
-</td>
+                                className={`text-center ${
+                                  user.status === 1 ? "" : ""
+                                }`}
+                              >
+                                <span
+                                  className={`status-dot ${
+                                    user.status === 1
+                                      ? "dot-success"
+                                      : "dot-danger"
+                                  }`}
+                                ></span>
+                                {user.status === 1
+                                  ? "Hoạt động"
+                                  : "Không hoạt động"}
+                              </td>
 
+                              {/* Avatar Image */}
+                             
+
+                              {/* Action Button */}
                               <td>
                                 <button
                                   className="btn btn-danger"
@@ -252,7 +278,7 @@ const ListUser = () => {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="8" className="text-center">
+                            <td colSpan="9" className="text-center">
                               Không có người dùng nào
                             </td>
                           </tr>
@@ -260,22 +286,26 @@ const ListUser = () => {
                       </tbody>
                     </table>
                   </div>
-
                   {/* Pagination */}
-                  <nav>
-                    <ul className="pagination justify-content-center">
+                  <div className="d-flex justify-content-center">
+                    <ul className="pagination">
                       {pageNumbers.map((number) => (
-                        <li key={number} className="page-item">
+                        <li
+                          key={number}
+                          className={`page-item ${
+                            number === currentPage ? "active" : ""
+                          }`}
+                        >
                           <button
-                            className="page-link"
                             onClick={() => paginate(number)}
+                            className="page-link"
                           >
                             {number}
                           </button>
                         </li>
                       ))}
                     </ul>
-                  </nav>
+                  </div>
                 </div>
               </div>
             </div>
