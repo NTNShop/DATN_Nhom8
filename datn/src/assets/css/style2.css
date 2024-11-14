@@ -311,7 +311,6 @@ ul#main-menu>li:hover>.menu-con {
 .menu-con li a {
     display: block;
     text-decoration: none;
-    border-bottom: 1px dotted gainsboro;
 }
 
 .name-menucon {

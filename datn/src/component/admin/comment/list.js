@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
@@ -57,40 +58,51 @@ const Reviews = () => {
     if (!reviewToDelete) return;
     
     try {
-      const response = await axios.delete(
-        `http://127.0.0.1:8000/api/v1/reviews/${reviewToDelete}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Thêm token xác thực nếu cần
-            // 'Authorization': `Bearer ${yourAuthToken}`
-          }
+        // Retrieve the token from cookies (replace 'authToken' with your actual token key)
+        const token = Cookies.get('authToken');
+        
+        if (!token) {
+            setError("Vui lòng đăng nhập để xóa bình luận.");
+            setShowErrorModal(true);
+            return;
         }
-      );
 
-      if (response.status === 200 || response.status === 204) {
-        setReviews(prevReviews => 
-          prevReviews.filter(review => review.id !== reviewToDelete)
+        // Perform the delete request with the token
+        const response = await axios.delete(
+            `http://127.0.0.1:8000/api/v1/reviews/${reviewToDelete}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Add token here
+                }
+            }
         );
-        setReviewToDelete(null);
-        setShowDeleteModal(false);
-        setShowSuccessModal(true);
-      }
+
+        if (response.status === 200 || response.status === 204) {
+            setReviews(prevReviews => 
+                prevReviews.filter(review => review.id !== reviewToDelete)
+            );
+            setReviewToDelete(null);
+            setShowDeleteModal(false);
+            setShowSuccessModal(true);
+        }
     } catch (error) {
-      console.error("Chi tiết lỗi xóa:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message
-      });
-      
-      setError(
-        error.response?.data?.message || 
-        "Không thể xóa bình luận. Vui lòng thử lại sau."
-      );
-      setShowDeleteModal(false);
+        console.error("Chi tiết lỗi xóa:", {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
+
+        setError(
+            error.response?.data?.message || 
+            "Không thể xóa bình luận. Vui lòng thử lại sau."
+        );
+        setShowDeleteModal(false);
+        setShowErrorModal(true);
     }
 };
+
 
 
 
