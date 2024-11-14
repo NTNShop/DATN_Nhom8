@@ -140,6 +140,8 @@ function App() {
       <Route path="/admin/order" element={<ListOrder />} />
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />
+      <Route path="/admin/blog/:id" element={<EditBlog />} />
+
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
       <Route path="/admin/warring" element={<LoginWarning />} />

@@ -17,8 +17,6 @@ const Header = () => {
       const userFullName = Cookies.get("full_name");
       const authToken = Cookies.get("authToken");
 
-      console.log("fullName:", userFullName);  // Debugging
-      console.log("authToken:", authToken);    // Debugging
 
       if (userFullName && authToken) {
         setFullName(userFullName);
