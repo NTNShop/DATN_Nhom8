@@ -311,7 +311,6 @@ ul#main-menu>li:hover>.menu-con {
 .menu-con li a {
     display: block;
     text-decoration: none;
-    border-bottom: 1px dotted gainsboro;
 }
 
 .name-menucon {
@@ -711,10 +710,12 @@ ol {
 	color: #ffffff;
 	text-transform: uppercase;
 	font-weight: 700;
-	background: #ff9911;
+	background: #000000;
 	letter-spacing: 2px;
 }
-
+.primary-btn:hover {
+	color: white;
+}
 .site-btn {
 	font-size: 14px;
 	color: #ffffff;

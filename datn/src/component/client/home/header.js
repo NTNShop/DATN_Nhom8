@@ -88,10 +88,10 @@ const Header = () => {
                 <li>
                   <Link className="ten-menu" to="/product">SẢN PHẨM</Link>
                   <ul className="menu-con">
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ VIỆT</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ THẾ GIỚI</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ CẢM HỨNG</Link></li>
-                    <li><Link className="name-menucon" to="/">SẢN PHẨM KHÁC</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP TRẺ EM</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP THỂ THAO</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP FIXED GEAR</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP ĐỊA HÌNH</Link></li>
                   </ul>
                 </li>
                 <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>

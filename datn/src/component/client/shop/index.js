@@ -117,6 +117,45 @@ const Product = () => {
   return (
     <>
       <Header />
+      <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#">
+                    <input type="text" placeholder="What do you need?" />
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section
         className="breadcrumb-section set-bg"
         style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}

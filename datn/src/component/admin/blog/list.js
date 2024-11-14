@@ -60,6 +60,8 @@ const Blog = () => {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
                     <li className="breadcrumb-item active" aria-current="page">Danh sách bài viết</li>
+                    <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li className="breadcrumb-item active" aria-current="page">Danh sách bài viết</li>
                   </ol>
                 </nav>
               </div>

@@ -4,6 +4,7 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 
+
 const AddCategory = () => {
     const [categoryData, setCategoryData] = useState({
         name: "",
@@ -52,6 +53,7 @@ const AddCategory = () => {
     const handleCloseModal = () => {
         setShowModal(false);
     };
+    const [selectedColor, setSelectedColor] = useState ("");
 
     return (
         <div>
@@ -97,6 +99,7 @@ const AddCategory = () => {
                                             <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} required>
                                                 <option value="1">Kích hoạt</option>
                                                 <option value="0">Không kích hoạt</option>
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -111,13 +114,50 @@ const AddCategory = () => {
                                             <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">Thêm danh mục</button>
                                         </div>
                                     </div>
+                                    <div>
+            <h4>Chọn màu:</h4>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+                <input 
+                    type="radio" 
+                    name="color" 
+                    value="black" 
+                    checked={selectedColor === 'black'}
+                    onChange={() => setSelectedColor('black')}
+                    style={{ accentColor: '#000000' }}
+                />
+            </label>
+            
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+                <input 
+                    type="radio" 
+                    name="color" 
+                    value="red" 
+                    checked={selectedColor === 'red'}
+                    onChange={() => setSelectedColor('red')}
+                    style={{ accentColor: '#FF0000' }}
+                />
+            </label>
+            
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+                <input 
+                    type="radio" 
+                    name="color" 
+                    value="blue" 
+                    checked={selectedColor === 'blue'}
+                    onChange={() => setSelectedColor('blue')}
+                    style={{ accentColor: '#0000FF' }}
+                />
+            </label>
+        </div>
                                 </form>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
+                
             </div>
-
+            
             {/* Success Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>

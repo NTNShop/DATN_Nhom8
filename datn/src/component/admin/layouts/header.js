@@ -222,6 +222,26 @@ const Header = () => {
                     <span className="hide-menu">Bài viết</span>
                   </a>
                 </li>
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/contact"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi me-2 mdi-comment"></i>
+                    <span className="hide-menu">Phản hồi</span>
+                  </a>
+                </li>
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/contact"
+                    aria-expanded="false"
+                  >
+                    
+                  </a>
+                </li>
+
               </ul>
             </nav>
           </div>
