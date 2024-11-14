@@ -8,12 +8,9 @@ const AddBlog = () => {
   const initialFormData = {
     user_id: 2,
     title: "",
-    slug: "",
     content: "",
     featured_image: "",
     status: "",
-    created_at: "",
-    updated_at: ""
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -46,7 +43,7 @@ const AddBlog = () => {
     e.preventDefault();
 
     // Validate required fields
-    if (!formData.title || !formData.slug || !formData.content || !formData.status) {
+    if (!formData.title ||  !formData.content || !formData.status) {
       setError("Vui lòng điền đầy đủ thông tin bắt buộc");
       return;
     }
@@ -55,11 +52,8 @@ const AddBlog = () => {
     const submitData = new FormData();
     submitData.append('user_id', formData.user_id);
     submitData.append('title', formData.title.trim());
-    submitData.append('slug', formData.slug.trim());
     submitData.append('content', formData.content.trim());
     submitData.append('status', formData.status);
-    submitData.append('created_at', formData.created_at || new Date().toISOString().slice(0, 19).replace('T', ' '));
-    submitData.append('updated_at', formData.updated_at || new Date().toISOString().slice(0, 19).replace('T', ' '));
     
     if (formData.featured_image) {
       submitData.append('featured_image', formData.featured_image);
@@ -97,7 +91,7 @@ const AddBlog = () => {
             <div className="col-md-6 col-8 align-self-center">
               <div className="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                    <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a href="#">Danh sách bài viết</a></li>
                     <li className="breadcrumb-item active" aria-current="page">Thêm bài viết</li>
                   </ol>
@@ -131,20 +125,6 @@ const AddBlog = () => {
                     </div>
 
                     <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Slug</label>
-                      <div className="col-md-12">
-                        <input
-                          type="text"
-                          name="slug"
-                          className="form-control-line border-input"
-                          placeholder="Nhập slug"
-                          value={formData.slug}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mb-3">
                       <label className="col-md-12 font-weight-bold">Hình ảnh</label>
                       <div className="col-md-12">
                         <input
@@ -164,33 +144,7 @@ const AddBlog = () => {
                           rows="3"
                           placeholder="Nhập nội dung"
                           className="border-input2 form-control-line"
-                          value={formData.content}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Ngày tạo</label>
-                      <div className="col-md-12">
-                        <input
-                          type="datetime-local"
-                          name="created_at"
-                          className="form-control-line border-input"
-                          value={formData.created_at}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Ngày cập nhật</label>
-                      <div className="col-md-12">
-                        <input
-                          type="datetime-local"
-                          name="updated_at"
-                          className="form-control-line border-input"
-                          value={formData.updated_at}
+value={formData.content}
                           onChange={handleInputChange}
                         />
                       </div>

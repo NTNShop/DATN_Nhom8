@@ -51,10 +51,7 @@ const Blog = () => {
     <div>
       <Header />
 
-      <div
-        className="page-wrapper"
-        style={{ position: "relative", left: "241px" }}
-      >
+      <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
         <div className="page-breadcrumb">
           <div className="row align-items-center">
             <div className="col-md-6 col-8 align-self-center">
@@ -79,9 +76,7 @@ const Blog = () => {
                     <a href="/admin/addBlog" className="btn btn-primary mb-3">
                       Thêm bài viết
                     </a>
-                  </span>
-
-                  <div className="table-responsive">
+                  </span> <div className="table-responsive">
                     {loading ? (
                       <p>Đang tải...</p>
                     ) : error ? (
@@ -133,8 +128,7 @@ const Blog = () => {
                                       onClick={() => handleDelete(post.id)}
                                       disabled={deleting}
                                     >
-                                      {deleting ? "Đang xóa..." : "Xóa"}
-                                    </button>
+                                      {deleting ? "Đang xóa..." : "Xóa"} </button>
                                   </div>
                                 </td>
                               </tr>

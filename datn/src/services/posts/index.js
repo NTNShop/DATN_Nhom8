@@ -82,7 +82,7 @@ export const deletePost = async (postId) => {
             headers: {
                 Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
             },
-        });
+});
 
         // Kiểm tra dữ liệu trả về từ API
         if (response.data && response.data.message) {
@@ -148,7 +148,7 @@ export const updatePost = async (postId, postData) => {
         // Gửi yêu cầu PUT để cập nhật bài viết
         const response = await axios.put(`http://127.0.0.1:8000/api/v1/posts/${postId}`, postData, {
             headers: {
-                Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
+Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
             },
         });
 

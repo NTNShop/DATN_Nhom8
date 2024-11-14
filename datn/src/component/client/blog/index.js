@@ -65,8 +65,7 @@ const Blog = () => {
               </div>
             </div>
             <div className="col-lg-8 col-md-7">
-              <div className="row">
-                {/* Hiển thị các bài viết */}
+              <div className="row">{/* Hiển thị các bài viết */}
                 {loading ? (
                   <p>Đang tải bài viết...</p>
                 ) : (
