@@ -8,16 +8,13 @@ const AddBlog = () => {
   const initialFormData = {
     user_id: 2,
     title: "",
-    slug: "",
     content: "",
-    featured_image: "",
+    featured_image: null,
     status: "",
-    created_at: "",
-    updated_at: ""
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -29,38 +26,52 @@ const AddBlog = () => {
       ...prev,
       [name]: value
     }));
+    setError(prev => ({
+      ...prev,
+      [name]: "" // Clear any previous error for this field
+    }));
   };
 
   // Handle file upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       setFormData(prev => ({
         ...prev,
         featured_image: file
       }));
+      setError(prev => ({
+        ...prev,
+        featured_image: "" // Clear any previous error for this field
+      }));
+    } else {
+      setError(prev => ({
+        ...prev,
+        featured_image: "Vui lòng tải lên một tệp hình ảnh hợp lệ."
+      }));
     }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.title) newErrors.title = "Tên bài viết là bắt buộc.";
+    if (!formData.content) newErrors.content = "Nội dung là bắt buộc.";
+    if (!formData.status) newErrors.status = "Trạng thái là bắt buộc.";
+  
+    setError(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
-    // Validate required fields
-    if (!formData.title || !formData.slug || !formData.content || !formData.status) {
-      setError("Vui lòng điền đầy đủ thông tin bắt buộc");
-      return;
-    }
-
-    // Create FormData object for API submission
+    // Chuẩn bị dữ liệu dưới dạng FormData để gửi lên API
     const submitData = new FormData();
     submitData.append('user_id', formData.user_id);
     submitData.append('title', formData.title.trim());
-    submitData.append('slug', formData.slug.trim());
     submitData.append('content', formData.content.trim());
     submitData.append('status', formData.status);
-    submitData.append('created_at', formData.created_at || new Date().toISOString().slice(0, 19).replace('T', ' '));
-    submitData.append('updated_at', formData.updated_at || new Date().toISOString().slice(0, 19).replace('T', ' '));
-    
     if (formData.featured_image) {
       submitData.append('featured_image', formData.featured_image);
     }
@@ -71,18 +82,14 @@ const AddBlog = () => {
 
       if (response) {
         setSuccess("Bài viết đã được thêm thành công!");
-        setError("");
-        // Reset form
+        setError({});
         setFormData(initialFormData);
-        // Redirect after 2 seconds
-        setTimeout(() => {
-          navigate("/admin/blog");
-        }, 2000);
+        setTimeout(() => navigate("/admin/blog"), 2000);
       } else {
-        setError("Có lỗi xảy ra khi tạo bài viết");
+        setError({ general: "Có lỗi xảy ra khi tạo bài viết." });
       }
     } catch (err) {
-      setError("Có lỗi xảy ra khi gọi API");
+      setError({ general: "Có lỗi xảy ra khi gọi API." });
     } finally {
       setLoading(false);
     }
@@ -95,14 +102,12 @@ const AddBlog = () => {
         <div className="page-breadcrumb">
           <div className="row align-items-center">
             <div className="col-md-6 col-8 align-self-center">
-              <div className="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="#">Danh sách bài viết</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Thêm bài viết</li>
-                  </ol>
-                </nav>
-              </div>
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item"><a href="#">Danh sách bài viết</a></li>
+                  <li className="breadcrumb-item active" aria-current="page">Thêm bài viết</li>
+                </ol>
+              </nav>
             </div>
           </div>
         </div>
@@ -112,7 +117,7 @@ const AddBlog = () => {
               <div className="card">
                 <div className="card-body">
                   <h4 className="card-title">Thêm bài viết</h4>
-                  {error && <div className="alert alert-danger">{error}</div>}
+                  {error.general && <div className="alert alert-danger">{error.general}</div>}
                   {success && <div className="alert alert-success">{success}</div>}
 
                   <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
@@ -127,20 +132,7 @@ const AddBlog = () => {
                           value={formData.title}
                           onChange={handleInputChange}
                         />
-                      </div>
-                    </div>
-
-                    <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Slug</label>
-                      <div className="col-md-12">
-                        <input
-                          type="text"
-                          name="slug"
-                          className="form-control-line border-input"
-                          placeholder="Nhập slug"
-                          value={formData.slug}
-                          onChange={handleInputChange}
-                        />
+                        {error.title && <div className="text-danger">{error.title}</div>}
                       </div>
                     </div>
 
@@ -149,10 +141,12 @@ const AddBlog = () => {
                       <div className="col-md-12">
                         <input
                           type="file"
+                          name="featured_image"
                           className="form-control-line border-input"
                           onChange={handleImageChange}
                           accept="image/*"
                         />
+                        {error.featured_image && <div className="text-danger">{error.featured_image}</div>}
                       </div>
                     </div>
 
@@ -167,32 +161,7 @@ const AddBlog = () => {
                           value={formData.content}
                           onChange={handleInputChange}
                         />
-                      </div>
-                    </div>
-
-                    <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Ngày tạo</label>
-                      <div className="col-md-12">
-                        <input
-                          type="datetime-local"
-                          name="created_at"
-                          className="form-control-line border-input"
-                          value={formData.created_at}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mb-3">
-                      <label className="col-md-12 mb-0">Ngày cập nhật</label>
-                      <div className="col-md-12">
-                        <input
-                          type="datetime-local"
-                          name="updated_at"
-                          className="form-control-line border-input"
-                          value={formData.updated_at}
-                          onChange={handleInputChange}
-                        />
+                        {error.content && <div className="text-danger">{error.content}</div>}
                       </div>
                     </div>
 
@@ -209,6 +178,7 @@ const AddBlog = () => {
                           <option value="1">Active</option>
                           <option value="0">Inactive</option>
                         </select>
+                        {error.status && <div className="text-danger">{error.status}</div>}
                       </div>
                     </div>
 

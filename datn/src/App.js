@@ -143,6 +143,8 @@ function App() {
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/blog/:id" element={<EditBlog />} />
+      <Route path="/blogdetail/:id" element={<BlogDetails />} />
+
 
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
