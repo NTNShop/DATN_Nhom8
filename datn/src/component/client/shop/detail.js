@@ -4,6 +4,9 @@ import axios from "axios";
 import Header from "../home/header";
 import Footer from "../home/footer";
 import { FaStar } from 'react-icons/fa';
+import { toast } from 'react-toastify'; // Thêm thư viện này để hiển thị thông báo
+import { CartService } from "../../../services/client/Cart";
+import Cookies from "js-cookie";
 
 const Detail = () => {
     const [mainImage, setMainImage] = useState(null);
@@ -14,6 +17,7 @@ const Detail = () => {
     const [hover, setHover] = useState(null);
     const [comment, setComment] = useState('');
     const { id } = useParams();
+    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         const fetchProductDetail = async () => {
@@ -45,6 +49,45 @@ const Detail = () => {
     const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
     const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
 
+    // xử lý cart
+    const handleAddToCart = async () => {
+        try {
+          const token = Cookies.get('authToken');
+          if (!token) {
+            // Nếu không có token, nghĩa là người dùng chưa đăng nhập
+            toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
+            window.location.href = '/login'; // Chuyển hướng đến trang đăng nhập
+            return;
+          }
+      
+          // Lấy thông tin người dùng từ Cookies
+          const userInfo = JSON.parse(Cookies.get('userInfo'));
+      
+          // Gọi hàm addToCart của CartService
+          const result = await CartService.addToCart(id, quantity, userInfo);
+          toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+      
+          // Cập nhật lại giỏ hàng
+          await updateCartItems();
+        } catch (error) {
+          toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+        }
+      };
+      const updateCartItems = async () => {
+        try {
+          const token = Cookies.get('authToken');
+          if (!token) {
+            // Nếu không có token, nghĩa là người dùng chưa đăng nhập
+            return;
+          }
+      
+          const response = await CartService.getCartItems();
+          setCartItems(response.data);
+        } catch (error) {
+          console.error('Error fetching cart items:', error);
+          toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
+        }
+      };
     return (
         <>
             <Header />
@@ -106,7 +149,12 @@ const Detail = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <a href="#" className="primary-btn">ADD TO CART</a>
+                                {/* cart api */}
+                                <a href="" className="primary-btn" onClick={handleAddToCart}>ADD TO CART</a>
+                                <button 
+                className="primary-btn"
+                onClick={handleAddToCart} > ADD TO CART
+            </button>
                                 <a href="#" className="heart-icon">
                                     <span className="icon_heart_alt"></span>
                                 </a>

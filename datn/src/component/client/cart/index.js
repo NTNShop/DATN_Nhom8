@@ -1,79 +1,96 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Header from '../home/header';
 import Footer from '../home/footer';
 import sp from "../../../assets/img/cart/sp1.png";
 import banner from "../../../assets/img/hero/banner2.jpg";
-
+import { toast } from 'react-toastify';
+import { CartService } from '../../../services/client/Cart';
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Tính tổng giá trị đơn hàng
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  // Cập nhật số lượng sản phẩm
-  const updateQuantity = async (productId, newQuantity) => {
-    try {
-      if (newQuantity < 1) return;
-      
-      await axios.post('http://127.0.0.1:8000/api/v1/cart/add', {
-        product_id: productId,
-        quantity: newQuantity
-      });
-      
-      // Cập nhật state local
-      setCartItems(cartItems.map(item => 
-        item.id === productId ? {...item, quantity: newQuantity} : item
-      ));
-    } catch (error) {
-      console.error('Error updating quantity:', error);
-    }
-  };
-
-  // Xóa sản phẩm khỏi giỏ hàng
-  const removeItem = async (productId) => {
-    try {
-      await axios.post('http://127.0.0.1:8000/api/v1/cart/remove', {
-        product_id: productId
-      });
-      
-      // Cập nhật state local
-      setCartItems(cartItems.filter(item => item.id !== productId));
-    } catch (error) {
-      console.error('Error removing item:', error);
-    }
-  };
-
-  // Fetch giỏ hàng khi component mount
+  const [totalAmount, setTotalAmount] = useState(0);
   useEffect(() => {
-    const fetchCart = async () => {
+    const fetchCartItems = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://127.0.0.1:8000/api/v1/cart', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setCartItems(response.data.data);
-        setLoading(false);
+        const response = await CartService.getCartItems();
+        console.log('Cart items:', response.data);
+        setCartItems(response.data);
       } catch (error) {
-        console.error('Error details:', error.response?.data || error.message);
-        setLoading(false);
-        if (error.response?.status === 401) {
-          // Xử lý khi chưa đăng nhập
-          alert('Vui lòng đăng nhập để xem giỏ hàng!');
-          // window.location.href = '/login';
-        }
+        console.error('Error fetching cart items:', error);
+        toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
       }
     };
 
-    fetchCart();
+    fetchCartItems();
   }, []);
-
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    calculateTotal();
+  }, [cartItems]);
+  const calculateTotal = () => {
+    const total = cartItems.reduce((sum, item) => {
+      return sum + (parseFloat(item.unit_price) * item.quantity);
+    }, 0);
+    setTotalAmount(total);
+  };
+  // Xử lý cập nhật số lượng
+  const handleUpdateQuantity = async (cartItemId, newQuantity) => {
+    try {
+      if (newQuantity < 1) {
+        toast.error('Số lượng không thể nhỏ hơn 1');
+        return;
+      }
+  
+      // Gọi API cập nhật trước
+      await CartService.updateCartItem(cartItemId, newQuantity);
+      
+      // Sau khi API thành công, cập nhật UI
+      const updatedItems = cartItems.map(item => {
+        if (item.id === cartItemId) {
+          const newTotalPrice = parseFloat(item.unit_price) * newQuantity;
+          return {
+            ...item,
+            quantity: newQuantity,
+            total_price: newTotalPrice
+          };
+        }
+        return item;
+      });
+      
+      setCartItems(updatedItems);
+      toast.success('Cập nhật số lượng thành công');
+      
+    } catch (error) {
+      console.error('Error updating cart item quantity:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật số lượng');
+      
+      // Nếu có lỗi, fetch lại data từ server
+      try {
+        const response = await CartService.getCartItems();
+        setCartItems(response.data);
+      } catch (fetchError) {
+        console.error('Error fetching updated cart items:', fetchError);
+        toast.error('Không thể đồng bộ dữ liệu với server');
+      }
+    }
+  };
+  // Hàm xử lý xóa sản phẩm khỏi giỏ hàng
+  const handleRemoveItem = async (cartItemId) => {
+    try {
+      await CartService.removeFromCart(cartItemId);
+      setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
+      toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
+    } catch (error) {
+      toast.error('Có lỗi xảy ra khi xóa sản phẩm');
+    }
+  };
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
   return(
     <>
     <Header/>
@@ -112,52 +129,50 @@ const Cart = () => {
                   </tr>
                 </thead>
                 <tbody>
-                    {cartItems.map((item) => (
-                      <tr key={item.id}>
-                        <td className="shoping__cart__item">
-                          <img 
-                            src={`http://127.0.0.1:8000${item.images[0]?.image_url}`} 
-                            alt={item.name} 
-                            style={{ width: '150px' }} 
-                          />
-                          <h5>{item.name}</h5>
-                        </td>
-                        <td className="shoping__cart__price">
-                          {item.price.toLocaleString()}đ
-                        </td>
-                        <td className="shoping__cart__quantity">
-                          <div className="quantity">
-                            <div className="pro-qty">
-                              <button 
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                className="btn btn-sm btn-outline-secondary"
-                              >-</button>
-                              <input 
-                                type="text" 
-                                value={item.quantity} 
-                                readOnly 
-                                className="mx-2"
-                              />
-                              <button 
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="btn btn-sm btn-outline-secondary"
-                              >+</button>
-                            </div>
+                  {cartItems.map(item => (
+                    <tr key={item.id}>
+                      <td className="shoping__cart__item"> 
+                        <img src={`http://127.0.0.1:8000${item.product.image.url}`}   alt={item.product.name} style={{ width: '150px' }} />
+                        <h5>{item.product.name}</h5>
+                      </td>
+                      <td className="shoping__cart__price">{item.unit_price}đ</td>
+                      <td className="shoping__cart__quantity">
+                        <div className="quantity">
+                          <div className="pro-qty">
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                            >
+                              -
+                            </button>
+                            <input
+                              type="text"
+                              value={item.quantity}
+                              readOnly
+                              className="mx-2"
+                            />
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                            >
+                              +
+                            </button>
                           </div>
-                        </td>
-                        <td className="shoping__cart__total">
-                          {(item.price * item.quantity).toLocaleString()}đ
-                        </td>
-                        <td className="shoping__cart__item__close">
-                          <span 
-                            className="icon_close" 
-                            onClick={() => removeItem(item.id)}
-                            style={{ cursor: 'pointer' }}
-                          ></span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+                        </div>
+                      </td>
+                      <td className="shoping__cart__total">{formatCurrency(parseFloat(item.unit_price) * item.quantity)}đ</td>
+                      <td className="shoping__cart__item__close">
+                        <span
+                          className="icon_close"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleRemoveItem(item.id)}
+                        ></span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+
+
               </table>
             </div>
           </div>
@@ -165,7 +180,7 @@ const Cart = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="shoping__cart__btns">
-              <a href="#" className="primary-btn cart-btn">TIẾP TỤC MUA SẮM </a>
+              <a href="/product" className="primary-btn cart-btn">TIẾP TỤC MUA SẮM </a>
               <a href="#" className="primary-btn cart-btn cart-btn-right"><span className="icon_loading"></span> Update Cart</a>
             </div>
           </div>
@@ -181,14 +196,18 @@ const Cart = () => {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="shoping__checkout">
-              <h5>TỔNG ĐƠN</h5>
-              <ul>
-              <li>TỔNG CỘNG <span>{calculateTotal().toLocaleString()}đ</span></li>
-              <li>TỔNG <span>{calculateTotal().toLocaleString()}đ</span></li>
-              </ul>
-              <a href="/checkout" className="primary-btn">THANH TOÁN</a>
-            </div>
+          <div className="shoping__checkout">
+  <h5>TỔNG ĐƠN</h5>
+  <ul>
+    <li>
+      Tổng cộng{" "}
+      <span>
+      {formatCurrency(totalAmount)}
+      </span>
+    </li>
+  </ul>
+  <a href="/checkout" className="primary-btn">THANH TOÁN</a>
+</div>
           </div>
         </div>
       </div>

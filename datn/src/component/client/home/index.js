@@ -29,9 +29,10 @@ import banner4 from "../../../assets/img/hero/banner-4.jpg";
 import imgCategory from "../../../assets/img/hero/cateimg1.jpg";
 import logo from "../../../assets/img/logo.png";
 import videoBanner from "../../../assets/img/hero/video-header.mp4";
-import blog1 from "../../../assets/img/hero/blog1.jpg";
+import blog1 from "../../../assets/img/hero/blog1.jpg"
 
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 const Home = () => {
   const [products, setProducts] = useState([]); // State to store fetched products
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
@@ -78,7 +79,7 @@ const Home = () => {
 
   return (
     <div>
-
+      
       <header>
         <section className="header sticky">
           <div className="khungmenu">
@@ -130,7 +131,7 @@ const Home = () => {
               </ul>
             </nav>
           </div>
-        </section>
+        </section> */}
 
         <section className="video">
           <video className="videoheader" src={videoBanner} width="100%" autoPlay muted loop />
@@ -142,7 +143,7 @@ const Home = () => {
             Là những người đam mê đạp xe, chúng tôi hiểu được niềm vui và sự tự do khi đạp xe trên hai bánh xe
           </div>
         </section>
-      </header>
+      
       <section className="hero hero-normal">
         <div className="container">
           <div className="row">

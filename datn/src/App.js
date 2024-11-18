@@ -15,7 +15,7 @@ import Contact from "./component/client/contact";
 import BlogDetails from "./component/client/blog/detail";
 import Favourites from "./component/client/favourites";
 import Introduce from "./component/client/introduce";
-
+import LoginWarning from "./component/admin/layouts/error";
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
 import './assets/css/font-awesome.min.css'
@@ -44,7 +44,6 @@ import EditProduct from "./component/admin/products/edit";
 import AddProduct from "./component/admin/products/add";
 import User from "./component/admin/users/list";
 import EditUser from "./component/admin/users/edit";
-import AddUser from "./component/admin/users/add";
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import ListOrder from "./component/admin/order/list";
@@ -122,7 +121,6 @@ function App() {
         <Route path="/atm" element={<Atm/>}/>
         <Route path="/qratm" element={<Qratm/>}/>
         <Route path="/qrmomo" element={<Qrmomo/>}/>
-
       {/* Các route admin */}
       <Route path="/admin" element={<Layout />} />
       <Route path="/admin/dashboard" element={<Dashboard />} />
@@ -138,13 +136,15 @@ function App() {
       <Route path="/admin/product/edit/:id" element={<EditProduct />} />
       <Route path="/admin/user" element={<User />} />
       <Route path="/admin/login" element={<Authentication />} />
-      <Route path="/admin/addUser" element={<AddUser />} />
-      <Route path="/admin/editUser" element={<EditUser />} />
+      <Route path="/admin/editUser/:id" element={<EditUser />} />
       <Route path="/admin/order" element={<ListOrder />} />
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />
+      <Route path="/admin/blog/:id" element={<EditBlog />} />
+
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
+      <Route path="/admin/warring" element={<LoginWarning />} />
 
     
         
