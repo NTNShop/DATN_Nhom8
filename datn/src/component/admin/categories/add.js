@@ -29,6 +29,18 @@ const AddCategory = () => {
         setSuccessMessage("");
         setErrorMessage("");
 
+        // Check if file is selected
+        if (!categoryData.image_url) {
+            setErrorMessage("Vui lòng chọn hình ảnh.");
+            return;
+        }
+
+        // Check if name is empty
+        if (!categoryData.name) {
+            setErrorMessage("Vui lòng nhập tên danh mục.");
+            return;
+        }
+
         const formData = new FormData();
         Object.keys(categoryData).forEach(key => formData.append(key, categoryData[key]));
 
@@ -41,6 +53,7 @@ const AddCategory = () => {
             setShowModal(true);  // Show the success modal
         } catch (error) {
             setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
+            console.error("Error response:", error.response);
             if (error.response) {
                 setErrorMessage("Có lỗi xảy ra: " + error.response.data.message);
             } else {
@@ -82,19 +95,19 @@ const AddCategory = () => {
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Tên danh mục</label>
                                         <div className="col-md-12">
-                                            <input type="text" id="name" value={categoryData.name} placeholder="Nhập tên danh mục" className="form-control-line border-input" onChange={handleChange} required />
+                                            <input type="text" id="name" value={categoryData.name} placeholder="Nhập tên danh mục" className="form-control-line border-input" onChange={handleChange}  />
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Hình ảnh</label>
                                         <div className="col-md-12">
-                                            <input type="file" id="image_url" className="form-control-line border-input" onChange={handleFileChange} />
+                                            <input type="file" id="image_url" className="form-control-line border-input" onChange={handleFileChange}  />
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
                                         <div className="col-md-12">
-                                            <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} required>
+                                            <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} >
                                                 <option value="1">Kích hoạt</option>
                                                 <option value="0">Không kích hoạt</option>
                                             </select>

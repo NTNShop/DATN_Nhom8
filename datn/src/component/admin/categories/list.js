@@ -89,7 +89,7 @@ const ListCategory = () => {
                                         <table className="table user-table mt-2">
                                             <thead>
                                                 <tr className='table-light'>
-                                                    <th className="border-top-0">ID</th>
+                                                    <th className="border-top-0">STT</th>
                                                     <th className="border-top-0">Tên danh mục</th>
                                                     <th className="border-top-0">Slug</th>
                                                     <th className="border-top-0">Hình ảnh</th>
@@ -107,9 +107,9 @@ const ListCategory = () => {
                                                         <td colSpan="6">{error}</td>
                                                     </tr>
                                                 ) : categories.length > 0 ? (
-                                                    categories.map((category) => (
+                                                    categories.map((category,index) => (
                                                         <tr key={category.id}>
-                                                            <td>{category.id}</td>
+                                                            <td>{index + 1}</td> 
                                                             <td>{category.name}</td>
                                                             <td>{category.slug}</td>
                                                             <td>
