@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import logo from "../../../assets/img/logo.png";
-
+import Header from '../home/header';
 import Footer from '../home/footer';
 import videoBanner from "../../../assets/img/hero/video-header2.mp4";
 import intro1 from "../../../assets/img/hero/img-intro1.jpg"
@@ -15,59 +15,7 @@ const introduce = () => {
 
     return (
         <>
-       <header>
-        <section className="header sticky">
-          <div className="khungmenu">
-            <Link to="/" className="logo ">BIKESCHOOL</Link>
-            <nav className="dmcc">
-              <ul id="main-menu">
-                <li><Link className="ten-menu" to="/">TRANG CHỦ</Link></li>
-                <li>
-                  <Link className="ten-menu" to="/product">SẢN PHẨM</Link>
-                  <ul className="menu-con">
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ VIỆT</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ THẾ GIỚI</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ CẢM HỨNG</Link></li>
-                    <li><Link className="name-menucon" to="/">SẢN PHẨM KHÁC</Link></li>
-                  </ul>
-                </li>
-                <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
-                <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
-                <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
-                <li>
-                  <Link className="main-dangnhap ten-menu" to="/profile">
-                    <i className="bi bi-person-fill"></i>
-                  </Link>
-                </li>
-                <div className="nav">
-                  <label htmlFor="nav_pc_input" className="btn-bar">
-                    <i className="bx bxs-search-alt-2" style={{ color: 'black', fontSize: '30px', textShadow: '0px 0px 3px rgb(255, 255, 255)' }}></i>
-                  </label>
-                  <li>
-                      <a href="/cart">
-                        <i className="fa fa-shopping-cart"></i> <span>3</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="pl-1">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                  <input hidden type="checkbox" className="nav_input" name="nav_pc_input" id="nav_pc_input" />
-                  <label htmlFor="nav_pc_input" className="nav_overplay"></label>
-                  <div className="nav_pc">
-                    <div className="logointk">
-                      <img src={logo} width="120px" alt="Logo" />
-                    </div>
-                    <div className="nd-timkiem">Tìm kiếm</div>
-                    <input className="timkiem-main" type="text" placeholder="Tìm kiếm ..." />
-                  </div>
-                </div>
-              </ul>
-            </nav>
-          </div>
-        </section>
-      </header>
+    <Header />
         <section className="video">
           <video className="videoheader" src={videoBanner} width="100%" autoPlay muted loop />
           <div className="tieude1">
@@ -113,7 +61,7 @@ const introduce = () => {
                     </div>
                     <div className='col-6'>
                         <div className='title-intro text-dark'>
-                            <span className='text-dark'>|</span>  BIKESCHOOL
+                            <span style={{ color: "rgb(13, 144, 200)"}}>|</span>  BIKESCHOOL
                         </div>
                         <div className='content-intro2 pt-4'>
                         Xe đạp nói riêng và các hoạt động thể chất ngoài trời nói chung là vô cùng cần thiết cho sự phát triển toàn diện của các bạn nhỏ cũng như người trưởng thành. Vận động không chỉ giúp nâng cao sức khỏe chống lại bệnh tật, mà còn giúp chúng ta có tinh thần hăng hái, học tập và làm việc hiệu quả hơn. <br/>
@@ -149,7 +97,7 @@ const introduce = () => {
                     <div className='col-12 row'>
                         <div className='col-6'>
                             <div className='title-intro'>
-                                <span className='text-danger'>|</span>  Mục tiêu của BIKESCHOOL
+                            <span style={{ color: "rgb(13, 144, 200)"}}>|</span>  Mục tiêu của BIKESCHOOL
                             </div>
                             <div className='content-intro2 pt-4'>
                             BikeSchool mong muốn mang lại cho tất cả mọi người, đặc biệt bạn nhỏ, các bạn học sinh, thế hệ trẻ những chiếc xe đạp chất lượng và an toàn. Với đội ngũ kỹ thuật viên chuyên nghiệp, tận tình, tất cả xe đạp của tại BikeSchool khi đến tay khách hàng đều được đảm bảo chất lượng, Khách hàng hoàn toàn yên tâm khi sử dụng. <br/>
@@ -201,7 +149,7 @@ const introduce = () => {
                     </div>
                     <div className='col-6'>
                         <div className='title-intro'>
-                            <span className='text-danger'>|</span>  BikeSchool mang đến điều gì cho khách hàng
+                        <span style={{ color: "rgb(13, 144, 200)"}}>|</span>  BikeSchool mang đến điều gì cho khách hàng
                         </div>
                         <div className='content-intro2 pt-4'>
                         BikeSchool mong muốn mang lại cho tất cả mọi người, và đặc biệt bạn nhỏ, các bạn học sinh và thế hệ trẻ những chiếc xe đạp chất lượng và an toàn.
@@ -239,7 +187,7 @@ const introduce = () => {
                     <div className='col-12 row'>
                         <div className='col-6'>
                             <div className='title-intro'>
-                                <span className='text-danger'>|</span>  Bảo vệ môi trường 
+                            <span style={{ color: "rgb(13, 144, 200)"}}>|</span>  Bảo vệ môi trường 
                             </div>
                             <div className='content-intro2 pt-4'>
                             & Nhận thức rõ bảo vệ môi trường là trách nhiệm lâu dài và cấp bách đối với xã hội, bên cạnh nỗ lực giảm thiểu tác động

@@ -59,19 +59,19 @@ const Header = () => {
         {fullName ? (
           <p>Xin chào, {fullName}</p>
         ) : (
-          <p>hiii</p>  // Show homepage link if not logged in
+          <p><i class="bi bi-person-fill text-dark"></i></p>  // Show homepage link if not logged in
         )}
       </Link>
-      <ul className="menu-con">
+      <ul className="menu-con ">
         {!isAuthenticated ? (
           <>
-            <li><Link className="name-menucon" to="/login">ĐĂNG NHẬP</Link></li>
-            <li><Link className="name-menucon" to="/register">ĐĂNG KÝ</Link></li>
+            <li><Link className="name-menucon pl-0" to="/login">ĐĂNG NHẬP</Link></li>
+            <li><Link className="name-menucon pl-0" to="/register">ĐĂNG KÝ</Link></li>
           </>
         ) : (
           <>
-            <li><Link className="name-menucon" to="/profile">THÔNG TIN CÁ NHÂN</Link></li>
-            <li><button className="name-menucon" onClick={handleLogout}>ĐĂNG XUẤT</button></li>
+            <li><Link className="name-menucon pl-0" to="/profile">THÔNG TIN CÁ NHÂN</Link></li>
+            <li><button className="name-menucon pl-0" onClick={handleLogout}>ĐĂNG XUẤT</button></li>
           </>
         )}
       </ul>
@@ -99,7 +99,12 @@ const Header = () => {
                 <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
                 <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
                 <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
-                <ProfileMenu />
+                <li>
+                  <a href="/cart">
+                    <i className="fa fa-shopping-cart"></i> <span>0</span>
+                  </a>
+                </li>
+                <li><ProfileMenu /></li>
               </ul>
             </nav>
           </div>
