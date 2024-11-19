@@ -33,16 +33,16 @@ export const getPostById = async (id) => {
 
 
 // Lấy danh sách bài viết
-export const getPosts = async () => {
+export const getPosts = async (page = 1) => {
     try {
         const token = Cookies.get("authToken");
 
-        // Kiểm tra xem token có tồn tại trong cookie không
+        // Kiểm tra xem token có tồn tại không
         if (!token) {
             throw new Error("Token không tồn tại. Bạn cần đăng nhập lại.");
         }
 
-        const response = await axios.get("http://127.0.0.1:8000/api/v1/posts", {
+        const response = await axios.get(`http://127.0.0.1:8000/api/v1/posts?page=${page}`, {
             headers: {
                 Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
             },
@@ -53,18 +53,20 @@ export const getPosts = async () => {
         // Kiểm tra dữ liệu trả về từ API
         if (data && data.data) {
             return {
-                posts: data.data, // Danh sách bài viết
-                pagination: data.pagination, // Dữ liệu phân trang (nếu có)
+                data: {
+                    posts: data.data, // Danh sách bài viết
+                    pagination: data.pagination, // Dữ liệu phân trang
+                },
+                error: null,
             };
         } else {
-            // Nếu không có bài viết hoặc có lỗi từ API
             console.error("Lỗi khi lấy bài viết:", data.message || "Không có dữ liệu.");
-            return { posts: [], pagination: {} };
+            return { data: { posts: [], pagination: {} }, error: data.message || "Không có dữ liệu." };
         }
     } catch (error) {
-        // Xử lý lỗi: kiểm tra lỗi từ API hoặc lỗi không xác định
+        // Xử lý lỗi và trả về thông tin lỗi rõ ràng
         console.error("Lỗi khi gọi API:", error.response ? error.response.data : error.message);
-        return { posts: [], pagination: {} };
+        return { data: { posts: [], pagination: {} }, error: error.response ? error.response.data : error.message };
     }
 };
 
@@ -100,6 +102,9 @@ export const deletePost = async (postId) => {
 };
 
 // Tạo bài viết
+// import axios from "axios";
+// import Cookies from "js-cookie";
+
 export const createPost = async (postData) => {
     try {
         const token = Cookies.get("authToken");
@@ -113,6 +118,7 @@ export const createPost = async (postData) => {
         const response = await axios.post("http://127.0.0.1:8000/api/v1/posts", postData, {
             headers: {
                 Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
+                'Content-Type': 'multipart/form-data' // Đảm bảo header đúng để upload hình ảnh
             },
         });
 
@@ -134,6 +140,7 @@ export const createPost = async (postData) => {
         return null; // Trả về null nếu có lỗi
     }
 };
+
 
 // Cập nhật bài viết
 export const updatePost = async (postId, postData) => {

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getPosts, deletePost } from "../../../services/posts"// Import API để lấy và xóa bài viết
+import { getPosts, deletePost } from "../../../services/admin/posts"; // Import API để lấy và xóa bài viết
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-// import './styles.css'; // Import file CSS chung
 
 const Blog = () => {
   const [posts, setPosts] = useState([]); // Dữ liệu bài viết
-  const [pagination, setPagination] = useState({}); // Dữ liệu phân trang
+  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 }); // Dữ liệu phân trang, gán mặc định để tránh undefined
   const [loading, setLoading] = useState(true); // Trạng thái đang tải
   const [error, setError] = useState(null); // Trạng thái lỗi
   const [deleting, setDeleting] = useState(false); // Trạng thái khi xóa bài viết
@@ -16,9 +15,13 @@ const Blog = () => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const { posts, pagination } = await getPosts(); // Lấy bài viết từ API
-        setPosts(posts);
-        setPagination(pagination);
+        const response = await getPosts(); // Lấy bài viết từ API
+        if (response.data) {
+          setPosts(response.data.posts);
+          setPagination(response.data.pagination || { current_page: 1, last_page: 1 }); // Đảm bảo pagination có dữ liệu mặc định
+        } else {
+          setError("Không thể tải bài viết.");
+        }
       } catch (err) {
         setError("Không thể tải bài viết.");
       } finally {
@@ -95,7 +98,7 @@ const Blog = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {posts.length > 0 ? (
+                          {posts && posts.length > 0 ? ( // Kiểm tra posts tồn tại và có dữ liệu
                             posts.map((post) => (
                               <tr key={post.id}>
                                 <td>{post.id}</td>
@@ -120,7 +123,7 @@ const Blog = () => {
                                 </td>
                                 <td className="text-truncate" style={{ maxWidth: '130px' }}>
                                   <div className="d-flex gap-2">
-                                    <a href={`/admin/blog/${post.id}`} className="btn btn-primary">
+                                    <a href={`blog/${post.id}`} className="btn btn-primary">
                                       Sửa
                                     </a>
                                     <button

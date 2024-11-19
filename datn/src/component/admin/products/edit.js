@@ -147,12 +147,7 @@ const EditProduct = () => {
         }));
     };
 
-    // const handleFileChange = (e) => {
-    //     setProduct((prevState) => ({
-    //         ...prevState,
-    //         images: e.target.files,
-    //     }));
-    // };
+   
 
     const handleCKEditorChange = (event, editor) => {
         const data = editor.getData();
@@ -175,7 +170,7 @@ const EditProduct = () => {
     
         const formData = new FormData();
     
-        // Append các trường cơ bản
+    
         formData.append('price', parseFloat(product.price));
         formData.append('category_id', parseInt(product.category_id));
         formData.append('brand_id', parseInt(product.brand_id));

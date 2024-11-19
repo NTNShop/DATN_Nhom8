@@ -4,7 +4,7 @@ import { getUsers, deleteUser } from "../../../services/admin/users";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaDownload, FaTrashAlt } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import { useNavigate } from "react-router-dom";
@@ -213,17 +213,34 @@ const ListUser = () => {
                     <table className="table table-bordered mt-2">
                       <thead>
                         <tr className="table-light">
-                          <th className="border-top-0">ID</th>
-                          <th className="border-top-0">Họ và tên</th>
-                          <th className="border-top-0">Avatar</th> 
-                          <th className="border-top-0">Email</th>
-                          <th className="border-top-0">Số điện thoại</th>
-                          <th className="border-top-0">Địa chỉ</th>
-                          <th className="border-top-0">Vai Trò</th>
-                          <th className="border-top-0">Trạng thái</th>
-                          <th className="border-top-0">Thao tác</th>
+                          <th className="border-top-0 font-weight-bold">#</th>
+                          <th className="border-top-0 font-weight-bold">
+                            Họ và tên
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Avatar
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Email
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Số điện thoại
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Địa chỉ
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Vai Trò
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Trạng thái
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Thao tác
+                          </th>
                         </tr>
                       </thead>
+
                       <tbody>
                         {currentUsers.length > 0 ? (
                           currentUsers.map((user, index) => (
@@ -232,7 +249,10 @@ const ListUser = () => {
                               <td>{user.full_name}</td>
                               <td>
                                 <img
-                                  src={user.avatar || "default-avatar-url"} 
+                                  src={
+                                    `http://127.0.0.1:8000${user.avatar}` ||
+                                    "default-avatar-url"
+                                  }
                                   alt={user.full_name}
                                   style={{
                                     width: "50px",
@@ -241,7 +261,11 @@ const ListUser = () => {
                                   }}
                                 />
                               </td>
-                              <td>{user.email}</td>
+                              <td>
+                                <i className="fa-solid fa-envelope me-2 text-primary"></i>
+                                {user.email}
+                              </td>
+
                               <td>{user.phone}</td>
                               <td>{user.address}</td>
                               <td>{user.role}</td>
@@ -262,13 +286,21 @@ const ListUser = () => {
                                   : "Không hoạt động"}
                               </td>
 
-                              {/* Avatar Image */}
-                             
-
-                              {/* Action Button */}
                               <td>
+                                <Link
+                                  to={`/users/${user.id}`}
+                                  className="btn btn-outline-dark mx-1"
+                                >
+                                  <i className="fa-solid fa-eye"></i>
+                                </Link>
+                                <Link
+                                  to={`/admin/editUser/${user.id}`}
+                                  className="btn btn-outline-dark "
+                                >
+                                  <i className="fa-solid fa-pen-to-square"></i>
+                                </Link>
                                 <button
-                                  className="btn btn-danger"
+                                  className="btn btn-outline-dark mx-1"
                                   onClick={() => handleDelete(user.id)}
                                 >
                                   <FaTrashAlt />
