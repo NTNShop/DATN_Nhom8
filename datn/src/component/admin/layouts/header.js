@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/img/logo.png";
 import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
-import { logoutUser } from "../../../services/login";  // Import the logoutUser function
+import { logoutUser } from "../../../services/client/Login";  // Import the logoutUser function
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -15,12 +15,10 @@ const Header = () => {
   const toggleSearch = () => {
     setShowSearch(!showSearch);
   };
-
   // Function to remove the AuthToken from cookies
   const removeAuthToken = () => {
     Cookies.remove("AuthToken");
   };
-
   // Get user info from cookies
   useEffect(() => {
     const storedUserInfo = Cookies.get("userInfo");
@@ -186,6 +184,12 @@ const Header = () => {
                   <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/category">
                     <i className="mdi me-2 mdi-table"></i>
                     <span className="hide-menu">Danh Mục</span>
+                  </a>
+                </li>
+                <li className="sidebar-item">
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/brand">
+                  <i className="mdi me-2 mdi-tag-multiple"></i>
+                    <span className="hide-menu">Thương hiệu</span>
                   </a>
                 </li>
                 <li className="sidebar-item">

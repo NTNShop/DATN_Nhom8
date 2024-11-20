@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getPosts, deletePost } from "../../../services/posts"; // Import API để lấy và xóa bài viết
+import { getPosts, deletePost } from "../../../services/admin/posts"; // Import API để lấy và xóa bài viết
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
@@ -88,9 +88,7 @@ const Blog = () => {
                     <a href="/admin/addBlog" className="btn btn-primary mb-3">
                       Thêm bài viết
                     </a>
-                  </span>
-
-                  <div className="table-responsive">
+                  </span> <div className="table-responsive">
                     {loading ? (
                       <p>Đang tải...</p>
                     ) : error ? (
@@ -146,8 +144,7 @@ const Blog = () => {
                                       onClick={() => handleDelete(post.id)}
                                       disabled={deleting}
                                     >
-                                      {deleting ? "Đang xóa..." : "Xóa"}
-                                    </button>
+                                      {deleting ? "Đang xóa..." : "Xóa"} </button>
                                   </div>
                                 </td>
                               </tr>

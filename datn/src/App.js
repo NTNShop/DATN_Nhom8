@@ -44,7 +44,7 @@ import EditProduct from "./component/admin/products/edit";
 import AddProduct from "./component/admin/products/add";
 import User from "./component/admin/users/list";
 import EditUser from "./component/admin/users/edit";
-import AddUser from "./component/admin/users/add";
+import UserDetails from "./component/admin/users/detail"
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import ListOrder from "./component/admin/order/list";
@@ -136,9 +136,9 @@ function App() {
       <Route path="/admin/product/add" element={<AddProduct />} />
       <Route path="/admin/product/edit/:id" element={<EditProduct />} />
       <Route path="/admin/user" element={<User />} />
+      <Route path="/users/:userId" element={<UserDetails />} />
       <Route path="/admin/login" element={<Authentication />} />
-      <Route path="/admin/addUser" element={<AddUser />} />
-      <Route path="/admin/editUser" element={<EditUser />} />
+      <Route path="/admin/editUser/:id" element={<EditUser />} />
       <Route path="/admin/order" element={<ListOrder />} />
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />

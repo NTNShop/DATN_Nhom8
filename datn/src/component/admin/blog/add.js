@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
-import { createPost } from "../../../services/posts";
+import { createPost } from "../../../services/admin/posts";
 
 const AddBlog = () => {
   const initialFormData = {
@@ -158,7 +158,7 @@ const AddBlog = () => {
                           rows="3"
                           placeholder="Nhập nội dung"
                           className="border-input2 form-control-line"
-                          value={formData.content}
+value={formData.content}
                           onChange={handleInputChange}
                         />
                         {error.content && <div className="text-danger">{error.content}</div>}

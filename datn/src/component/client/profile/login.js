@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
-import { loginUser } from "../../../services/login";
+import { loginUser } from "../../../services/client/Login"; 
 import { useForm } from "react-hook-form";
 
 const Login = () => {

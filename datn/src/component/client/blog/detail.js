@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Dùng để lấy `id` từ URL
 import Footer from "../home/footer";
 import Header from "../home/header";
-import { getPostById } from "../../../services/posts"; // Hàm API lấy bài viết theo ID
+import { getPostById } from "../../../services/admin/posts"; // Hàm API lấy bài viết theo ID
 
 const BlogDetails = () => {
   const { id } = useParams(); // Lấy `id` từ URL
@@ -55,10 +55,11 @@ const BlogDetails = () => {
             {/* Mã phần sidebar không thay đổi */}
           </div>
         </div>
-      </section>
-      <Footer />
-    </>
-  );
+        </section>
+
+<Footer />
+</>
+);
 };
 
 export default BlogDetails;

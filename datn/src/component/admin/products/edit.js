@@ -3,14 +3,45 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
-import { useParams } from 'react-router-dom';  // Import useParams
+import { useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const EditProduct = () => {
-    const { id } = useParams();  // Use useParams to get the product ID from the URL
+    const { id } = useParams();
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
+    const [uploadedImages, setUploadedImages] = useState([]); // Thêm state để lưu ảnh hiện tại
+    const [imageErrors, setImageErrors] = useState(null); // Thêm state để xử lý lỗi ảnh
+
+    // Sửa hàm handleFileChange để validate và preview ảnh
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        
+        // Validate files
+        const invalidFiles = files.filter(file => !file.type.startsWith('image/'));
+        if (invalidFiles.length > 0) {
+            setImageErrors('Chỉ chấp nhận file ảnh');
+            return;
+        }
+
+        // Validate size (ví dụ: giới hạn 5MB mỗi file)
+        const oversizedFiles = files.filter(file => file.size > 5 * 1024 * 1024);
+        if (oversizedFiles.length > 0) {
+            setImageErrors('File ảnh không được vượt quá 5MB');
+            return;
+        }
+
+        setImageErrors(null);
+        setProduct(prev => ({
+            ...prev,
+            images: files
+        }));
+
+        // Preview images
+        const imageUrls = files.map(file => URL.createObjectURL(file));
+        setUploadedImages(imageUrls);
+    };
     const [product, setProduct] = useState({
         name: '',
         category_id: '',
@@ -21,19 +52,16 @@ const EditProduct = () => {
         specifications: '',
         status: 'in_stock',
         warranty: '6',
-        images: [], // Images should be handled as files in the form
+        images: [],
         variants: []
     });
-    // State cho variant đang nhập
     const [currentVariant, setCurrentVariant] = useState({
         color: '',
         price: '',
-        code: ''
     });
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        // Fetch categories and brands
         const fetchCategoriesAndBrands = async () => {
             try {
                 const categoryResponse = await axios.get('http://127.0.0.1:8000/api/v1/categories');
@@ -45,11 +73,10 @@ const EditProduct = () => {
             }
         };
 
-        // Fetch the product data by ID
         const fetchProductData = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
-                setProduct(response.data.data); // Assuming the product data is under the `data` key
+                setProduct(response.data.data);
             } catch (error) {
                 console.error("Error fetching product data:", error);
             }
@@ -57,7 +84,7 @@ const EditProduct = () => {
 
         fetchCategoriesAndBrands();
         fetchProductData();
-    }, [id]);  // Add `id` as a dependency to re-fetch when the product ID changes
+    }, [id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -66,6 +93,7 @@ const EditProduct = () => {
             [name]: value,
         }));
     };
+
     const handleVariantChange = (e) => {
         const { name, value } = e.target;
         setCurrentVariant(prev => ({
@@ -74,37 +102,53 @@ const EditProduct = () => {
         }));
     };
 
+    const generateColorCode = (colorName) => {
+        // Loại bỏ dấu và chuyển thành chữ thường
+        const removeAccents = (str) => {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D');
+        };
+        
+        return removeAccents(colorName.toLowerCase())
+            .replace(/\s+/g, '_') // Thay thế khoảng trắng bằng dấu gạch dưới
+            .replace(/[^a-z0-9_]/g, ''); // Chỉ giữ lại chữ cái, số và dấu gạch dưới
+    };
+    
+
     const addVariant = () => {
         if (!currentVariant.color || !currentVariant.price) {
             alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
             return;
         }
-        
-        const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
-        
+    
+        const colorCode = generateColorCode(currentVariant.color);
+    
         setProduct(prev => ({
             ...prev,
-            variants: [...prev.variants, { ...currentVariant, code: variantCode }]
+            variants: [...prev.variants, { 
+                color: currentVariant.color,
+                price: currentVariant.price,
+                code: colorCode // Tự động tạo code
+            }]
         }));
-        
+    
         setCurrentVariant({
             color: '',
             price: '',
-            code: ''
         });
     };
+
     const removeVariant = (index) => {
         setProduct(prev => ({
             ...prev,
             variants: prev.variants.filter((_, i) => i !== index)
         }));
     };
-    const handleFileChange = (e) => {
-        setProduct((prevState) => ({
-            ...prevState,
-            images: e.target.files,
-        }));
-    };
+
+   
+
     const handleCKEditorChange = (event, editor) => {
         const data = editor.getData();
         setProduct((prevState) => ({
@@ -112,6 +156,10 @@ const EditProduct = () => {
             specifications: data,
         }));
     };
+
+    
+
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = validateForm();
@@ -119,55 +167,72 @@ const EditProduct = () => {
             setErrors(formErrors);
             return;
         }
-
-        try {
-            const formData = new FormData();
-            
-            // Append all product data
-            Object.keys(product).forEach(key => {
-                if (key === 'images') {
-                    if (product.images.length > 0) {
-                        Array.from(product.images).forEach(file => {
-                            formData.append('images[]', file);
-                        });
-                    }
-                } else if (key === 'variants') {
-                    formData.append('variants', JSON.stringify(product.variants));
-                } else {
-                    formData.append(key, product[key]);
-                }
+    
+        const formData = new FormData();
+    
+    
+        formData.append('price', parseFloat(product.price));
+        formData.append('category_id', parseInt(product.category_id));
+        formData.append('brand_id', parseInt(product.brand_id));
+        formData.append('warranty', parseInt(product.warranty));
+        formData.append('status', product.status);
+        formData.append('name', product.name);
+        formData.append('description', product.description);
+        formData.append('short_description', product.short_description);
+        formData.append('specifications', product.specifications);
+    
+        // Xử lý variants
+        product.variants.forEach((variant, index) => {
+            formData.append(`variants[${index}][color]`, variant.color);
+            formData.append(`variants[${index}][price]`, parseFloat(variant.price));
+            formData.append(`variants[${index}][code]`, variant.code); // Code đã được tạo tự động
+        });
+    
+        // Xử lý images
+        if (product.images && product.images.length > 0) {
+            Array.from(product.images).forEach(file => {
+                formData.append('images[]', file);
             });
-
+        }
+    
+        formData.append('_method', 'PUT');
+    
+        try {
             const response = await axios.post(
                 `http://127.0.0.1:8000/api/v1/products/${id}`,
                 formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'X-HTTP-Method-Override': 'PUT'
+                        'Accept': 'application/json'
                     }
                 }
             );
-
+    
             if (response.data.status === 'success') {
                 alert('Cập nhật sản phẩm thành công');
             }
         } catch (error) {
-            console.error("Error:", error);
-            alert(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật sản phẩm");
+            console.error("Error:", error.response?.data || error.message);
+            alert("Có lỗi xảy ra: " + (error.response?.data?.message || "Lỗi không xác định"));
         }
     };
 
+
     const validateForm = () => {
         const errors = {};
-        if (!product.name) errors.name = "Name is required";
-        if (!product.category_id) errors.category_id = "Category is required";
-        if (!product.price) errors.price = "Price is required";
-        if (!product.short_description) errors.short_description = "Short description is required";
-        if (!product.description) errors.description = "Description is required";
+        if (!product.name) errors.name = "Tên sản phẩm là bắt buộc";
+        if (!product.category_id) errors.category_id = "Danh mục là bắt buộc";
+        if (!product.brand_id) errors.brand_id = "Thương hiệu là bắt buộc";
+        if (!product.price || isNaN(product.price) || Number(product.price) <= 0) {
+            errors.price = "Giá sản phẩm phải là số dương";
+        }
+        if (!product.short_description) errors.short_description = "Mô tả ngắn là bắt buộc";
+        if (!product.description) errors.description = "Mô tả là bắt buộc";
+        if (product.variants.length === 0) errors.variants = "Cần ít nhất một biến thể màu sắc";
         return errors;
     };
-    
+
     return (
         <div>
             <Header />
@@ -247,17 +312,37 @@ const EditProduct = () => {
                                     </div>
 
                                     <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Hình ảnh</label>
-                                        <div className="col-md-12">
-                                            <input
-                                                type="file"
-                                                name="images"
-                                                onChange={handleFileChange}
-                                                multiple
-                                                className="form-control-line border-input"
-                                            />
-                                        </div>
-                                    </div>
+                <label className="col-md-12 mb-0">Hình ảnh</label>
+                <div className="col-md-12">
+                    <input
+                        type="file"
+                        name="images"
+                        onChange={handleFileChange}
+                        multiple
+                        accept="image/*"
+                        className="form-control-line border-input"
+                    />
+                    {imageErrors && <span className="text-danger">{imageErrors}</span>}
+                    
+                    {/* Preview ảnh */}
+                    <div className="image-preview mt-2 d-flex flex-wrap gap-2">
+                        {uploadedImages.map((url, index) => (
+                            <div key={index} className="position-relative" style={{width: '100px', height: '100px'}}>
+                                <img
+                                    src={url}
+                                    alt={`Preview ${index + 1}`}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '4px'
+                                    }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Giá</label>
@@ -298,7 +383,7 @@ const EditProduct = () => {
                                             {errors.description && <span className="text-danger">{errors.description}</span>}
                                         </div>
                                     </div>
-                                    {/* Phần variants */}
+
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
                                         <div className="col-md-12">
@@ -319,7 +404,7 @@ const EditProduct = () => {
                                                     placeholder="Nhập giá"
                                                     className="form-control"
                                                 />
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={addVariant}
                                                     className="btn btn-primary"
@@ -327,15 +412,15 @@ const EditProduct = () => {
                                                     Thêm màu
                                                 </button>
                                             </div>
-                                            
+
                                             <div className="variants-list mt-2">
                                                 {product.variants.map((variant, index) => (
                                                     <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
                                                         <span className='text-dark'>
                                                             Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
                                                         </span>
-                                                        <button 
-                                                            type="button" 
+                                                        <button
+                                                            type="button"
                                                             className="btn btn-danger btn-sm"
                                                             onClick={() => removeVariant(index)}
                                                         >
@@ -344,8 +429,10 @@ const EditProduct = () => {
                                                     </div>
                                                 ))}
                                             </div>
+                                            {errors.variants && <span className="text-danger">{errors.variants}</span>}
                                         </div>
                                     </div>
+
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thời gian bảo hành</label>
                                         <div className="col-md-12">
@@ -359,7 +446,8 @@ const EditProduct = () => {
                                                 <option value="12">12 tháng</option>
                                             </select>
                                         </div>
-                                    </div>           
+                                    </div>
+
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Trạng thái</label>
                                         <div className="col-md-12">
@@ -374,17 +462,18 @@ const EditProduct = () => {
                                             </select>
                                         </div>
                                     </div>
+
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
                                         <div className="col-md-12">
                                             <CKEditor
                                                 editor={ClassicEditor}
-                                                data={product.specifications}  // Đưa dữ liệu vào CKEditor
-                                                onChange={handleCKEditorChange}  // Cập nhật dữ liệu khi thay đổi
+                                                data={product.specifications}
+                                                onChange={handleCKEditorChange}
                                             />
-                                            {errors.specifications && <span className="text-danger">{errors.specifications}</span>}
                                         </div>
-                                    </div>      
+                                    </div>
+
                                     <div className="form-group">
                                         <div className="col-sm-12 d-flex">
                                             <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">

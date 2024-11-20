@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getPosts } from "../../../services/posts"; // Ensure correct path to your service
+import { getPosts } from "../../../services/admin/posts"; // Ensure correct path to your service
 import { Link } from "react-router-dom";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";

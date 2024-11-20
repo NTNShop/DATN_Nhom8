@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { logoutUser } from "../../../services/login";
+import { logoutUser } from "../../../services/client/Login";
 import logo from "../../../assets/img/logo.png";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
