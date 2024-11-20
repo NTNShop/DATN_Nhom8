@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Thư viện js-cookie
 import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
 import { createPost } from "../../../services/admin/posts";
 
 const AddBlog = () => {
+  // Lấy user_id từ cookie
+  const userId = Cookies.get('userId'); // Thay 'user_id' bằng tên cookie mà bạn lưu
+  
   const initialFormData = {
-    user_id: 2,
+    user_id: userId || "", // Gán user_id từ cookie
     title: "",
     content: "",
     featured_image: null,
@@ -19,7 +23,7 @@ const AddBlog = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Handle input changes
+  // Xử lý thay đổi trong các input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -28,11 +32,11 @@ const AddBlog = () => {
     }));
     setError(prev => ({
       ...prev,
-      [name]: "" // Clear any previous error for this field
+      [name]: "" // Xóa lỗi của trường tương ứng
     }));
   };
 
-  // Handle file upload
+  // Xử lý thay đổi hình ảnh
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -42,7 +46,7 @@ const AddBlog = () => {
       }));
       setError(prev => ({
         ...prev,
-        featured_image: "" // Clear any previous error for this field
+        featured_image: "" // Xóa lỗi hình ảnh
       }));
     } else {
       setError(prev => ({
@@ -52,8 +56,10 @@ const AddBlog = () => {
     }
   };
 
+  // Kiểm tra dữ liệu đầu vào
   const validateForm = () => {
     const newErrors = {};
+    if (!formData.user_id) newErrors.user_id = "Người dùng không được xác định. Vui lòng đăng nhập lại.";
     if (!formData.title) newErrors.title = "Tên bài viết là bắt buộc.";
     if (!formData.content) newErrors.content = "Nội dung là bắt buộc.";
     if (!formData.status) newErrors.status = "Trạng thái là bắt buộc.";
@@ -62,11 +68,12 @@ const AddBlog = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Xử lý gửi form
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // Chuẩn bị dữ liệu dưới dạng FormData để gửi lên API
+    // Chuẩn bị dữ liệu gửi lên API
     const submitData = new FormData();
     submitData.append('user_id', formData.user_id);
     submitData.append('title', formData.title.trim());
@@ -118,7 +125,9 @@ const AddBlog = () => {
                 <div className="card-body">
                   <h4 className="card-title">Thêm bài viết</h4>
                   {error.general && <div className="alert alert-danger">{error.general}</div>}
-                  {success && <div className="alert alert-success">{success}</div>}
+                  {success && <div className="alert alert-success">
+                    {success} <a href="/admin/blog">Quay lại danh sách bài viết</a>
+                  </div>}
 
                   <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
                     <div className="form-group mb-3">
@@ -158,7 +167,7 @@ const AddBlog = () => {
                           rows="3"
                           placeholder="Nhập nội dung"
                           className="border-input2 form-control-line"
-value={formData.content}
+                          value={formData.content}
                           onChange={handleInputChange}
                         />
                         {error.content && <div className="text-danger">{error.content}</div>}
@@ -175,8 +184,8 @@ value={formData.content}
                           onChange={handleInputChange}
                         >
                           <option value="">Chọn trạng thái</option>
-                          <option value="1">Active</option>
-                          <option value="0">Inactive</option>
+                          <option value="1">Hoạt động (Bài viết sẽ hiển thị công khai)</option>
+                          <option value="0">Không hoạt động (Bài viết sẽ bị ẩn)</option>
                         </select>
                         {error.status && <div className="text-danger">{error.status}</div>}
                       </div>

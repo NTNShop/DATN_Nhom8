@@ -160,7 +160,8 @@ Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
         });
 
         // Kiểm tra dữ liệu trả về từ API
-        if (response.data && response.data.message) {
+        if (response.data && response.data.message) {console.log('API Response:', response);
+
             console.log("Cập nhật bài viết thành công:", response.data.message);
             return response.data; // Trả về dữ liệu bài viết đã được cập nhật
         } else {
@@ -172,4 +173,5 @@ Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
         console.error("Lỗi khi gọi API cập nhật bài viết:", error.response ? error.response.data : error.message);
         return null; // Trả về null nếu có lỗi
     }
+    
 };

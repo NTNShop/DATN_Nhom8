@@ -76,17 +76,24 @@ const Blog = () => {
                 <div className="blog__sidebar__item">
                   <h4>Tin tức xe máy gần đây</h4>
                   <div className="blog__sidebar__recent">
-                    {posts.slice(0, 3).map((post) => (
-                      <a href="#" className="blog__sidebar__recent__item" key={post.id}>
-                        <div className="blog__sidebar__recent__item__pic">
-                          <img src={`http://127.0.0.1:8000${post.featured_image}` || Cart1} width={100} alt="thumbnail" />
-                        </div>
-                        <div className="blog__sidebar__recent__item__text">
-                          <h6>{post.title}</h6>
-                          <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                        </div>
-                      </a>
-                    ))}
+                    {posts
+                      .filter((post) => post.status === 1) // Filter active posts only
+                      .slice(0, 3) // Show only 3 recent posts
+                      .map((post) => (
+                        <a href="#" className="blog__sidebar__recent__item" key={post.id}>
+                          <div className="blog__sidebar__recent__item__pic">
+                            <img
+                              src={`http://127.0.0.1:8000${post.featured_image}` || Cart1}
+                              width={100}
+                              alt="thumbnail"
+                            />
+                          </div>
+                          <div className="blog__sidebar__recent__item__text">
+                            <h6>{post.title}</h6>
+                            <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                          </div>
+                        </a>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -98,32 +105,37 @@ const Blog = () => {
                 {loading ? (
                   <SkeletonLoader />
                 ) : posts.length > 0 ? (
-                  posts.map((post) => (
-                    <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
-                      <div className="blog__item">
-                        <div className="blog__item__pic">
-                          <img src={`http://127.0.0.1:8000${post.featured_image}` || Cart} alt="Post Image" />
-                        </div>
-                        <div className="blog__item__text">
-                          <ul>
-                            <li>
-                              <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
-                            </li>
-                            <li>
-                              <i className="fa fa-comment-o"></i> 5
-                            </li>
-                          </ul>
-                          <h5>
-                            <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
-                          </h5>
-                          
-                          <Link to={`/blogdetail/${post.id}`} className="blog__btn">
-                            ĐỌC THÊM <span className="arrow_right"></span>
-                          </Link>
+                  posts
+                    .filter((post) => post.status === 1) // Filter active posts only
+                    .map((post) => (
+                      <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
+                        <div className="blog__item">
+                          <div className="blog__item__pic">
+                            <img
+                              src={`http://127.0.0.1:8000${post.featured_image}` || Cart}
+                              alt="Post Image"
+                            />
+                          </div>
+                          <div className="blog__item__text">
+                            <ul>
+                              <li>
+                                <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
+                              </li>
+                              <li>
+                                <i className="fa fa-comment-o"></i> 5
+                              </li>
+                            </ul>
+                            <h5>
+                              <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
+                            </h5>
+                            
+                            <Link to={`/blogdetail/${post.id}`} className="blog__btn">
+                              ĐỌC THÊM <span className="arrow_right"></span>
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    ))
                 ) : (
                   <p>Không có bài viết nào.</p>
                 )}
@@ -133,7 +145,10 @@ const Blog = () => {
                   <div className="col-lg-12">
                     <div className="product__pagination blog__pagination">
                       {pagination.current_page > 1 && (
-                        <button onClick={() => handlePageChange(pagination.current_page - 1)} className="prev">
+                        <button
+                          onClick={() => handlePageChange(pagination.current_page - 1)}
+                          className="prev"
+                        >
                           « Trước
                         </button>
                       )}
@@ -141,7 +156,10 @@ const Blog = () => {
                         {pagination.current_page} / {pagination.last_page}
                       </span>
                       {pagination.current_page < pagination.last_page && (
-                        <button onClick={() => handlePageChange(pagination.current_page + 1)} className="next">
+                        <button
+                          onClick={() => handlePageChange(pagination.current_page + 1)}
+                          className="next"
+                        >
                           Tiếp theo »
                         </button>
                       )}

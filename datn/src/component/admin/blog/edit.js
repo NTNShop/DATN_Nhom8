@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
-import { getPostById, updatePost } from "../../../services/posts";
+import { getPostById, updatePost } from "../../../services/admin/posts";
 import Cookies from 'js-cookie';
 
 const EditBlog = () => {
