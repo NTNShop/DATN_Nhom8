@@ -5,40 +5,44 @@ import Footer from "../layouts/footer";
 
 const Blog = () => {
   const [posts, setPosts] = useState([]); // Dữ liệu bài viết
-  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 }); // Dữ liệu phân trang, gán mặc định để tránh undefined
+  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 }); // Dữ liệu phân trang
   const [loading, setLoading] = useState(true); // Trạng thái đang tải
   const [error, setError] = useState(null); // Trạng thái lỗi
   const [deleting, setDeleting] = useState(false); // Trạng thái khi xóa bài viết
 
-  useEffect(() => {
-    // Hàm gọi API để lấy danh sách bài viết
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const response = await getPosts(); // Lấy bài viết từ API
-        if (response.data) {
-          setPosts(response.data.posts);
-          setPagination(response.data.pagination || { current_page: 1, last_page: 1 }); // Đảm bảo pagination có dữ liệu mặc định
-        } else {
-          setError("Không thể tải bài viết.");
-        }
-      } catch (err) {
+  // Gọi API để lấy danh sách bài viết
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const response = await getPosts(); // Gọi API lấy bài viết
+      if (response.data) {
+        // Sắp xếp bài viết mới nhất lên đầu
+        const sortedPosts = response.data.posts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setPosts(sortedPosts); // Lưu danh sách bài viết vào state
+        setPagination(response.data.pagination || { current_page: 1, last_page: 1 }); // Cập nhật phân trang
+      } else {
         setError("Không thể tải bài viết.");
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      setError("Không thể tải bài viết.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchPosts(); // Gọi hàm khi component được render lần đầu
+  // Gọi hàm fetchPosts khi component được render lần đầu
+  useEffect(() => {
+    fetchPosts();
   }, []);
 
+  // Xử lý xóa bài viết
   const handleDelete = async (postId) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
       try {
         setDeleting(true);
         const success = await deletePost(postId); // Gọi API xóa bài viết
         if (success) {
-          setPosts(posts.filter(post => post.id !== postId)); // Cập nhật lại danh sách bài viết sau khi xóa
+          setPosts(posts.filter(post => post.id !== postId)); // Cập nhật danh sách bài viết sau khi xóa
         } else {
           setError("Xóa bài viết thất bại.");
         }
@@ -48,6 +52,11 @@ const Blog = () => {
         setDeleting(false);
       }
     }
+  };
+
+  // Thêm bài viết mới vào đầu danh sách
+  const handleAddNewPost = (newPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]); // Thêm bài viết mới vào đầu danh sách
   };
 
   return (
@@ -100,30 +109,34 @@ const Blog = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {posts && posts.length > 0 ? ( // Kiểm tra posts tồn tại và có dữ liệu
+                          {posts && posts.length > 0 ? (
                             posts.map((post) => (
                               <tr key={post.id}>
                                 <td>{post.id}</td>
                                 <td>
                                   <img
-                                    width={"150px"}
-                                    src={`http://127.0.0.1:8000${post.featured_image}`}
+                                    width="150px"
+                                    src={
+                                      post.featured_image
+                                        ? `http://127.0.0.1:8000${post.featured_image}`
+                                        : "default-avatar-url"
+                                    }
                                     alt={post.title}
                                   />
                                 </td>
-                                <td className="text-truncate" style={{ maxWidth: '150px' }}>
+                                <td className="text-truncate" style={{ maxWidth: "150px" }}>
                                   {post.title}
                                 </td>
-                                <td className="text-truncate" style={{ maxWidth: '170px' }}>
+                                <td className="text-truncate" style={{ maxWidth: "170px" }}>
                                   {post.content}
                                 </td>
-                                <td className="text-truncate" style={{ maxWidth: '100px' }}>
+                                <td>
                                   {new Date(post.created_at).toLocaleDateString()}
                                 </td>
-                                <td className="text-truncate" style={{ maxWidth: '100px' }}>
+                                <td>
                                   {post.status === 1 ? "Hoạt động" : "Không hoạt động"}
                                 </td>
-                                <td className="text-truncate" style={{ maxWidth: '130px' }}>
+                                <td>
                                   <div className="d-flex gap-2">
                                     <a href={`blog/${post.id}`} className="btn btn-primary">
                                       Sửa
