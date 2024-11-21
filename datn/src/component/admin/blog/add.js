@@ -56,6 +56,14 @@ const AddBlog = () => {
     }
   };
 
+  // Xóa hình ảnh đã chọn
+  const handleRemoveImage = () => {
+    setFormData(prev => ({
+      ...prev,
+      featured_image: null
+    }));
+  };
+
   // Kiểm tra dữ liệu đầu vào
   const validateForm = () => {
     const newErrors = {};
@@ -111,7 +119,7 @@ const AddBlog = () => {
             <div className="col-md-6 col-8 align-self-center">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item"><a href="#">Danh sách bài viết</a></li>
+                  <li className="breadcrumb-item"><a href="">Danh sách bài viết</a></li>
                   <li className="breadcrumb-item active" aria-current="page">Thêm bài viết</li>
                 </ol>
               </nav>
@@ -155,6 +163,22 @@ const AddBlog = () => {
                           onChange={handleImageChange}
                           accept="image/*"
                         />
+                        {formData.featured_image && (
+                          <div className="mt-2">
+                            <img
+                              src={URL.createObjectURL(formData.featured_image)}
+                              alt="Featured"
+                              style={{ width: '200px', height: 'auto' }}
+                            />
+                            <button
+                              type="button"
+                              onClick={handleRemoveImage}
+                              className="btn btn-danger mt-2"
+                            >
+                              Xóa ảnh
+                            </button>
+                          </div>
+                        )}
                         {error.featured_image && <div className="text-danger">{error.featured_image}</div>}
                       </div>
                     </div>

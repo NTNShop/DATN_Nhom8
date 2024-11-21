@@ -18,6 +18,7 @@ const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
+  const [newPostId, setNewPostId] = useState(null); // Trạng thái theo dõi bài viết mới
 
   // Fetch posts
   useEffect(() => {
@@ -27,7 +28,7 @@ const Blog = () => {
         const response = await getPosts();
         if (response.data) {
           const sortedPosts = response.data.posts.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            (a, b) => b.id - a.id // Sắp xếp theo ID giảm dần
           );
           setPosts(sortedPosts);
           setFilteredPosts(sortedPosts);
@@ -98,6 +99,15 @@ const Blog = () => {
     pageNumbers.push(i);
   }
 
+  // Trigger color change for new post
+  const handleAddNewPost = (newPost) => {
+    setPosts([newPost, ...posts]);
+    setFilteredPosts([newPost, ...filteredPosts]);
+
+    setNewPostId(newPost.id); // Set new post ID
+    setTimeout(() => setNewPostId(null), 3000); // Remove new post ID after 3 seconds
+  };
+
   return (
     <div>
       <Header />
@@ -116,13 +126,14 @@ const Blog = () => {
             </div>
           </div>
         </div>
+
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-10">
               <div className="card">
                 <div className="card-body">
                   <h4 className="card-title text-primary">Danh sách bài viết</h4>
-                  
+
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <button
                       onClick={handleDownloadExcel}
@@ -131,13 +142,11 @@ const Blog = () => {
                       <FaDownload className="me-2" /> Tải về
                     </button>
                     <a
-  href="/admin/addBlog"
-  className="btn btn-success d-flex align-items-center"
->
-   Thêm bài viết
-</a>
-
-
+                      href="/admin/addBlog"
+                      className="btn btn-success d-flex align-items-center"
+                    >
+                      Thêm bài viết
+                    </a>
                     {/* Tìm kiếm */}
                     <div className="de-search text-start">
                       <p className="sl-box-title">Từ khóa</p>
@@ -153,14 +162,11 @@ const Blog = () => {
                         </span>
                       </div>
                     </div>
-
                     {/* Chọn trạng thái */}
                     <div className="d-flex justify-content-start gap-4 mb-3">
                       <div className="position-relative w-100">
                         <div className="d-flex align-items-center mb-2">
-                          <span className="me-2 text-secondary">
-                            Trạng thái hoạt động
-                          </span>
+                          <span className="me-2 text-secondary">Trạng thái hoạt động</span>
                         </div>
 
                         <div className="input-group">
@@ -174,9 +180,7 @@ const Blog = () => {
                             placeholder="Chọn trạng thái"
                           />
                           <span
-                            className={`input-group-text ${
-                              showStatus ? "bi-chevron-up" : "bi-chevron-down"
-                            } text-secondary`}
+                            className={`input-group-text ${showStatus ? "bi-chevron-up" : "bi-chevron-down"} text-secondary`}
                             style={{ cursor: "pointer" }}
                             onClick={() => setShowStatus(!showStatus)}
                           ></span>
@@ -184,20 +188,18 @@ const Blog = () => {
 
                         {showStatus && (
                           <ul className="dropdown-menu show mt-2 position-absolute w-100" style={{ zIndex: 1050 }}>
-                            {["Tất cả", "Hoạt động", "Không hoạt động"].map(
-                              (status) => (
-                                <li
-                                  key={status}
-                                  className="dropdown-item text-center p-2"
-                                  onClick={() => {
-                                    filterPostsByStatus(status);
-                                    setShowStatus(false);
-                                  }}
-                                >
-                                  {status}
-                                </li>
-                              )
-                            )}
+                            {["Tất cả", "Hoạt động", "Không hoạt động"].map((status) => (
+                              <li
+                                key={status}
+                                className="dropdown-item text-center p-2"
+                                onClick={() => {
+                                  filterPostsByStatus(status);
+                                  setShowStatus(false);
+                                }}
+                              >
+                                {status}
+                              </li>
+                            ))}
                           </ul>
                         )}
                       </div>
@@ -222,21 +224,18 @@ const Blog = () => {
                       <tbody>
                         {loading ? (
                           <tr>
-                            <td colSpan="7" className="text-center">
-                              Đang tải...
-                            </td>
+                            <td colSpan="7" className="text-center">Đang tải...</td>
                           </tr>
                         ) : currentPosts.length > 0 ? (
                           currentPosts.map((post) => (
-                            <tr key={post.id}>
+                            <tr
+                              key={post.id}
+                              className={post.id === newPostId ? "bg-success text-white" : ""}
+                            >
                               <td>{post.id}</td>
                               <td>
                                 <img
-                                  src={
-                                    post.featured_image
-                                      ? `http://127.0.0.1:8000${post.featured_image}`
-                                      : "default-image-url"
-                                  }
+                                  src={post.featured_image ? `http://127.0.0.1:8000${post.featured_image}` : "default-image-url"}
                                   alt={post.title}
                                   style={{
                                     width: "100px",
@@ -251,23 +250,14 @@ const Blog = () => {
                               <td className="text-truncate" style={{ maxWidth: "200px" }}>
                                 {post.content}
                               </td>
-                              <td>
-                                {new Date(post.created_at).toLocaleDateString()}
-                              </td>
+                              <td>{new Date(post.created_at).toLocaleDateString()}</td>
                               <td className="text-center">
                                 <span
-                                  className={`status-dot ${
-                                    post.status === 1
-                                      ? "dot-success"
-                                      : "dot-danger"
-                                  }`}
+                                  className={`status-dot ${post.status === 1 ? "dot-success" : "dot-danger"}`}
                                 ></span>
-                                {post.status === 1
-                                  ? "Hoạt động"
-                                  : "Không hoạt động"}
+                                {post.status === 1 ? "Hoạt động" : "Không hoạt động"}
                               </td>
                               <td>
-                             
                                 <Link
                                   to={`/admin/blog/${post.id}`}
                                   className="btn btn-outline-dark"
@@ -285,9 +275,7 @@ const Blog = () => {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="7" className="text-center">
-                              Không có bài viết nào
-                            </td>
+                            <td colSpan="7" className="text-center">Không có bài viết nào</td>
                           </tr>
                         )}
                       </tbody>
@@ -300,9 +288,7 @@ const Blog = () => {
                       {pageNumbers.map((number) => (
                         <li
                           key={number}
-                          className={`page-item ${
-                            number === currentPage ? "active" : ""
-                          }`}
+                          className={`page-item ${number === currentPage ? "active" : ""}`}
                         >
                           <button
                             onClick={() => setCurrentPage(number)}
