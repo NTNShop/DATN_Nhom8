@@ -267,12 +267,7 @@ const Blog = () => {
                                   : "Không hoạt động"}
                               </td>
                               <td>
-                                <Link
-                                  to={`/admin/blogdetailadmin/${post.id}`}
-                                  className="btn btn-outline-dark mx-1"
-                                >
-                                  <i className="fa-solid fa-eye"></i>
-                                </Link>
+                             
                                 <Link
                                   to={`/admin/blog/${post.id}`}
                                   className="btn btn-outline-dark"

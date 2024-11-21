@@ -64,7 +64,6 @@ import "./assets/css/style.min.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import PostDetails from "./component/admin/blog/detail";
 
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
@@ -144,7 +143,6 @@ function App() {
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/blog/:id" element={<EditBlog />} />
       <Route path="/blogdetail/:id" element={<BlogDetails />} />
-      <Route path="/admin/blogdetailadmin/:id" element={<PostDetails />} />
 
 
       <Route path="/admin/addBlog" element={<AddBlog />} />

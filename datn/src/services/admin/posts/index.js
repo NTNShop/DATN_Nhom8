@@ -145,33 +145,57 @@ export const createPost = async (postData) => {
 // Cập nhật bài viết
 export const updatePost = async (postId, postData) => {
     try {
-        const token = Cookies.get("authToken");
-
-        // Kiểm tra xem token có tồn tại trong cookie không
-        if (!token) {
-            throw new Error("Token không tồn tại. Bạn cần đăng nhập lại.");
+      const token = Cookies.get("authToken");
+  
+      // Kiểm tra xem token có tồn tại
+      if (!token) {
+        throw new Error("Token không tồn tại. Bạn cần đăng nhập lại.");
+      }
+  
+      // Kiểm tra xem postData có phải là FormData không
+      if (!(postData instanceof FormData)) {
+        throw new Error("Dữ liệu gửi phải ở dạng FormData.");
+      }
+  
+      // Bổ sung `_method: PUT` cho FormData
+      postData.append("_method", "PUT");
+  
+      // Gửi yêu cầu cập nhật bài viết
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/v1/posts/${postId}`,
+        postData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
-
-        // Gửi yêu cầu PUT để cập nhật bài viết
-        const response = await axios.put(`http://127.0.0.1:8000/api/v1/posts/${postId}`, postData, {
-            headers: {
-Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
-            },
-        });
-
-        // Kiểm tra dữ liệu trả về từ API
-        if (response.data && response.data.message) {console.log('API Response:', response);
-
-            console.log("Cập nhật bài viết thành công:", response.data.message);
-            return response.data; // Trả về dữ liệu bài viết đã được cập nhật
-        } else {
-            console.error("Lỗi khi cập nhật bài viết:", response.data.message || "Không có thông báo từ API.");
-            return null; // Trả về null nếu có lỗi
-        }
+      );
+  
+      // Kiểm tra phản hồi từ API
+      if (response?.data?.message) {
+        console.log("Cập nhật bài viết thành công:", response.data.message);
+        return response.data; // Trả về dữ liệu bài viết đã cập nhật
+      } else {
+        console.error(
+          "Lỗi khi cập nhật bài viết:",
+          response.data?.message || "Không có phản hồi từ API."
+        );
+        return null; // Trả về null nếu không có thông báo từ API
+      }
     } catch (error) {
-        // Xử lý lỗi: kiểm tra lỗi từ API hoặc lỗi không xác định
-        console.error("Lỗi khi gọi API cập nhật bài viết:", error.response ? error.response.data : error.message);
-        return null; // Trả về null nếu có lỗi
+      // Quản lý lỗi
+      if (error.response) {
+        // Lỗi từ phía server
+        console.error(
+          "Lỗi từ server:",
+          error.response.status,
+          error.response.data
+        );
+      } else {
+        // Lỗi khác (mạng, cấu hình...)
+        console.error("Lỗi không xác định:", error.message);
+      }
+      return null; // Trả về null khi gặp lỗi
     }
-    
-};
+  };

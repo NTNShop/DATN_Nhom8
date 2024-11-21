@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getPosts } from "../../../services/admin/posts"; // Ensure correct path to your service
+import { getPosts } from "../../../services/admin/posts";
 import { Link } from "react-router-dom";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
@@ -7,36 +7,26 @@ import Cart from "../../../assets/img/cart/cart.png";
 import Cart1 from "../../../assets/img/cart/cart1.png";
 import banner from "../../../assets/img/hero/banner2.jpg";
 
-// Skeleton loader component for the blog post and sidebar
-const SkeletonLoader = () => (
-  <div className="skeleton-loader">
-    <div className="skeleton skeleton-image"></div>
-    <div className="skeleton skeleton-text"></div>
-    <div className="skeleton skeleton-text"></div>
-  </div>
-);
-
 const Blog = () => {
-  const [posts, setPosts] = useState([]); // List of blog posts
-  const [pagination, setPagination] = useState({}); // Pagination data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [posts, setPosts] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Function to fetch posts from the API
   const fetchPosts = async (page = 1) => {
     setLoading(true);
-    const result = await getPosts(page); // Fetch posts for the current page
-    setPosts(result.data.posts); // Set posts data in state
-    setPagination(result.data.pagination); // Set pagination data
-    setLoading(false); // Stop loading
+    const result = await getPosts(page);
+    setPosts(result.data.posts);
+    setPagination(result.data.pagination);
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchPosts(currentPage); // Fetch posts when component mounts
-  }, [currentPage]); // Re-run when currentPage changes
+    fetchPosts(currentPage);
+  }, [currentPage]);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page); // Update the page when user clicks page number
+    setCurrentPage(page);
   };
 
   return (
@@ -57,7 +47,7 @@ const Blog = () => {
               <div className="breadcrumb__text">
                 <h2>BÀI VIẾT</h2>
                 <div className="breadcrumb__option">
-                  <a href="./index.html">TRANG CHỦ</a>
+                  <a href="/">TRANG CHỦ</a>
                   <span>BÀI VIẾT</span>
                 </div>
               </div>
@@ -76,24 +66,28 @@ const Blog = () => {
                 <div className="blog__sidebar__item">
                   <h4>Tin tức xe máy gần đây</h4>
                   <div className="blog__sidebar__recent">
-                    {posts
-                      .filter((post) => post.status === 1) // Filter active posts only
-                      .slice(0, 3) // Show only 3 recent posts
-                      .map((post) => (
-                        <a href="#" className="blog__sidebar__recent__item" key={post.id}>
-                          <div className="blog__sidebar__recent__item__pic">
-                            <img
-                              src={`http://127.0.0.1:8000${post.featured_image}` || Cart1}
-                              width={100}
-                              alt="thumbnail"
-                            />
-                          </div>
-                          <div className="blog__sidebar__recent__item__text">
-                            <h6>{post.title}</h6>
-                            <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                          </div>
-                        </a>
-                      ))}
+                    {loading ? (
+                      <div className="spinner"></div>
+                    ) : (
+                      posts
+                        .filter((post) => post.status === 1)
+                        .slice(0, 3)
+                        .map((post) => (
+                          <a href="#" className="blog__sidebar__recent__item" key={post.id}>
+                            <div className="blog__sidebar__recent__item__pic">
+                              <img
+                                src={`http://127.0.0.1:8000${post.featured_image}` || Cart1}
+                                width={100}
+                                alt="thumbnail"
+                              />
+                            </div>
+                            <div className="blog__sidebar__recent__item__text">
+                              <h6>{post.title}</h6>
+                              <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                            </div>
+                          </a>
+                        ))
+                    )}
                   </div>
                 </div>
               </div>
@@ -103,10 +97,10 @@ const Blog = () => {
             <div className="col-lg-8 col-md-7">
               <div className="row">
                 {loading ? (
-                  <SkeletonLoader />
+                  <div className="spinner"></div>
                 ) : posts.length > 0 ? (
                   posts
-                    .filter((post) => post.status === 1) // Filter active posts only
+                    .filter((post) => post.status === 1)
                     .map((post) => (
                       <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
                         <div className="blog__item">
@@ -114,6 +108,7 @@ const Blog = () => {
                             <img
                               src={`http://127.0.0.1:8000${post.featured_image}` || Cart}
                               alt="Post Image"
+                              className="blog-image"
                             />
                           </div>
                           <div className="blog__item__text">
@@ -128,7 +123,6 @@ const Blog = () => {
                             <h5>
                               <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
                             </h5>
-                            
                             <Link to={`/blogdetail/${post.id}`} className="blog__btn">
                               ĐỌC THÊM <span className="arrow_right"></span>
                             </Link>
@@ -174,49 +168,34 @@ const Blog = () => {
 
       <Footer />
 
-      {/* Inline CSS for Skeleton Loader */}
+      {/* Inline CSS */}
       <style>
         {`
-          .skeleton-loader {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+          .blog-image {
+            max-width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease-in-out;
           }
-
-          .skeleton {
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            animation: skeleton-animation 1.2s infinite linear;
+          .blog-image:hover {
+            transform: scale(1.05);
           }
-
-          .skeleton-image {
-            width: 100%;
-            height: 200px;
+          .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
           }
-
-          .skeleton-text {
-            height: 20px;
-            width: 100%;
-            margin: 5px 0;
-          }
-
-          .skeleton-text:nth-child(1) {
-            width: 80%;
-          }
-
-          .skeleton-text:nth-child(2) {
-            width: 60%;
-          }
-
-          @keyframes skeleton-animation {
+          @keyframes spin {
             0% {
-              background-color: #e0e0e0;
-            }
-            50% {
-              background-color: #d0d0d0;
+              transform: rotate(0deg);
             }
             100% {
-              background-color: #e0e0e0;
+              transform: rotate(360deg);
             }
           }
         `}
