@@ -35,6 +35,7 @@ import Dashboard from "./component/admin/dashboard/index";
 import Profile from "./component/admin/profile/index";
 import Categories from "./component/admin/categories/list";
 import Contacts from "./component/admin/contact/list";
+import EditContact from "./component/admin/contact/edit";
 
 import EditCategories from "./component/admin/categories/edit";
 import AddCategories from "./component/admin/categories/add";
@@ -128,6 +129,7 @@ function App() {
       <Route path="/admin/profile" element={<Profile />} />
       <Route path="/admin/category" element={<Categories />} />
       <Route path="/admin/contact" element={<Contacts />} />
+      <Route path="/admin/contact/edit/:id" element={<EditContact />} />
       <Route path="/admin/category/edit/:id" element={<EditCategories />} />
       <Route path="/admin/category/add" element={<AddCategories />} />
       <Route path="/admin/brand" element={<ListBrand />} />

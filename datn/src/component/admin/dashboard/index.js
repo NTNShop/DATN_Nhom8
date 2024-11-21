@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../layouts/header';
 import { Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
-
+import { Link } from 'react-router-dom';
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
 const Dashboard = () => {
@@ -105,7 +105,7 @@ const Dashboard = () => {
               <div className="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li className="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
                     <li className="breadcrumb-item active" aria-current="page">Thống kê</li>
                   </ol>
                 </nav>
@@ -229,7 +229,7 @@ const Dashboard = () => {
           </div>
         </div>
         
-        <footer className="footer text-center"> © Design by <a href="#">Nhóm 8</a></footer>
+        <footer className="footer text-center"> © Design by <Link href="#">Nhóm 8</Link></footer>
       </div>
     </div>
   );

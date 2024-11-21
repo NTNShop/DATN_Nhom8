@@ -19,6 +19,7 @@ const AddProduct = () => {
         status: 'in_stock',
         is_featured: 0,
         warranty: '6',
+        stock: '',
         images: [],
         variants: []
     });
@@ -278,6 +279,20 @@ const validateForm = () => {
                                                 placeholder="Nhập giảm giá sản phẩm"
                                                 className="form-control-line border-input"
                                             />
+                                        </div>
+                                    </div>
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Số lượng</label>
+                                        <div className="col-md-12">
+                                            <input
+                                                type="text"
+                                                name="stock"
+                                                value={product.stock}
+                                                onChange={handleInputChange}
+                                                placeholder="Nhập số lượng sản phẩm"
+                                                className="form-control-line border-input"
+                                            />
+                                            {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                         </div>
                                     </div>
 

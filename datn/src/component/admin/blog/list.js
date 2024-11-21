@@ -1,51 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { getPosts, deletePost } from "../../../services/posts"// Import API để lấy và xóa bài viết
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-// import './styles.css'; // Import file CSS chung
 
 const Blog = () => {
   const [posts, setPosts] = useState([]); // Dữ liệu bài viết
-  const [pagination, setPagination] = useState({}); // Dữ liệu phân trang
+  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 }); // Dữ liệu phân trang, gán mặc định để tránh undefined
   const [loading, setLoading] = useState(true); // Trạng thái đang tải
   const [error, setError] = useState(null); // Trạng thái lỗi
   const [deleting, setDeleting] = useState(false); // Trạng thái khi xóa bài viết
-
-  useEffect(() => {
-    // Hàm gọi API để lấy danh sách bài viết
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const { posts, pagination } = await getPosts(); // Lấy bài viết từ API
-        setPosts(posts);
-        setPagination(pagination);
-      } catch (err) {
-        setError("Không thể tải bài viết.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts(); // Gọi hàm khi component được render lần đầu
-  }, []);
-
-  const handleDelete = async (postId) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
-      try {
-        setDeleting(true);
-        const success = await deletePost(postId); // Gọi API xóa bài viết
-        if (success) {
-          setPosts(posts.filter(post => post.id !== postId)); // Cập nhật lại danh sách bài viết sau khi xóa
-        } else {
-          setError("Xóa bài viết thất bại.");
-        }
-      } catch (error) {
-        setError("Xóa bài viết thất bại.");
-      } finally {
-        setDeleting(false);
-      }
-    }
-  };
 
   return (
     <div>
@@ -60,8 +22,6 @@ const Blog = () => {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
                     <li className="breadcrumb-item active" aria-current="page">Danh sách bài viết</li>
-                    <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Danh sách bài viết</li>
                   </ol>
                 </nav>
               </div>
@@ -73,12 +33,14 @@ const Blog = () => {
             <div className="col-sm-10">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title">Danh sách bài viết</h4>
+<h4 className="card-title">Danh sách bài viết</h4>
                   <span>
                     <a href="/admin/addBlog" className="btn btn-primary mb-3">
                       Thêm bài viết
                     </a>
-                  </span> <div className="table-responsive">
+                  </span>
+
+                  <div className="table-responsive">
                     {loading ? (
                       <p>Đang tải...</p>
                     ) : error ? (
@@ -97,7 +59,7 @@ const Blog = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {posts.length > 0 ? (
+                          {posts && posts.length > 0 ? ( // Kiểm tra posts tồn tại và có dữ liệu
                             posts.map((post) => (
                               <tr key={post.id}>
                                 <td>{post.id}</td>
@@ -122,15 +84,15 @@ const Blog = () => {
                                 </td>
                                 <td className="text-truncate" style={{ maxWidth: '130px' }}>
                                   <div className="d-flex gap-2">
-                                    <a href={`/admin/blog/${post.id}`} className="btn btn-primary">
+                                    <a href={`blog/${post.id}`} className="btn btn-primary">
                                       Sửa
                                     </a>
-                                    <button
+<button
                                       className="btn btn-danger"
-                                      onClick={() => handleDelete(post.id)}
                                       disabled={deleting}
                                     >
-                                      {deleting ? "Đang xóa..." : "Xóa"} </button>
+                                      {deleting ? "Đang xóa..." : "Xóa"}
+                                    </button>
                                   </div>
                                 </td>
                               </tr>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Lấy ID của thương hiệu từ URL và điều hướng
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
@@ -17,7 +17,7 @@ const EditBrand = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [previewLogo, setPreviewLogo] = useState(null);
-
+    const [uploadedImages, setUploadedImages] = useState([]); // Thêm state để lưu ảnh hiện tại
 
     useEffect(() => {
         fetchBrandData();
@@ -34,6 +34,9 @@ const EditBrand = () => {
                 logo: null
             });
             setPreviewLogo(logo ? `http://127.0.0.1:8000${logo}` : null);
+            // Lưu ID của brand mới vào localStorage
+            localStorage.setItem('newBrandId', response.data.data.id);
+            localStorage.setItem('newBrandTimestamp', Date.now().toString());
         } catch (error) {
             setErrorMessage("Không thể tải dữ liệu thương hiệu. Vui lòng thử lại sau.");
             console.error("Error fetching brand data:", error);
@@ -99,7 +102,7 @@ const EditBrand = () => {
 
     const handleCloseModal = () => {
         setShowModal(false);
-        navigate('/admin/brand'); // Điều hướng về danh sách thương hiệu sau khi cập nhật thành công
+        navigate('/admin/brand');
     };
 
     return (
@@ -151,13 +154,13 @@ const EditBrand = () => {
                                                 className="form-control-line border-input"
                                                 onChange={handleFileChange}
                                             />
-                                            {brandData.logo && typeof brandData.logo === "string" && (
-                                                <img
-                                                    src={brandData.logo}
-                                                    alt="Current logo"
-                                                    style={{ width: "50px", height: "50px", marginTop: "10px" }}
-                                                />
-                                            )}
+                                            {previewLogo && (
+    <img
+        src={previewLogo}
+        alt="Brand Logo"
+        style={{ width: "100px", height: "100px", marginTop: "10px", objectFit: "cover" }}
+    />
+)}
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">

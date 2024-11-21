@@ -61,7 +61,6 @@ const Product = () => {
         const data = await getCategories();
         setCategories(data);
       } catch (err) {
-        setError("Không thể tải danh mục sản phẩm");
       }
     };
     fetchCategories();
@@ -147,7 +146,7 @@ const Product = () => {
 
   // Clear filters
   const clearFilter = () => {
-    setPriceRange([0, 1000000]);
+    setPriceRange([0, 100000000]);
     setFilteredProducts(products);
     setCurrentPage(1);
   };
@@ -262,7 +261,7 @@ const Product = () => {
                       <input
                         type="range"
                         min="0"
-                        max="1000000"
+                        max="10000000"
                         step="100000"
                         value={priceRange[1]}
                         onChange={(e) => handleSliderChange([priceRange[0], parseInt(e.target.value)])}

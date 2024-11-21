@@ -3,96 +3,90 @@ import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-
+import { Link } from 'react-router-dom';
+import { ContactService } from '../../../services/client/Contact';
 const Contacts = () => {
+  // State để lưu trữ danh sách liên hệ
   const [contacts, setContacts] = useState([]);
+  
+  // State quản lý trạng thái loading và error
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // State quản lý modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState(null);
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
 
-  const handleCloseErrorModal = () => {
-    setShowErrorModal(false);
-    setError(null);
-  };
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-
+  // Hàm fetch danh sách liên hệ
   const fetchContacts = async () => {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/contacts');
-        if (!response.ok) {
-            throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
-        }
-        const data = await response.json();
-
-        // Kiểm tra và lấy mảng contacts từ phản hồi
-        if (data && data.contacts) {
-            setContacts(data.contacts);
-        } else {
-            console.error('Cấu trúc dữ liệu không như mong đợi:', data);
-            setError('Định dạng dữ liệu không hợp lệ');
-        }
-    } catch (error) {
-        console.error("Lỗi khi lấy Thông tin phản hồi:", error);
-        setError("Không thể tải Thông tin phản hồi. Vui lòng thử lại sau.");
+      setLoading(true);
+      const response = await ContactService.getContacts();
+      
+      // Kiểm tra và chuyển đổi dữ liệu sang mảng
+      const contactList = Array.isArray(response) 
+        ? response 
+        : (response.data || response.contacts || []);
+      
+      setContacts(contactList);
+      setError(null);
+    } catch (err) {
+      setError(err.message || "Có lỗi xảy ra khi tải danh sách liên hệ");
+      setContacts([]);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
+  // Hàm xóa liên hệ
+  const handleDeleteContact = async () => {
+    if (!selectedContact) return;
 
-  const confirmDelete = (id) => {
-    setContactToDelete(id);
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/v1/contacts/${selectedContact.id}`);
+      // Refresh danh sách sau khi xóa
+      fetchContacts();
+      // Đóng modal
+      setShowDeleteModal(false);
+    } catch (err) {
+      console.error("Lỗi khi xóa liên hệ:", err);
+      // Có thể hiển thị modal lỗi ở đây
+    }
+  };
+
+  // Gọi fetch contacts khi component mount
+  useEffect(() => {
+    fetchContacts();
+    console.log('Danh sách liên hệ:', contacts); // Kiểm tra dữ liệu
+}, []);
+
+  // Hàm mở modal xác nhận xóa
+  const confirmDelete = (contact) => {
+    setSelectedContact(contact);
     setShowDeleteModal(true);
   };
 
-  const handleDelete = async () => {
-    if (!contactToDelete) return;
+  // Render loading
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <div className="text-center mt-5">Đang tải dữ liệu...</div>
+        <Footer />
+      </div>
+    );
+  }
 
-    try {
-      const response = await axios.delete(
-        `http://127.0.0.1:8000/api/v1/contacts/${contactToDelete}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-        }
-      );
-
-      if (response.status === 200 || response.status === 204) {
-        setContacts(prevContacts =>
-          prevContacts.filter(contact => contact.id !== contactToDelete)
-        );
-        setContactToDelete(null);
-        setShowDeleteModal(false);
-        setShowSuccessModal(true);
-      }
-    } catch (error) {
-      console.error("Chi tiết lỗi xóa:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message
-      });
-
-      setError(
-        error.response?.data?.message ||
-        "Không thể xóa phản hồi. Vui lòng thử lại sau."
-      );
-      setShowDeleteModal(false);
-      setShowErrorModal(true);
-    }
-  };
-
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-  };
-
+  // Render error
+  if (error) {
+    return (
+      <div>
+        <Header />
+        <div className="alert alert-danger text-center">{error}</div>
+        <Footer />
+      </div>
+    );
+  }
   return (
     <div>
       <Header />
@@ -104,7 +98,7 @@ const Contacts = () => {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a href="#">Trang chủ</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Danh bạ</li>
+                    <li className="breadcrumb-item active" aria-current="page">Danh sách phản hồi</li>
                   </ol>
                 </nav>
               </div>
@@ -125,7 +119,7 @@ const Contacts = () => {
                           <th>Tên</th>
                           <th>Email</th>
                           <th>Số điện thoại</th>
-                          <th>Phản hồi của khách hàng</th> 
+                          <th>Lời nhắn</th> 
                           <th>Trạng thái</th>
                           <th>Thời gian</th>
                           <th>Hành động</th>
@@ -133,15 +127,11 @@ const Contacts = () => {
                         </tr>
                       </thead>
                       <tbody className='align-middle'>
-                        {loading ? (
+                        {contacts.length === 0 ? (
                           <tr>
-                            <td colSpan="5">Đang tải...</td>
+                            <td colSpan="8" className="text-center">Không có dữ liệu</td>
                           </tr>
-                        ) : error ? (
-                          <tr>
-                            <td colSpan="5">{error}</td>
-                          </tr>
-                        ) : contacts && Array.isArray(contacts) && contacts.length > 0 ? (
+                        ) : (
                           contacts.map((contact) => (
                             <tr key={contact.id}>
                               <td>{contact.id}</td>
@@ -149,22 +139,31 @@ const Contacts = () => {
                               <td>{contact.email}</td>
                               <td>{contact.phone}</td>
                               <td>{contact.message}</td>
-                              <td>{contact.status === 1 ? 'Chờ phản hồi' : 'đã phản hồi'}</td>
-                              <td>{contact.created_at}</td>
                               <td>
-                                <button 
-                                  onClick={() => confirmDelete(contact.id)} 
-                                  className="btn btn-danger"
-                                >
-                                  Xóa
-                                </button>
+                              <span className={`badge ${contact.status === 0 ? 'bg-success' : 'bg-warning'}`}>
+                                    {contact.status === 0 ? 'Đã phản hồi' : 'Chờ phản hồi'}
+                                  </span>
+                              </td>
+                              <td>{new Date(contact.created_at).toLocaleString()}</td>
+                              <td>
+                                <div className="d-flex gap-2">
+                                  <span>
+                                    <Link to={`/admin/contact/edit/${contact.id}`} className="btn btn-primary btn-sm">
+                                      Chỉnh sửa
+                                    </Link>
+                                  </span>
+                                  <span>
+                                    <button 
+                                      onClick={() => confirmDelete(contact)} 
+                                      className="btn btn-danger btn-sm"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </span>
+                                </div>
                               </td>
                             </tr>
                           ))
-) : (
-                          <tr>
-                            <td colSpan="5">Không có phản hồi nào</td>
-                          </tr>
                         )}
                       </tbody>
                     </table>
@@ -183,36 +182,36 @@ const Contacts = () => {
           </Modal.Header>
           <Modal.Body>Bạn có chắc chắn muốn xóa phản hồi này không?</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
               Hủy
             </Button>
-            <Button variant="danger" onClick={handleDelete}>
+            <Button variant="danger" onClick={handleDeleteContact}>
               Xóa
             </Button>
           </Modal.Footer>
         </Modal>
 
         {/* Modal thông báo thành công */}
-        <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
+        <Modal>
           <Modal.Header closeButton>
             <Modal.Title>Xóa thành công</Modal.Title>
           </Modal.Header>
           <Modal.Body>Liên lạc đã được xóa thành công!</Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" onClick={handleCloseSuccessModal}>
+            <Button variant="primary" >
               Đóng
             </Button>
           </Modal.Footer>
         </Modal>
 
         {/* Modal thông báo lỗi */}
-        <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
+        <Modal >
           <Modal.Header closeButton>
             <Modal.Title>Lỗi</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{error}</Modal.Body>
+          <Modal.Body>Lỗi</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseErrorModal}>
+            <Button >
               Đóng
             </Button>
           </Modal.Footer>

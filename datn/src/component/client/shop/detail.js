@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Header from "../home/header";
 import Footer from "../home/footer";
@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 
 const Detail = () => {
     const [mainImage, setMainImage] = useState(null);
+  const [filteredProducts, setFilteredProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -20,6 +21,11 @@ const Detail = () => {
     const [comment, setComment] = useState('');
     const { id } = useParams();
     const [cartItems, setCartItems] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 1000000]);
+
 
     useEffect(() => {
         const fetchProductDetail = async () => {
@@ -38,6 +44,8 @@ const Detail = () => {
             }
         };
 
+        
+
         fetchProductDetail();
     }, [id]);
 
@@ -52,6 +60,11 @@ const Detail = () => {
             setError("Không thể tải bình luận. Vui lòng thử lại sau.");
         }
     };
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
     if (loading) return <div>Loading...</div>;
 
     const handleThumbnailClick = (image) => {
@@ -101,9 +114,92 @@ const Detail = () => {
           toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
         }
       };
+        // Handle search
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const searchResults = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(searchResults);
+    setCurrentPage(1);
+  };
+  // Handle search input change
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
+    // Nếu muốn tìm kiếm realtime, bỏ comment đoạn code dưới đây
+    const searchResults = products.filter(product =>
+      product.name.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredProducts(searchResults);
+    setCurrentPage(1);
+  };
+  // Clear search
+  const clearSearch = () => {
+    setSearchTerm("");
+    setFilteredProducts(products);
+    setCurrentPage(1);
+  };
+  // Handle price filter
+  const handlePriceChange = () => {
+    const [minPrice, maxPrice] = priceRange;
+    const filtered = products.filter((product) => {
+      const price = parseFloat(product.price);
+      return price >= minPrice && price <= maxPrice;
+    });
+    setFilteredProducts(filtered);
+    setCurrentPage(1);
+  };
     return (
         <>
             <Header />
+            <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#" onSubmit={handleSearch}>
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..."  value={searchTerm}
+                      onChange={handleSearchInputChange}/>
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                {searchTerm && (
+                  <button 
+                    onClick={clearSearch}
+                    className="btn btn-outline-secondary mt-2"
+                  >
+                    Xóa tìm kiếm
+                  </button>
+                )}
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
             <section className="product-details py-5">
                 <div className="container">
                     <div className="row">
