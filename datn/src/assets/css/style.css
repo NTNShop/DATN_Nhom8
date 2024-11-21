@@ -15126,3 +15126,25 @@ nav.dmcc ul#main-menu li a span {
     display: block;
   }
 }
+.product__item__pic {
+  position: relative;
+}
+
+.out-of-stock-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: not-allowed;
+  z-index: 10;
+}
+
+.out-of-stock-btn:hover {
+  background-color: rgba(255, 0, 0, 0.9);
+}

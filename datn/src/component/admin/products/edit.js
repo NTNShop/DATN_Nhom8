@@ -3,16 +3,24 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Modal, Button } from 'react-bootstrap';
 
 const EditProduct = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
     const [uploadedImages, setUploadedImages] = useState([]); // Thêm state để lưu ảnh hiện tại
     const [imageErrors, setImageErrors] = useState(null); // Thêm state để xử lý lỗi ảnh
+    const [showModal, setShowModal] = useState(false);
+    const handleClose = () => {
+        setShowModal(false);
+        navigate(-1); // Quay về trang trước
+    };
+     
 
     // Sửa hàm handleFileChange để validate và preview ảnh
     const handleFileChange = (e) => {
@@ -53,7 +61,8 @@ const EditProduct = () => {
         status: 'in_stock',
         warranty: '6',
         images: [],
-        variants: []
+        variants: [],
+        stock:'',
     });
     const [currentVariant, setCurrentVariant] = useState({
         color: '',
@@ -185,6 +194,7 @@ const EditProduct = () => {
         formData.append('description', product.description);
         formData.append('short_description', product.short_description);
         formData.append('specifications', product.specifications);
+        formData.append('stock', product.stock);
     
         // Xử lý variants
         product.variants.forEach((variant, index) => {
@@ -215,8 +225,9 @@ const EditProduct = () => {
             );
     
             if (response.data.status === 'success') {
-                alert('Cập nhật sản phẩm thành công');
+                setShowModal(true);
             }
+            // navigate("/admin/product");
         } catch (error) {
             console.error("Error:", error.response?.data || error.message);
             alert("Có lỗi xảy ra: " + (error.response?.data?.message || "Lỗi không xác định"));
@@ -235,6 +246,10 @@ const EditProduct = () => {
         if (!product.short_description) errors.short_description = "Mô tả ngắn là bắt buộc";
         if (!product.description) errors.description = "Mô tả là bắt buộc";
         if (product.variants.length === 0) errors.variants = "Cần ít nhất một biến thể màu sắc";
+
+        if (!product.stock || isNaN(product.stock) || Number(product.stock) <= 0) {
+            errors.stock = "Số lượng sản phẩm phải là số dương";
+        }
         return errors;
     };
 
@@ -361,6 +376,20 @@ const EditProduct = () => {
                                             />
                                             {errors.price && <span className="text-danger">{errors.price}</span>}
                                         </div>
+                                    </div>
+                                    <div>
+                                    <label className="col-md-12 mb-0">số lượng</label>
+                                        <input
+                                            type="number"
+                                            id="stock"
+                                            name="stock"
+                                            value={product.stock}
+                                            onChange={handleInputChange}
+                                            min="0"
+                                            className="form-control-line border-input"
+                                            
+                                        />
+                                        {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                     </div>
 
                                     <div className="form-group mb-3">
@@ -491,8 +520,21 @@ const EditProduct = () => {
                         </div>
                     </div>
                 </div>
+                
             </div>
             <Footer />
+               {/* Modal */}
+               <Modal show={showModal} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Thành công</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Cập nhật sản phẩm thành công!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="success" onClick={handleClose}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

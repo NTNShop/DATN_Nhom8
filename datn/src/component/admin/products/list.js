@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useMemo} from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
@@ -12,6 +12,7 @@ const ListProduct = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -73,6 +74,11 @@ const ListProduct = () => {
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
     };
+    const filteredProducts = useMemo(() => {
+        return products.filter((product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [products, searchTerm]);
 
     return (
         <div>
@@ -92,25 +98,44 @@ const ListProduct = () => {
                         </div>
                     </div>
                 </div>
-
+    
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-10">
                             <div className="card">
                                 <div className="card-body">
-                                    <h4 className="card-title">Danh sách sản phẩm</h4>
-                                    <span><Link to='/admin/product/add' className="btn btn-primary">Thêm sản phẩm</Link></span>
-
-                                    <div className="table-responsive mt-3">
-                                        <table className="table user-table mt-2">
+                                    <h4 className="card-title text-primary">Danh sách sản phẩm</h4>
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <Link to="/admin/product/add" className="btn btn-primary">
+                                            Thêm sản phẩm
+                                        </Link>
+                                        <div className="de-search text-start">
+                                            <div className="input-group mb-3">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Nhập tên sản phẩm"
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                />
+                                                <span className="input-group-text bg-primary text-white">
+                                                    <i className="fa-solid fa-magnifying-glass"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    <div className="table-responsive">
+                                        <table className="table table-bordered mt-2">
                                             <thead>
-                                                <tr className='table-light'>
+                                                <tr className="table-light">
                                                     <th className="border-top-0">STT</th>
                                                     <th className="border-top-0">Tên</th>
                                                     <th className="border-top-0">Danh mục</th>
                                                     <th className="border-top-0">Thương hiệu</th>
                                                     <th className="border-top-0">Giá</th>
-                                                    <th className="border-top-0">Hình ảnh</th> {/* Thêm cột Hình ảnh */}
+                                                    <th className="border-top-0">Hình ảnh</th>
+                                                    <th className="border-top-0">Số lượng</th>
                                                     <th className="border-top-0">Trạng thái</th>
                                                     <th className="border-top-0">Thao tác</th>
                                                 </tr>
@@ -118,65 +143,105 @@ const ListProduct = () => {
                                             <tbody>
                                                 {loading ? (
                                                     <tr>
-                                                        <td colSpan="8">Đang tải...</td>
+                                                        <td colSpan="8" className="text-center">Đang tải...</td>
                                                     </tr>
                                                 ) : error ? (
                                                     <tr>
-                                                        <td colSpan="8">{error}</td>
+                                                        <td colSpan="8" className="text-center text-danger">{error}</td>
                                                     </tr>
-                                                ) : products.length > 0 ? (
-                                                    products.map((product,index) => (
+                                                ) : filteredProducts.length > 0 ? (
+                                                    filteredProducts.map((product, index) => (
                                                         <tr key={product.id}>
-                                                            <td>{index + 1}</td> 
+                                                            <td>{index + 1}</td>
                                                             <td>{product.name}</td>
                                                             <td>{product.category?.name || "N/A"}</td>
                                                             <td>{product.brand?.name || "N/A"}</td>
                                                             <td>{product.price}</td>
                                                             <td>
-                                                                {/* Hiển thị hình ảnh sản phẩm */}
                                                                 {product.images.length > 0 ? (
-                                                                    <img src={`http://127.0.0.1:8000${product.images[0].image_url}`} alt={product.name} width="100" />
+                                                                    <img
+                                                                        src={`http://127.0.0.1:8000${product.images[0].image_url}`}
+                                                                        alt={product.name}
+                                                                        style={{
+                                                                            width: "50px",
+                                                                            height: "50px",
+                                                                            borderRadius: "5px",
+                                                                            objectFit: "cover",
+                                                                        }}
+                                                                    />
                                                                 ) : (
                                                                     "Không có hình ảnh"
                                                                 )}
                                                             </td>
-                                                            <td>{product.status === "in_stock" ? "Còn hàng" : "Hết hàng"}</td>
+                                                            <td>{product.stock}</td>
+                                                            <td>
+                                                                <span
+                                                                    className={`status-dot ${product.status === "in_stock"
+                                                                        ? "dot-success"
+                                                                        : "dot-danger"
+                                                                        }`}
+                                                                ></span>
+                                                                {product.status === "in_stock" ? "Kích hoạt" : "Không kích hoạt"}
+                                                            </td>
                                                             <td>
                                                                 <div className="d-flex gap-2">
-                                                                    <span><Link to={`/admin/product/edit/${product.id}`} className="btn btn-primary">Chỉnh sửa</Link></span>
-                                                                    <span>
-                                                                        <button onClick={() => confirmDelete(product.id)} className="btn btn-danger">Xóa</button>
-                                                                    </span>
+                                                                    <Link
+                                                                        to={`/admin/product/edit/${product.id}`}
+                                                                        className="btn btn-primary"
+                                                                    >
+                                                                        Chỉnh sửa
+                                                                    </Link>
+                                                                    <button
+                                                                        onClick={() => confirmDelete(product.id)}
+                                                                        className="btn btn-danger"
+                                                                    >
+                                                                        Xóa
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                     ))
                                                 ) : (
                                                     <tr>
-                                                        <td colSpan="8">Không tìm thấy sản phẩm</td>
+                                                        <td colSpan="8" className="text-center">Không tìm thấy sản phẩm</td>
                                                     </tr>
                                                 )}
                                             </tbody>
                                         </table>
                                     </div>
-
-                                    {/* Phân trang */}
-                                    <div className="pagination-controls">
-                                        <button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>
-                                            Trước
-                                        </button>
-                                        <span>Trang {pagination.currentPage} của {pagination.totalPages}</span>
-                                        <button onClick={() => handlePageChange(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>
-                                            Tiếp theo
-                                        </button>
+    
+                                    {/* Pagination */}
+                                    <div className="d-flex justify-content-center">
+                                        <ul className="pagination">
+                                            <li className={`page-item ${pagination.currentPage === 1 ? "disabled" : ""}`}>
+                                                <button
+                                                    className="page-link"
+                                                    onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                                >
+                                                    Trước
+                                                </button>
+                                            </li>
+                                            <li className="page-item">
+                                                <span className="page-link">Trang {pagination.currentPage} / {pagination.totalPages}</span>
+                                            </li>
+                                            <li className={`page-item ${pagination.currentPage === pagination.totalPages ? "disabled" : ""}`}>
+                                                <button
+                                                    className="page-link"
+                                                    onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                                >
+                                                    Tiếp theo
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+    
                 <Footer />
-
+    
                 {/* Modal xác nhận xóa */}
                 <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
@@ -192,7 +257,7 @@ const ListProduct = () => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
+    
                 {/* Modal thông báo thành công */}
                 <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                     <Modal.Header closeButton>
@@ -208,6 +273,7 @@ const ListProduct = () => {
             </div>
         </div>
     );
+    
 };
 
 export default ListProduct;

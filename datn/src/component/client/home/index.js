@@ -30,8 +30,8 @@ import imgCategory from "../../../assets/img/hero/cateimg1.jpg";
 import logo from "../../../assets/img/logo.png";
 import videoBanner from "../../../assets/img/hero/video-header.mp4";
 import blog1 from "../../../assets/img/hero/blog1.jpg"
-
-import AOS from 'aos';
+import Header from './header';
+// import AOS from 'aos';
 import 'aos/dist/aos.css';
 const Home = () => {
   const [products, setProducts] = useState([]); // State to store fetched products
@@ -79,9 +79,9 @@ const Home = () => {
 
   return (
     <div>
-      
-      <header>
-        <section className="header sticky">
+     <Header/>
+     
+        {/* <section className="header sticky">
           <div className="khungmenu">
             <Link to="/" className="logo">BIKESCHOOL</Link>
             <nav className="dmcc">

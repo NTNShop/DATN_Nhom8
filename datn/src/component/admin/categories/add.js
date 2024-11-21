@@ -3,14 +3,21 @@ import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const AddCategory = () => {
+    const navigate = useNavigate();
+    const handleGoBack = () => {
+        navigate(-1);
+    }
+
     const [categoryData, setCategoryData] = useState({
         name: "",
         image_url: null,
         status: "1",
         parent_id: ""
     });
+    const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
@@ -24,21 +31,34 @@ const AddCategory = () => {
         setCategoryData({ ...categoryData, image_url: e.target.files[0] });
     };
 
+    const validateForm = () => {
+        let tempErrors = {};
+        let formIsValid = true;
+
+        // Check if name is empty
+        if (!categoryData.name) {
+            formIsValid = false;
+            tempErrors["name"] = "Vui lòng nhập tên danh mục.";
+        }
+
+        // Check if image is selected
+        if (!categoryData.image_url) {
+            formIsValid = false;
+            tempErrors["image_url"] = "Vui lòng chọn hình ảnh.";
+        }
+
+        setErrors(tempErrors);
+        return formIsValid;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccessMessage("");
         setErrorMessage("");
 
-        // Check if file is selected
-        if (!categoryData.image_url) {
-            setErrorMessage("Vui lòng chọn hình ảnh.");
-            return;
-        }
-
-        // Check if name is empty
-        if (!categoryData.name) {
-            setErrorMessage("Vui lòng nhập tên danh mục.");
-            return;
+        // Validate form
+        if (!validateForm()) {
+            return; // Stop submission if validation fails
         }
 
         const formData = new FormData();
@@ -91,38 +111,61 @@ const AddCategory = () => {
                                 <h4 className="card-title">Thêm danh mục</h4>
                                 {successMessage && <p className="text-success">{successMessage}</p>}
                                 {errorMessage && <p className="text-danger">{errorMessage}</p>}
-                                <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
-                                    <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Tên danh mục</label>
-                                        <div className="col-md-12">
-                                            <input type="text" id="name" value={categoryData.name} placeholder="Nhập tên danh mục" className="form-control-line border-input" onChange={handleChange}  />
-                                        </div>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="mb-3">
+                                        <label htmlFor="name" className="form-label">Tên danh mục</label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            value={categoryData.name}
+                                            placeholder="Nhập tên danh mục"
+                                            className="form-control"
+                                            onChange={handleChange}
+                                        />
+                                        <span className="text-danger">{errors.name}</span>
                                     </div>
-                                    <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Hình ảnh</label>
-                                        <div className="col-md-12">
-                                            <input type="file" id="image_url" className="form-control-line border-input" onChange={handleFileChange}  />
-                                        </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="image_url" className="form-label">Hình ảnh</label>
+                                        <input
+                                            type="file"
+                                            id="image_url"
+                                            className="form-control"
+                                            onChange={handleFileChange}
+                                        />
+                                        <span className="text-danger">{errors.image_url}</span>
                                     </div>
-                                    <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Trạng thái</label>
-                                        <div className="col-md-12">
-                                            <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} >
-                                                <option value="1">Kích hoạt</option>
-                                                <option value="0">Không kích hoạt</option>
-                                            </select>
-                                        </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="status" className="form-label">Trạng thái</label>
+                                        <select
+                                            id="status"
+                                            value={categoryData.status}
+                                            className="form-select"
+                                            onChange={handleChange}
+                                        >
+                                            <option value="1">Kích hoạt</option>
+                                            <option value="0">Không kích hoạt</option>
+                                        </select>
                                     </div>
-                                    <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Danh mục cha</label>
-                                        <div className="col-md-12">
-                                            <input type="number" id="parent_id" value={categoryData.parent_id} placeholder="Nhập ID danh mục cha (hoặc để trống)" className="form-control-line border-input" onChange={handleChange} />
-                                        </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="parent_id" className="form-label">Danh mục cha</label>
+                                        <input
+                                            type="number"
+                                            id="parent_id"
+                                            value={categoryData.parent_id}
+                                            placeholder="Nhập ID danh mục cha (hoặc để trống)"
+                                            className="form-control"
+                                            onChange={handleChange}
+                                        />
                                     </div>
-                                    <div className="form-group">
-                                        <div className="col-sm-12 d-flex">
-                                            <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">Thêm danh mục</button>
-                                        </div>
+                                    <div className="d-flex justify-content">
+                                        <button type="submit" className="btn btn-success mt-3 text-white">Thêm danh mục</button>
+                                        <button
+                                            className="btn btn-secondary mt-3 mx-auto mx-md-0 text-white"
+                                            type="button"
+                                            onClick={handleGoBack}
+                                        >
+                                            Trở về
+                                        </button>
                                     </div>
                                 </form>
                             </div>

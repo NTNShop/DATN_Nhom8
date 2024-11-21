@@ -4,8 +4,13 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useNavigate, } from 'react-router-dom';
 
 const AddProduct = () => {
+    const navigate = useNavigate();
+    const handleGoBack = () => {
+        navigate(-1); // Điều hướng về trang trước
+    };
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
     const [product, setProduct] = useState({
@@ -13,6 +18,7 @@ const AddProduct = () => {
         category_id: '',
         brand_id: '',
         price: '',
+        stock: '',
         description: '',
         short_description: '',
         specifications: '',
@@ -20,48 +26,49 @@ const AddProduct = () => {
         is_featured: 0,
         warranty: '6',
         images: [],
-        variants: []
+        variants: [],
+
     });
     // Thêm state để quản lý variant đang nhập
-const [currentVariant, setCurrentVariant] = useState({
-    color: '',
-    price: '',
-    code: ''
-});
-const handleVariantChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentVariant(prev => ({
-        ...prev,
-        [name]: value
-    }));
-};
-const addVariant = () => {
-    if (!currentVariant.color || !currentVariant.price) {
-        alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
-        return;
-    }
-    
-    // Tạo mã code ngẫu nhiên cho variant
-    const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
-    
-    setProduct(prev => ({
-        ...prev,
-        variants: [...prev.variants, { ...currentVariant, code: variantCode }]
-    }));
-    
-    // Reset form variant
-    setCurrentVariant({
+    const [currentVariant, setCurrentVariant] = useState({
         color: '',
         price: '',
         code: ''
     });
-};
-const removeVariant = (index) => {
-    setProduct(prev => ({
-        ...prev,
-        variants: prev.variants.filter((_, i) => i !== index)
-    }));
-};
+    const handleVariantChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentVariant(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    const addVariant = () => {
+        if (!currentVariant.color || !currentVariant.price) {
+            alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
+            return;
+        }
+
+        // Tạo mã code ngẫu nhiên cho variant
+        const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+
+        setProduct(prev => ({
+            ...prev,
+            variants: [...prev.variants, { ...currentVariant, code: variantCode }]
+        }));
+
+        // Reset form variant
+        setCurrentVariant({
+            color: '',
+            price: '',
+            code: ''
+        });
+    };
+    const removeVariant = (index) => {
+        setProduct(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
+    };
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
@@ -70,8 +77,13 @@ const removeVariant = (index) => {
             try {
                 const categoryResponse = await axios.get('http://127.0.0.1:8000/api/v1/categories');
                 const brandResponse = await axios.get('http://127.0.0.1:8000/api/v1/brands');
-                setCategories(categoryResponse.data.data); // Assuming categories are in data.data
-                setBrands(brandResponse.data.data); // Assuming brands are in data.data
+
+                // Lọc dữ liệu có status === 1
+                const filteredCategories = categoryResponse.data.data.filter(item => item.status === 1);
+                const filteredBrands = brandResponse.data.data.filter(item => item.status === 1);
+
+                setCategories(filteredCategories);
+                setBrands(filteredBrands);
             } catch (error) {
                 console.error("Error fetching categories and brands:", error);
             }
@@ -110,10 +122,11 @@ const removeVariant = (index) => {
             setErrors(formErrors);
             return;
         }
-    
+
+
         try {
             const formData = new FormData();
-            
+
             // Append basic product data
             Object.keys(product).forEach(key => {
                 if (key === 'images') {
@@ -127,16 +140,20 @@ const removeVariant = (index) => {
                     formData.append('variants', JSON.stringify(product.variants));
                 } else {
                     formData.append(key, product[key]);
+
                 }
 
+
             });
-    
+            // console.log("FormData:", Array.from(formData.entries()));
+
+
             const response = await axios.post('http://127.0.0.1:8000/api/v1/products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }
             });
-    
+
             if (response.data.status === 'success') {
                 alert('Thêm sản phẩm thành công');
                 // Reset form or redirect
@@ -146,20 +163,26 @@ const removeVariant = (index) => {
             alert(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
         }
     };
-    
+
 
 
     // Validate form
-const validateForm = () => {
-    const errors = {};
-    if (!product.name) errors.name = "Tên sản phẩm là bắt buộc";
-    if (!product.category_id) errors.category_id = "Danh mục là bắt buộc";
-    if (!product.brand_id) errors.brand_id = "Thương hiệu là bắt buộc";
-    if (!product.price) errors.price = "Giá là bắt buộc";
-    if (!product.description) errors.description = "Mô tả là bắt buộc";
-    if (!product.images || product.images.length === 0) errors.images = "Ảnh là bắt buộc";
-    return errors;
-};
+    const validateForm = () => {
+        const errors = {};
+        if (!product.name) errors.name = "Tên sản phẩm là bắt buộc";
+        if (!product.category_id) errors.category_id = "Danh mục là bắt buộc";
+        if (!product.brand_id) errors.brand_id = "Thương hiệu là bắt buộc";
+        if (!product.price) errors.price = "Giá là bắt buộc";
+        if (!product.description) errors.description = "Mô tả là bắt buộc";
+        if (!product.images || product.images.length === 0) errors.images = "Ảnh là bắt buộc";
+        if (!product.stock) {
+            errors.stock = "Số lượng là bắt buộc";
+        } else if (isNaN(product.stock) || product.stock < 0) {
+            errors.stock = "Số lượng phải là số không âm";
+        }
+
+        return errors;
+    };
 
     return (
         <div>
@@ -269,68 +292,72 @@ const validateForm = () => {
                                         </div>
                                     </div>
 
+                                    <div>
+                                        <label className="col-md-12 mb-0">số lượng</label>
+                                        <input
+                                            type="number"
+                                            id="stock"
+                                            name="stock"
+                                            value={product.stock}
+                                            onChange={handleInputChange}
+                                            min="0"
+                                            className="form-control-line border-input"
+
+                                        />
+                                        {errors.stock && <span className="error">{errors.stock}</span>}
+                                    </div>
+
+
+                                    {/* Phần thêm variant màu sắc */}
                                     <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Giảm giá</label>
+                                        <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
                                         <div className="col-md-12">
-                                            <input
-                                                type="text"
-                                                name="sale"
-                                                placeholder="Nhập giảm giá sản phẩm"
-                                                className="form-control-line border-input"
-                                            />
+                                            <div className="d-flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    name="color"
+                                                    value={currentVariant.color}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập màu sắc"
+                                                    className="form-control"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    value={currentVariant.price}
+                                                    onChange={handleVariantChange}
+                                                    placeholder="Nhập giá"
+                                                    className="form-control"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={addVariant}
+                                                    className="btn btn-primary"
+                                                >
+                                                    Thêm màu
+                                                </button>
+                                            </div>
+
+                                            {/* Hiển thị danh sách variants */}
+                                            <div className="variants-list mt-2">
+                                                {product.variants.map((variant, index) => (
+                                                    <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                                        <span className='text-dark'>
+                                                            Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => removeVariant(index)}
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Phần thêm variant màu sắc */}
-                                            <div className="form-group mb-3">
-                                                <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
-                                                <div className="col-md-12">
-                                                    <div className="d-flex gap-2 mb-2">
-                                                        <input
-                                                            type="text"
-                                                            name="color"
-                                                            value={currentVariant.color}
-                                                            onChange={handleVariantChange}
-                                                            placeholder="Nhập màu sắc"
-                                                            className="form-control"
-                                                        />
-                                                        <input
-                                                            type="number"
-                                                            name="price"
-                                                            value={currentVariant.price}
-                                                            onChange={handleVariantChange}
-                                                            placeholder="Nhập giá"
-                                                            className="form-control"
-                                                        />
-                                                        <button 
-                                                            type="button"
-                                                            onClick={addVariant}
-                                                            className="btn btn-primary"
-                                                        >
-                                                            Thêm màu
-                                                        </button>
-                                                    </div>
-                                                    
-                                                    {/* Hiển thị danh sách variants */}
-                                                    <div className="variants-list mt-2">
-                                                        {product.variants.map((variant, index) => (
-                                                            <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
-                                                                <span className='text-dark'>
-                                                                    Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
-                                                                </span>
-                                                                <button 
-                                                                    type="button" 
-                                                                    className="btn btn-danger btn-sm"
-                                                                    onClick={() => removeVariant(index)}
-                                                                >
-                                                                    Xóa
-                                                                </button>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Mô tả ngắn</label>
@@ -362,20 +389,20 @@ const validateForm = () => {
                                         </div>
                                     </div>
                                     {/* Trường warranty */}
-                                        <div className="form-group mb-3">
-                                            <label className="col-md-12 mb-0">Thời gian bảo hành</label>
-                                            <div className="col-md-12">
-                                                <select
-                                                    name="warranty"
-                                                    value={product.warranty}
-                                                    onChange={handleInputChange}
-                                                    className="form-control"
-                                                >
-                                                    <option value="6">6 tháng</option>
-                                                    <option value="12">12 tháng</option>
-                                                </select>
-                                            </div>
-                                        </div>           
+                                    <div className="form-group mb-3">
+                                        <label className="col-md-12 mb-0">Thời gian bảo hành</label>
+                                        <div className="col-md-12">
+                                            <select
+                                                name="warranty"
+                                                value={product.warranty}
+                                                onChange={handleInputChange}
+                                                className="form-control"
+                                            >
+                                                <option value="6">6 tháng</option>
+                                                <option value="12">12 tháng</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     {/* Trường specifications với CKEditor */}
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
@@ -407,6 +434,13 @@ const validateForm = () => {
                                         <div className="col-sm-12 d-flex">
                                             <button className="btn btn-success mx-auto mx-md-0 text-white" type="submit">
                                                 Thêm sản phẩm
+                                            </button>
+                                            <button
+                                                className="btn btn-secondary  mx-auto mx-md-0 text-white"
+                                                type="button"
+                                                onClick={handleGoBack}
+                                            >
+                                                Trở về
                                             </button>
                                         </div>
                                     </div>
