@@ -835,6 +835,27 @@ ol {
 	display: inline-block;
 	margin-right: 5px; /* Khoảng cách giữa dấu chấm và text */
   }
+  .role-badge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  display: inline-block; /* Đảm bảo span hiển thị đúng */
+}
+
+.badge-admin {
+  background-color: #007bff; /* Màu nền cho admin */
+}
+
+.badge-user {
+  background-color: #28a745; /* Màu nền cho user */
+}
+
+.badge-guest {
+  background-color: #ffc107; /* Màu nền cho guest */
+}
+
+
   
   .dot-success {
 	background-color: #0fab33; /* Màu xanh */
@@ -848,6 +869,23 @@ ol {
 .header__top__left ul li:last-child {
 	margin-right: 0;
 }
+.status-badge {
+	padding: 5px 15px;
+	border-radius: 25px;
+	color: white;
+	font-weight: bold;
+	display: inline-block; /* Đảm bảo span hiển thị đúng */
+	text-transform: capitalize;
+  }
+  
+  .badge-success {
+	background-color: #28a745; /* Màu nền cho trạng thái "Hoạt động" */
+  }
+  
+  .badge-danger {
+	background-color: #dc3545; /* Màu nền cho trạng thái "Không hoạt động" */
+  }
+  
 
 .header__top__left ul li:last-child:after {
 	display: none;

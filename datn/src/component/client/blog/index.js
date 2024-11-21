@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getPosts } from "../../../services/admin/posts";
 import { Link } from "react-router-dom";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
@@ -16,12 +17,26 @@ const SkeletonLoader = () => (
 );
 
 const Blog = () => {
-  const [posts, setPosts] = useState([]); // List of blog posts
-  const [pagination, setPagination] = useState({}); // Pagination data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [posts, setPosts] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Function to fetch posts from the API
+  const fetchPosts = async (page = 1) => {
+    setLoading(true);
+    const result = await getPosts(page);
+    setPosts(result.data.posts);
+    setPagination(result.data.pagination);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchPosts(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -41,7 +56,7 @@ const Blog = () => {
               <div className="breadcrumb__text">
                 <h2>BÀI VIẾT</h2>
                 <div className="breadcrumb__option">
-                  <a href="./index.html">TRANG CHỦ</a>
+                  <a href="/">TRANG CHỦ</a>
                   <span>BÀI VIẾT</span>
                 </div>
               </div>
@@ -60,17 +75,28 @@ const Blog = () => {
                 <div className="blog__sidebar__item">
                   <h4>Tin tức xe máy gần đây</h4>
                   <div className="blog__sidebar__recent">
-                    {posts.slice(0, 3).map((post) => (
-<a href="#" className="blog__sidebar__recent__item" key={post.id}>
-                        <div className="blog__sidebar__recent__item__pic">
-                          <img src={`http://127.0.0.1:8000${post.featured_image}` || Cart1} width={100} alt="thumbnail" />
-                        </div>
-                        <div className="blog__sidebar__recent__item__text">
-                          <h6>{post.title}</h6>
-                          <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                        </div>
-                      </a>
-                    ))}
+                    {loading ? (
+                      <div className="spinner"></div>
+                    ) : (
+                      posts
+                        .filter((post) => post.status === 1)
+                        .slice(0, 3)
+                        .map((post) => (
+                          <a href="#" className="blog__sidebar__recent__item" key={post.id}>
+                            <div className="blog__sidebar__recent__item__pic">
+                              <img
+                                src={`http://127.0.0.1:8000${post.featured_image}` || Cart1}
+                                width={100}
+                                alt="thumbnail"
+                              />
+                            </div>
+                            <div className="blog__sidebar__recent__item__text">
+                              <h6>{post.title}</h6>
+                              <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                            </div>
+                          </a>
+                        ))
+                    )}
                   </div>
                 </div>
               </div>
@@ -80,34 +106,39 @@ const Blog = () => {
             <div className="col-lg-8 col-md-7">
               <div className="row">
                 {loading ? (
-                  <SkeletonLoader />
+                  <div className="spinner"></div>
                 ) : posts.length > 0 ? (
-                  posts.map((post) => (
-                    <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
-                      <div className="blog__item">
-                        <div className="blog__item__pic">
-                          <img src={`http://127.0.0.1:8000${post.featured_image}` || Cart} alt="Post Image" />
-                        </div>
-                        <div className="blog__item__text">
-                          <ul>
-                            <li>
-                              <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
-                            </li>
-                            <li>
-                              <i className="fa fa-comment-o"></i> 5
-                            </li>
-                          </ul>
-                          <h5>
-                            <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
-                          </h5>
-                          
-                          <Link to={`/blogdetail/${post.id}`} className="blog__btn">
-                            ĐỌC THÊM <span className="arrow_right"></span>
-                          </Link>
+                  posts
+                    .filter((post) => post.status === 1)
+                    .map((post) => (
+                      <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
+                        <div className="blog__item">
+                          <div className="blog__item__pic">
+                            <img
+                              src={`http://127.0.0.1:8000${post.featured_image}` || Cart}
+                              alt="Post Image"
+                              className="blog-image"
+                            />
+                          </div>
+                          <div className="blog__item__text">
+                            <ul>
+                              <li>
+                                <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
+                              </li>
+                              <li>
+                                <i className="fa fa-comment-o"></i> 5
+                              </li>
+                            </ul>
+                            <h5>
+                              <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
+                            </h5>
+                            <Link to={`/blogdetail/${post.id}`} className="blog__btn">
+                              ĐỌC THÊM <span className="arrow_right"></span>
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    ))
                 ) : (
                   <p>Không có bài viết nào.</p>
                 )}
@@ -117,7 +148,10 @@ const Blog = () => {
                   <div className="col-lg-12">
                     <div className="product__pagination blog__pagination">
                       {pagination.current_page > 1 && (
-                        <button  className="prev">
+                        <button
+                          onClick={() => handlePageChange(pagination.current_page - 1)}
+                          className="prev"
+                        >
                           « Trước
                         </button>
                       )}
@@ -125,7 +159,10 @@ const Blog = () => {
                         {pagination.current_page} / {pagination.last_page}
                       </span>
                       {pagination.current_page < pagination.last_page && (
-<button  className="next">
+                        <button
+                          onClick={() => handlePageChange(pagination.current_page + 1)}
+                          className="next"
+                        >
                           Tiếp theo »
                         </button>
                       )}
@@ -140,49 +177,34 @@ const Blog = () => {
 
       <Footer />
 
-      {/* Inline CSS for Skeleton Loader */}
+      {/* Inline CSS */}
       <style>
         {`
-          .skeleton-loader {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+          .blog-image {
+            max-width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease-in-out;
           }
-
-          .skeleton {
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            animation: skeleton-animation 1.2s infinite linear;
+          .blog-image:hover {
+            transform: scale(1.05);
           }
-
-          .skeleton-image {
-            width: 100%;
-            height: 200px;
+          .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
           }
-
-          .skeleton-text {
-            height: 20px;
-            width: 100%;
-            margin: 5px 0;
-          }
-
-          .skeleton-text:nth-child(1) {
-            width: 80%;
-          }
-
-          .skeleton-text:nth-child(2) {
-            width: 60%;
-          }
-
-          @keyframes skeleton-animation {
+          @keyframes spin {
             0% {
-              background-color: #e0e0e0;
-            }
-            50% {
-              background-color: #d0d0d0;
+              transform: rotate(0deg);
             }
             100% {
-              background-color: #e0e0e0;
+              transform: rotate(360deg);
             }
           }
         `}

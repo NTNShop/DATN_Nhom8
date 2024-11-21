@@ -47,6 +47,7 @@ import EditProduct from "./component/admin/products/edit";
 import AddProduct from "./component/admin/products/add";
 import User from "./component/admin/users/list";
 import EditUser from "./component/admin/users/edit";
+import UserDetails from "./component/admin/users/detail"
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import ListOrder from "./component/admin/order/list";
@@ -66,7 +67,6 @@ import "./assets/css/style.min.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
@@ -139,12 +139,15 @@ function App() {
       <Route path="/admin/product/add" element={<AddProduct />} />
       <Route path="/admin/product/edit/:id" element={<EditProduct />} />
       <Route path="/admin/user" element={<User />} />
+      <Route path="/users/:userId" element={<UserDetails />} />
       <Route path="/admin/login" element={<Authentication />} />
       <Route path="/admin/editUser/:id" element={<EditUser />} />
       <Route path="/admin/order" element={<ListOrder />} />
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/blog/:id" element={<EditBlog />} />
+      <Route path="/blogdetail/:id" element={<BlogDetails />} />
+
 
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />

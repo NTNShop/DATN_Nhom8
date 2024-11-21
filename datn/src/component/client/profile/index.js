@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
-import avt from '../../../assets/images/users/avt.png';
-import Cookies from "js-cookie";  // Import js-cookie to access cookies
+import avt from "../../../assets/images/users/avt.png";
+import { getUserProfile } from "../../../services/client/profile";
+import { updateUserProfile } from "../../../services/client/profile";
+import { updateUserAvatar } from "../../../services/client/profile";
+
+import Cookies from "js-cookie";
 
 const ProfileS = () => {
   const [editMode, setEditMode] = useState(false);
@@ -11,53 +15,114 @@ const ProfileS = () => {
     email: "",
     address: "",
     phone: "",
-    userRole: "", // Role of the user
-    avatar: "", // Avatar of the user
+    userRole: "",
+    avatar: "",
   });
+  const [loading, setLoading] = useState(true); // Ensure it's set to true initially
+  const [error, setError] = useState(null);
 
-  // Handle input change when editing information
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prevState) => ({
       ...prevState,
-      [name]: value, // Update user information in state
+      [name]: value,
     }));
   };
 
-  // Toggle between edit and view mode
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
 
-  useEffect(() => {
-    // Get user information from cookies when component is rendered
-    const email = Cookies.get("email");
-    const fullName = Cookies.get("full_name");
-    const phone = Cookies.get("phone");
-    const userInfo = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")) : {};
-    
-    if (userInfo && email && fullName && phone) {
-      // If userInfo cookie exists, set all available user data
-      setUserInfo({
-        fullName: userInfo.full_name || fullName,
-        email: userInfo.email || email,
-        address: userInfo.address || "", // Set default as empty if not available
-        phone: userInfo.phone || phone,
-        userRole: userInfo.role || "", // Role from userInfo
-        avatar: userInfo.avatar || avt, // Avatar URL or default avatar
+  const handleSaveChanges = async () => {
+    try {
+      setLoading(true); // Hiển thị trạng thái loading
+      await updateUserProfile({
+        full_name: userInfo.fullName,
+        email: userInfo.email,
+        address: userInfo.address,
+        phone: userInfo.phone,
       });
+      setEditMode(false); // Quay lại chế độ xem
+      setLoading(false);
+      alert("Thông tin đã được cập nhật thành công!");
+    } catch (error) {
+      setLoading(false);
+      alert("Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại!");
     }
+  };
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      const preview = URL.createObjectURL(file); // Hiển thị ảnh xem trước
+      setUserInfo((prev) => ({
+        ...prev,
+        avatar: preview,
+      }));
+    }
+  };
+
+  const handleSaveAvatar = async () => {
+    if (!avatarFile) return;
+
+    try {
+      setLoading(true);
+      await updateUserAvatar(avatarFile);
+      setLoading(false);
+      alert("Avatar đã được cập nhật thành công!");
+    } catch (error) {
+      setLoading(false);
+      alert("Có lỗi khi cập nhật avatar. Vui lòng thử lại!");
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const data = await getUserProfile(); // Call the service to fetch user data
+        setUserInfo({
+          fullName: data.full_name,
+          email: data.email,
+          address: data.address || "",
+          phone: data.phone,
+          userRole: data.role || "",
+          avatar: data.avatar || avt,
+        });
+        setLoading(false); // Set loading to false when data is fetched successfully
+      } catch (error) {
+        setError("Failed to load profile data.");
+        setLoading(false); // Set loading to false in case of error
+      }
+    };
+
+    fetchUserProfile();
   }, []);
+
+  // Display loading text if loading is true
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Display error message if there's an error
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <>
       <Header />
-      
       <div className="container">
         <div className="row">
           <div className="col-lg-12 text-center">
             <div className="breadcrumb__text">
-              <h2 className="text-danger pt-5" style={{ borderBottom: '2px solid #de0000'}}>Tài khoản của tôi</h2>
+              <h2
+                className="text-danger pt-5"
+                style={{ borderBottom: "2px solid #de0000" }}
+              >
+                Tài khoản của tôi
+              </h2>
             </div>
           </div>
         </div>
@@ -66,35 +131,55 @@ const ProfileS = () => {
       <div className="container">
         <div>
           <p>Thông tin tài khoản</p>
-          <span>Xin chào, </span> <span className="text-danger">{userInfo.fullName}</span>
+          <span>Xin chào, </span>{" "}
+          <span className="text-danger">{userInfo.fullName}</span>
         </div>
       </div>
 
       <div className="container d-flex justify-content-center pt-4">
-        <div className="col-lg-3 col-xlg-3 col-md-3">
-          <div className="card">
-            <div className="card-body profile-card">
-              <center className="mt-4">
-                <img src={userInfo.avatar} className="rounded-circle" width="50" alt="User Avatar" />
-                <h4 className="card-title mt-2">{userInfo.fullName}</h4>
-                <div className="row text-center justify-content-center">
-                  <div className="col-8">
-                    <a href="#home" className="link">
-                      <i className="icon-people" aria-hidden="true"></i>
-                      <span className="value-digit"> Đang hoạt động</span>
-                    </a>
-                  </div>
-                  <div className="col-3">
-                    <a href="#home" className="link">
-                      <i className="bi bi-bag-check"></i>
-                      <span className="value-digit"> 10</span>
-                    </a>
-                  </div>
-                </div>
-              </center>
+        <center className="mt-4">
+          <img
+             src={`http://127.0.0.1:8000${userInfo.avatar}` || "default-avatar-url"}
+             alt={userInfo.full_name}
+            className="rounded-circle"
+            width="100"
+            height="100"
+            
+          />
+          {editMode && (
+            <div className="mt-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="form-control"
+              />
+              {avatarFile && (
+                <button
+                  className="btn btn-danger text-light mt-2"
+                  onClick={handleSaveAvatar}
+                >
+                  Lưu Avatar
+                </button>
+              )}
+            </div>
+          )}
+          <h4 className="card-title mt-2">{userInfo.fullName}</h4>
+          <div className="row text-center justify-content-center">
+            <div className="col-8">
+              <a href="#home" className="link">
+                <i className="icon-people" aria-hidden="true"></i>
+                <span className="value-digit"> Đang hoạt động</span>
+              </a>
+            </div>
+            <div className="col-3">
+              <a href="#home" className="link">
+                <i className="bi bi-bag-check"></i>
+                <span className="value-digit"> 10</span>
+              </a>
             </div>
           </div>
-        </div>
+        </center>
 
         <div className="col-lg-9 col-xlg-9 col-md-9">
           <div className="col-lg-12 col-xlg-12 col-md-12">
@@ -110,7 +195,9 @@ const ProfileS = () => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="example-email" className="col-md-12">Email</label>
+                      <label htmlFor="example-email" className="col-md-12">
+                        Email
+                      </label>
                       <div className="col-md-12">
                         <span>{userInfo.email}</span>
                       </div>
@@ -130,7 +217,9 @@ const ProfileS = () => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label className="col-md-12 mb-0">Vai trò người dùng</label>
+                      <label className="col-md-12 mb-0">
+                        Vai trò người dùng
+                      </label>
                       <div className="col-md-12">
                         <span>{userInfo.userRole}</span>
                       </div>
@@ -138,7 +227,11 @@ const ProfileS = () => {
                   </div>
 
                   <div>
-                    <button type="button" className="btn btn-danger text-light" onClick={toggleEditMode}>
+                    <button
+                      type="button"
+                      className="btn btn-danger text-light"
+                      onClick={toggleEditMode}
+                    >
                       {editMode ? "Hủy chỉnh sửa" : "Chỉnh sửa thông tin"}
                     </button>
                   </div>
@@ -151,65 +244,61 @@ const ProfileS = () => {
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Họ và tên</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
+                            <input
+                              type="text"
+                              className="form-control"
                               name="fullName"
-                              value={userInfo.fullName} 
-                              onChange={handleInputChange} 
+                              value={userInfo.fullName}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Email</label>
-                            <input 
-                              type="email" 
-                              className="form-control" 
+                            <input
+                              type="email"
+                              className="form-control"
                               name="email"
-                              value={userInfo.email} 
-                              onChange={handleInputChange} 
+                              value={userInfo.email}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Địa chỉ</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
+                            <input
+                              type="text"
+                              className="form-control"
                               name="address"
-                              value={userInfo.address} 
-                              onChange={handleInputChange} 
+                              value={userInfo.address}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Số điện thoại</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
+                            <input
+                              type="text"
+                              className="form-control"
                               name="phone"
-                              value={userInfo.phone} 
-                              onChange={handleInputChange} 
+                              value={userInfo.phone}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
-                        <div className="col-lg-6">
-                          <div className="form-group">
-                            <label>Vai trò người dùng</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
-                              name="userRole"
-                              value={userInfo.userRole} 
-                              onChange={handleInputChange} 
-                            />
-                          </div>
+                        <div className="col-lg-12">
+                          <button
+                            type="button"
+                            className="btn btn-danger text-light"
+                            onClick={handleSaveChanges}
+                          >
+                            Lưu thay đổi
+                          </button>
                         </div>
                       </div>
-                      <button type="submit" className="btn btn-primary">Lưu thông tin</button>
                     </form>
                   </div>
                 )}
@@ -218,7 +307,6 @@ const ProfileS = () => {
           </div>
         </div>
       </div>
-      
       <Footer />
     </>
   );
