@@ -7,15 +7,6 @@ import Cart from "../../../assets/img/cart/cart.png";
 import Cart1 from "../../../assets/img/cart/cart1.png";
 import banner from "../../../assets/img/hero/banner2.jpg";
 
-// Skeleton loader component for the blog post and sidebar
-const SkeletonLoader = () => (
-  <div className="skeleton-loader">
-    <div className="skeleton skeleton-image"></div>
-    <div className="skeleton skeleton-text"></div>
-    <div className="skeleton skeleton-text"></div>
-  </div>
-);
-
 const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -90,7 +81,7 @@ const Blog = () => {
                                 alt="thumbnail"
                               />
                             </div>
-                            <div className="blog__sidebar__recent__item__text">
+<div className="blog__sidebar__recent__item__text">
                               <h6>{post.title}</h6>
                               <span>{new Date(post.created_at).toLocaleDateString()}</span>
                             </div>
@@ -158,7 +149,7 @@ const Blog = () => {
                       <span>
                         {pagination.current_page} / {pagination.last_page}
                       </span>
-                      {pagination.current_page < pagination.last_page && (
+{pagination.current_page < pagination.last_page && (
                         <button
                           onClick={() => handlePageChange(pagination.current_page + 1)}
                           className="next"

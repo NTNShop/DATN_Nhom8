@@ -17,7 +17,9 @@ const CheckoutSection = () => {
   const [shipping, setShipping] = useState(30000); // Phí ship mặc định 30,000đ
   const [total, setTotal] = useState(0);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [paymentDetails, setPaymentDetails] = useState(null);
   const navigate = useNavigate(); // Hook điều hướng
+  
   const [formData, setFormData] = useState({
     fullName: '', 
     city: '',
@@ -125,35 +127,89 @@ const CheckoutSection = () => {
     
     return isValid;
   };
+  const PAYMENT_METHODS = {
+    BANK_TRANSFER: 'bank_transfer',
+    VNPAY: 'vnpay',
+    COD: 'cod'
+  };
+
+  const PAYMENT_INFO = {
+    [PAYMENT_METHODS.BANK_TRANSFER]: {
+      title: 'Thanh toán chuyển khoản',
+      icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=6',
+      details: {
+        bank: 'VietinBank - Cà Mau',
+        account: '0942785922',
+        holder: 'Nhóm 8'
+      }
+    },
+    [PAYMENT_METHODS.VNPAY]: {
+      title: 'Thanh toán VNPAY',
+      icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=6',
+      paymentUrl: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+    },
+    [PAYMENT_METHODS.COD]: {
+      title: 'Thanh toán khi nhận hàng',
+      icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6'
+    }
+  };
+
+  const handlePaymentMethodChange = (method) => {
+    setSelectedPaymentMethod(method);
+    setPaymentDetails(PAYMENT_INFO[method]);
+    setErrors(prev => ({ ...prev, paymentMethod: '' }));
+  };
+  const PaymentMethodRadio = ({ method }) => (
+    <div className="checkout__input__radio" style={{ marginBottom: '20px' }}>
+      <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+        <input
+          type="radio"
+          name="payment-method"
+          checked={selectedPaymentMethod === method}
+          onChange={() => handlePaymentMethodChange(method)}
+          style={{ marginRight: '10px' }}
+        />
+        <img
+          src={PAYMENT_INFO[method].icon}
+          alt={PAYMENT_INFO[method].title}
+          style={{ width: '40px', height: '40px', marginRight: '10px' }}
+        />
+        <span>{PAYMENT_INFO[method].title}</span>
+      </label>
+
+      {selectedPaymentMethod === method && method === PAYMENT_METHODS.BANK_TRANSFER && (
+        <div className="payment-details">
+          <p><strong>Thông tin chuyển khoản:</strong></p>
+          <p>Ngân hàng: {PAYMENT_INFO[method].details.bank}</p>
+          <p>Số tài khoản: {PAYMENT_INFO[method].details.account}</p>
+          <p>Chủ tài khoản: {PAYMENT_INFO[method].details.holder}</p>
+        </div>
+      )}
+
+      {selectedPaymentMethod === method && method === PAYMENT_METHODS.VNPAY && (
+        <div className="payment-details">
+          <p>Bạn sẽ được chuyển đến cổng thanh toán VNPAY sau khi đặt hàng</p>
+        </div>
+      )}
+    </div>
+  );
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     
-    const token = Cookies.get("authToken");
-    if (!token) {
-      toast.error('Vui lòng đăng nhập để đặt hàng');
-      navigate('/login');
-      return;
-    }
-
     if (!validateForm()) return;
-
-    if (!cartItems || cartItems.length === 0) {
-      toast.error('Giỏ hàng trống');
-      return;
-    }
-
+    
     setLoading(true);
     try {
-      // Prepare order items
-      const order_items = cartItems.map(item => ({
-        product_id: item.product.id,
-        quantity: item.quantity,
+      const orderItems = cartItems.map(item => ({
+        product_id: parseInt(item.product.id),
+        variant_id: item.variant_id || null,
+        quantity: parseInt(item.quantity),
         price: parseFloat(item.unit_price)
       }));
 
-      // Prepare order data
       const orderData = {
-        customer_info: {
+        items: orderItems,
+        shipping_address: {
           full_name: formData.fullName.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
@@ -161,29 +217,31 @@ const CheckoutSection = () => {
           city: formData.city.trim(),
           note: formData.note?.trim() || ''
         },
-        order_items: order_items,
         payment_method: selectedPaymentMethod,
         shipping_fee: shipping,
         subtotal: subtotal,
         total_amount: total
       };
 
-      console.log('Sending order data:', orderData); // Debug log
-
       const response = await OrderService.createOrder(orderData);
       
       if (response.success) {
         await CartService.clearCart();
         toast.success('Đặt hàng thành công!');
-        navigate('/success', {
-          state: {
-            orderId: response.data.order_id,
-            orderDetails: response.data
-          }
-        });
+        
+        if (selectedPaymentMethod === PAYMENT_METHODS.VNPAY) {
+          // Redirect to VNPAY payment gateway
+          window.location.href = PAYMENT_INFO[PAYMENT_METHODS.VNPAY].paymentUrl;
+        } else {
+          navigate('/success', { 
+            state: { 
+              orderId: response.data.id,
+              orderDetails: response.data
+            }
+          });
+        }
       }
     } catch (error) {
-      console.error('Error processing order:', error);
       toast.error(error.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
     } finally {
       setLoading(false);
@@ -304,7 +362,7 @@ const CheckoutSection = () => {
                     <div>
                       <div>{item.product.name}</div>
                       <div style={{ fontSize: '0.9em', color: '#666' }}>
-                        {formatCurrency(item.unit_price)} x {item.quantity}
+                        Giá: {formatCurrency(item.unit_price)} - Số lượng: {item.quantity}
                       </div>
                     </div>
                   </div>
@@ -344,7 +402,7 @@ const CheckoutSection = () => {
                     alt="Payment Icon"
                     style={{ width: '40px', height: '40px', marginRight: '10px' }}
                   />
-                  <span style={{ marginRight: '10px' }}>Thanh toán bằng phương thức khác</span>
+                  <span style={{ marginRight: '10px' }}>Thanh toán bằng chuyển khoản ngân hàng</span>
                   <span className="checkmark"></span>
                 </label>
 
@@ -381,10 +439,63 @@ const CheckoutSection = () => {
                           </p>
                         </div>
                       )}
-                    </div>
+                </div>
+              {/* Chọn phương thức thanh toán VNpay */}     
+              <div className="checkout__input__radio" style={{ position: 'relative', marginBottom: '20px' }}>
+                <label
+                  htmlFor="payment-cod"
+                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '16px' }}
+                >
+                  <input
+                    type="radio"
+                    id="payment-cod"
+                    name="payment-method"
+                    onChange={() => setSelectedPaymentMethod('cod')}
+                    style={{ marginRight: '10px' }}
+                  />
+                  <img
+                    src="https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=6"
+                    alt="Payment Icon"
+                    style={{ width: '40px', height: '40px', marginRight: '10px' }}
+                  />
+                  <span style={{ marginRight: '10px' }}>Thanh toán bằng Vnpay</span>
+                  <span className="checkmark"></span>
+                </label>
 
-
-
+                      {selectedPaymentMethod === 'cod' && (
+                        <div
+                          style={{
+                            marginTop: '10px',
+                            padding: '15px',
+                            border: '1px solid #f5f5f5',
+                            borderRadius: '8px',
+                            backgroundColor: '#FFFF',
+                            transition: 'all 0.3s ease',
+                            animation: 'fadeIn 2s',
+                          }}
+                        >
+                          <p style={{ margin: '0 0 10px 0', fontWeight: 'bold', color: 'black' }}>
+                            Vui lòng thực hiện chuyển khoản theo thông tin bên dưới:
+                          </p>
+                          <p style={{ margin: '5px 0' }}>
+                            <strong>Nhóm 8</strong><br />
+                            Số tài khoản: <strong>0942785922</strong><br />
+                            Ngân hàng: <strong>VietinBank - Cà Mau</strong>
+                          </p>
+                          <p style={{ margin: '5px 0' }}>
+                            <strong>Hướng dẫn thanh toán:</strong>
+                            <a
+                              href="https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: '#007BFF', textDecoration: 'underline' }}
+                            >
+                              Xem tại đây
+                            </a>
+                          </p>
+                        </div>
+                      )}
+                </div>
               <div className="checkout__input__radio">
                 <label
                   htmlFor="cash-on-delivery"
@@ -410,7 +521,6 @@ const CheckoutSection = () => {
               <button type="submit" className="site-btn" disabled={loading}>
               {loading ? 'ĐANG XỬ LÝ...' : 'ĐẶT HÀNG'}
               </button>
-              
             </div>
             {errors.paymentMethod && (
                 <span className="error-message payment-error">

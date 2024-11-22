@@ -1,114 +1,85 @@
-// services/client/Payment.js
 import axios from 'axios';
 import Cookies from "js-cookie";
 
 const BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
-// Helper function to get auth config
 const getAuthConfig = () => {
-    const token = Cookies.get("authToken");
-    if (!token) {
-      throw new Error('Vui lòng đăng nhập để tiếp tục');
-    }
-    return {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    };
-  };
-
-// Error handler wrapper
-const handleApiError = async (apiCall) => {
-  try {
-    const response = await apiCall();
-    return response.data;
-  } catch (error) {
-    if (error.response?.status === 401) {
-      Cookies.remove("authToken");
-      throw new Error('Phiên đăng nhập đã hết hạn');
-    }
-    throw error.response?.data?.message || 'Có lỗi xảy ra khi xử lý yêu cầu';
+  const token = Cookies.get("authToken");
+  if (!token) {
+    throw new Error('Vui lòng đăng nhập để tiếp tục');
   }
+  return {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  };
 };
 
 export const OrderService = {
-  // Create new order
   createOrder: async (orderData) => {
     try {
-      if (!orderData.order_items || !Array.isArray(orderData.order_items)) {
-        throw new Error('Không có sản phẩm trong giỏ hàng');
+      const token = Cookies.get("authToken");
+      if (!token) {
+        throw new Error('Vui lòng đăng nhập để tiếp tục');
       }
 
-      const config = getAuthConfig();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
+      // Format data theo đúng cấu trúc API backend expect
+      const formattedOrderData = {
+        items: orderData.items.map(item => ({
+          product_id: item.product_id,
+          variant_id: item.variant_id,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        phone: orderData.shipping_address.phone,
+        email: orderData.shipping_address.email,
+        full_name: orderData.shipping_address.full_name,
+        address: orderData.shipping_address.address,
+        city: orderData.shipping_address.city,
+        note: orderData.shipping_address.note,
+        payment_method: orderData.payment_method,
+        shipping_fee: orderData.shipping_fee,
+        total_amount: orderData.total_amount
+      };
+
       const response = await axios.post(
-        `${BASE_URL}/orders`,
-        orderData,
+        `${BASE_URL}/orders`, 
+        formattedOrderData, 
         config
       );
 
-      if (!response.data.success) {
-        throw new Error(response.data.message || 'Có lỗi xảy ra khi tạo đơn hàng');
+      return {
+        success: true,
+        data: response.data
+      };
+
+    } catch (error) {
+      console.error('Order API Error:', error.response?.data);
+      
+      if (error.response?.status === 401) {
+        Cookies.remove("authToken");
+        throw new Error('Phiên đăng nhập đã hết hạn');
       }
 
-      return response.data;
-    } catch (error) {
-      if (error.response?.status === 401) {
-        throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
-      }
       if (error.response?.data?.errors) {
         const errorMessages = Object.values(error.response.data.errors)
           .flat()
           .join(', ');
         throw new Error(errorMessages);
       }
-      throw error;
+
+      throw new Error(
+        error.response?.data?.message || 
+        'Có lỗi xảy ra khi xử lý đơn hàng'
+      );
     }
   },
-
-  processCodPayment: async (orderId) => {
-    try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/v1/orders/${orderId}/process-cod`);
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý thanh toán COD');
-    }
-  },
-
-  // Initialize other payment methods
-  initializePayment: async (paymentData) => {
-    return handleApiError(async () => {
-      if (!paymentData.order_id || !paymentData.payment_method || !paymentData.amount) {
-        throw new Error('Thiếu thông tin thanh toán');
-      }
-      return await axios.post(
-        `${BASE_URL}/payments/initialize`,
-        paymentData,
-        getAuthConfig()
-      );
-    });
-  },
-
-  // Get order status
-  getOrderStatus: async (orderId) => {
-    return handleApiError(async () => {
-      return await axios.get(
-        `${BASE_URL}/orders/${orderId}/status`,
-        getAuthConfig()
-      );
-    });
-  }
-};
-
-export const CartService = {
-  // Get cart items
-  getCartItems: async () => {
-    return handleApiError(async () => {
-      return await axios.get(
-        `${BASE_URL}/cart`,
-        getAuthConfig()
-      );
-    });
-  },
-
 };

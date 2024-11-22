@@ -97,7 +97,7 @@ const AddBlog = () => {
 
       if (response) {
         setSuccess("Bài viết đã được thêm thành công!");
-        setError({});
+setError({});
         setFormData(initialFormData);
         setTimeout(() => navigate("/admin/blog"), 2000);
       } else {
@@ -115,7 +115,7 @@ const AddBlog = () => {
       <Header />
       <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
         <div className="page-breadcrumb">
-<div className="row align-items-center">
+          <div className="row align-items-center">
             <div className="col-md-6 col-8 align-self-center">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
@@ -137,7 +137,7 @@ const AddBlog = () => {
                     {success} <a href="/admin/blog">Quay lại danh sách bài viết</a>
                   </div>}
 
-                  <form className="form-horizontal form-material mx-2" >
+                  <form className="form-horizontal form-material mx-2" onSubmit={handleSubmit}>
                     <div className="form-group mb-3">
                       <label className="col-md-12 mb-0">Tên bài viết</label>
                       <div className="col-md-12">
@@ -146,6 +146,8 @@ const AddBlog = () => {
                           name="title"
                           className="form-control-line border-input"
                           placeholder="Nhập tên bài viết"
+                          value={formData.title}
+                          onChange={handleInputChange}
                         />
                         {error.title && <div className="text-danger">{error.title}</div>}
                       </div>
@@ -158,12 +160,13 @@ const AddBlog = () => {
                           type="file"
                           name="featured_image"
                           className="form-control-line border-input"
+                          onChange={handleImageChange}
                           accept="image/*"
                         />
                         {formData.featured_image && (
                           <div className="mt-2">
                             <img
-                              src={URL.createObjectURL(formData.featured_image)}
+src={URL.createObjectURL(formData.featured_image)}
                               alt="Featured"
                               style={{ width: '200px', height: 'auto' }}
                             />
@@ -201,7 +204,8 @@ const AddBlog = () => {
                         <select
                           name="status"
                           className="form-control-line border-input"
-
+                          value={formData.status}
+                          onChange={handleInputChange}
                         >
                           <option value="">Chọn trạng thái</option>
                           <option value="1">Hoạt động (Bài viết sẽ hiển thị công khai)</option>
@@ -216,8 +220,9 @@ const AddBlog = () => {
                         <button 
                           type="submit" 
                           className="btn btn-success mx-auto mx-md-0 text-white"
-                        > Cập nhật
-
+                          disabled={loading}
+                        >
+                          {loading ? "Đang thêm..." : "Thêm bài viết"}
                         </button>
                       </div>
                     </div>
@@ -228,7 +233,7 @@ const AddBlog = () => {
           </div>
         </div>
       </div>
-    </div>
+</div>
   );
 };
 
