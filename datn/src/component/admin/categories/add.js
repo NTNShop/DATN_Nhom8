@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
@@ -9,7 +9,7 @@ const AddCategory = () => {
     const navigate = useNavigate();
     const handleGoBack = () => {
         navigate(-1);
-    }
+    };
 
     const [categoryData, setCategoryData] = useState({
         name: "",
@@ -17,10 +17,28 @@ const AddCategory = () => {
         status: "1",
         parent_id: ""
     });
+
+    const [categories, setCategories] = useState([]); // Thêm state để lưu danh mục cha
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
+
+    // Fetch danh mục cha từ API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/v1/categories');
+                const allCategories = response.data.data;
+                const parentCategories = allCategories.filter(category => !category.parent_id); // Chỉ lấy danh mục cha
+                setCategories(parentCategories);
+            } catch (error) {
+                console.error("Lỗi khi tải danh mục cha:", error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -70,7 +88,7 @@ const AddCategory = () => {
             });
             setSuccessMessage("Danh mục đã được thêm thành công!");
             setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
-            setShowModal(true);  // Show the success modal
+            setShowModal(true); // Show the success modal
         } catch (error) {
             setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
             console.error("Error response:", error.response);
@@ -148,14 +166,19 @@ const AddCategory = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="parent_id" className="form-label">Danh mục cha</label>
-                                        <input
-                                            type="number"
+                                        <select
                                             id="parent_id"
                                             value={categoryData.parent_id}
-                                            placeholder="Nhập ID danh mục cha (hoặc để trống)"
-                                            className="form-control"
+                                            className="form-select"
                                             onChange={handleChange}
-                                        />
+                                        >
+                                            <option value="">Chọn danh mục cha</option>
+                                            {categories.map(category => (
+                                                <option key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="d-flex justify-content">
                                         <button type="submit" className="btn btn-success mt-3 text-white">Thêm danh mục</button>

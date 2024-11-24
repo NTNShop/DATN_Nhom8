@@ -24,6 +24,7 @@ const Product = () => {
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortOrder, setSortOrder] = useState("asc");
   const [cart, setCart] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(null);
   const itemsPerPage = 9;
 
   // Format price to VND currency
@@ -51,21 +52,26 @@ const Product = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
-      if (response.data?.data?.data) {
-        const allProducts = response.data.data.data;
-        setProducts(allProducts);
-        setFilteredProducts(allProducts);
-      } else {
-        throw new Error("Định dạng dữ liệu không hợp lệ");
-      }
+        const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
+        if (response.data?.data?.data) {
+            const allProducts = response.data.data.data;
+
+            // Lọc sản phẩm có trạng thái khác "out_of_stock"
+            const availableProducts = allProducts.filter(product => product.status !== 'out_of_stock');
+
+            setProducts(availableProducts); // Lưu trữ sản phẩm hợp lệ
+            setFilteredProducts(availableProducts); // Cập nhật danh sách hiển thị
+        } else {
+            throw new Error("Định dạng dữ liệu không hợp lệ");
+        }
     } catch (error) {
-      console.error("Lỗi khi tải sản phẩm:", error);
-      setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+        console.error("Lỗi khi tải sản phẩm:", error);
+        setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   useEffect(() => {
     fetchProducts();
@@ -91,13 +97,13 @@ const Product = () => {
   const handleSortChange = (event) => {
     const newSortOrder = event.target.value;
     setSortOrder(newSortOrder);
-    
+
     const sorted = [...filteredProducts].sort((a, b) => {
       const priceA = parseFloat(a.price) || 0;
       const priceB = parseFloat(b.price) || 0;
       return newSortOrder === 'asc' ? priceA - priceB : priceB - priceA;
     });
-    
+
     setFilteredProducts(sorted);
   };
 
@@ -113,6 +119,17 @@ const Product = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // Hàm xử lý khi chọn danh mục
+  const handleCategorySelect = (categoryId, categoryName) => {
+    const filtered = products.filter((product) => product.category_id === categoryId);
+    setFilteredProducts(filtered);
+    setCurrentCategory(categoryName); // Lưu tên danh mục đã chọn
+  };
+  const handleViewAllProducts = () => {
+    setFilteredProducts(products); // Hiển thị toàn bộ sản phẩm
+    setCurrentCategory(null); // Xóa danh mục hiện tại
+  };
 
   return (
     <>
@@ -143,20 +160,45 @@ const Product = () => {
             <div className="col-lg-3 col-md-5">
               <div className="sidebar">
                 {/* Categories */}
-                <div className="sidebar__item">
-                  <h4>Loại</h4>
-                  <ul>
-                    {categories && categories.length > 0 ? (
-                      categories.map((category) => (
-                        <li key={category.id}>
-                          <Link to={`/category/${category.id}`}>{category.name}</Link>
+                <div className="menu">
+                  <ul className="menu__parent">
+                    {categories
+                      .filter((category) => category.status === 1) // Lọc danh mục cha có status = 1
+                      .map((category) => (
+                        <li key={category.id} className="menu__item">
+                          {/* Danh mục cha */}
+                          <span
+                            onClick={() => (category.id, category.name)}
+                            style={{ cursor: 'pointer', color: '#808080' }}
+                          >
+                            {category.name}
+                          </span>
+
+                          {/* Danh mục con */}
+                          {category.children &&
+                            category.children.length > 0 && (
+                              <ul className="menu__child">
+                                {category.children
+                                  .filter((child) => child.status === 1) // Lọc danh mục con có status = 1
+                                  .map((child) => (
+                                    <li key={child.id}>
+                                      <span
+                                        onClick={() =>
+                                          handleCategorySelect(child.id, child.name)
+                                        }
+                                        style={{ cursor: 'pointer', color: '#808080' }}
+                                      >
+                                        {child.name}
+                                      </span>
+                                    </li>
+                                  ))}
+                              </ul>
+                            )}
                         </li>
-                      ))
-                    ) : (
-                      <p>Không có danh mục nào</p>
-                    )}
+                      ))}
                   </ul>
                 </div>
+
 
                 {/* Price Filter */}
                 <div className="sidebar__item sidebar__item__price--option">
@@ -176,13 +218,13 @@ const Product = () => {
                         <span>{formatPrice(priceRange[0])}</span>
                         <span>{formatPrice(priceRange[1])}</span>
                       </div>
-                      <button 
+                      <button
                         onClick={handlePriceChange}
                         className="btn btn-primary mt-2 w-100"
                       >
                         Lọc
                       </button>
-                      <button 
+                      <button
                         onClick={clearFilter}
                         className="btn btn-outline-secondary mt-2 w-100"
                       >
@@ -216,14 +258,25 @@ const Product = () => {
 
             {/* Product List */}
             <div className="col-lg-9 col-md-7">
+              {/* Notification */}
+              {currentCategory && (
+                <div className="alert alert-info d-flex justify-content-between align-items-center" role="alert">
+                  <span>
+                    Đang xem sản phẩm thuộc danh mục: <strong>{currentCategory}</strong>
+                  </span>
+                  <button className="btn btn-outline-primary" onClick={handleViewAllProducts}>
+                    Xem tất cả sản phẩm
+                  </button>
+                </div>
+              )}
               {/* Sort Section */}
               <div className="filter__item">
                 <div className="row">
                   <div className="col-lg-4 col-md-5">
                     <div className="filter__sort">
                       <span>Sắp xếp theo</span>
-                      <select 
-                        value={sortOrder} 
+                      <select
+                        value={sortOrder}
                         onChange={handleSortChange}
                         className="form-select"
                       >
@@ -256,88 +309,51 @@ const Product = () => {
                 <>
                   {/* Product Grid */}
                   <div className="row">
-  {paginatedProducts.length > 0 ? (
-    paginatedProducts.map((product) => (
-      <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
-        <div className="product__item">
-          <div className="product__item__pic position-relative">
-            {product.images && product.images.length > 0 ? (
-              <img
-                src={`http://127.0.0.1:8000${product.images[0].image_url}`}
-                alt={product.name}
-                className="img-fluid"
-              />
-            ) : (
-              <div className="no-image">Không có hình ảnh</div>
-            )}
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((product) => (
+                        <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
+                          <div className="product__item">
+                            <div className="product__item__pic position-relative">
+                              {product.images && product.images.length > 0 ? (
+                                <img
+                                  src={`http://127.0.0.1:8000${product.images[0].image_url}`}
+                                  alt={product.name}
+                                  className="img-fluid"
+                                />
+                              ) : (
+                                <div className="no-image">Không có hình ảnh</div>
+                              )}
 
-            {/* Hiển thị nút Hết hàng đè lên hình ảnh nếu stock <= 0 */}
-            {product.stock <= 0 && (
-              <button className="out-of-stock-btn btn btn-danger" disabled>
-                Hết hàng
-              </button>
-            )}
+                              {/* Hiển thị nút Hết hàng đè lên hình ảnh nếu stock <= 0 */}
+                              {product.stock <= 0 && (
+                                <button className="out-of-stock-btn btn btn-danger" disabled>
+                                  Hết hàng
+                                </button>
+                              )}
 
-            <ul className="product__item__pic__hover">
-              <li>
-                <Link to={`/product-details/${product.id}`}>
-                  <i className="fa fa-retweet"></i>
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div className="product__item__text">
-            <h5>
-              <Link to={`/product-details/${product.id}`}>
-                {product.name}
-              </Link>
-            </h5>
-            <h5>{formatPrice(product.price)}</h5>
-          </div>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="col-12 text-center">
-      <p>Không tìm thấy sản phẩm nào trong khoảng giá này.</p>
-    </div>
-  )}
-</div>
-
-
-
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="row mt-5">
-                      <div className="col-12">
-                        <div className="product__pagination text-center">
-                          <button
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                            className="btn btn-outline-secondary me-2"
-                          >
-                            &lt;
-                          </button>
-                          {Array.from({ length: totalPages }, (_, i) => (
-                            <button
-                              key={i + 1}
-                              onClick={() => setCurrentPage(i + 1)}
-                              className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline-secondary'} me-2`}
-                            >
-                              {i + 1}
-                            </button>
-                          ))}
-                          <button
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className="btn btn-outline-secondary"
-                          >
-                            &gt;
-                          </button>
+                              <ul className="product__item__pic__hover">
+                                <li>
+                                  <Link to={`/product-details/${product.id}`}>
+                                    <i className="fa fa-retweet"></i>
+                                  </Link>
+                                </li>
+                              </ul>
+                            </div>
+                            <div className="product__item__text">
+                              <h5>
+                                <Link to={`/product-details/${product.id}`}>{product.name}</Link>
+                              </h5>
+                              <h5>{product.price.toLocaleString()}đ</h5>
+                            </div>
+                          </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="col-12 text-center">
+                        <p>Không tìm thấy sản phẩm nào trong điều kiện của bạn.</p>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </>
               )}
             </div>
@@ -347,6 +363,6 @@ const Product = () => {
       <Footer />
     </>
   );
-};
+}
 
 export default Product;

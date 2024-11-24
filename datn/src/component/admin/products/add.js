@@ -235,14 +235,27 @@ const AddProduct = () => {
                                             >
                                                 <option value="">Chọn danh mục</option>
                                                 {categories.map((category) => (
-                                                    <option key={category.id} value={category.id}>
-                                                        {category.name}
-                                                    </option>
+                                                    <React.Fragment key={category.id}>
+                                                        {/* Danh mục chính */}
+                                                        <option value={category.id}>
+                                                            {category.name}
+                                                        </option>
+                                                        {/* Danh mục con */}
+                                                        {category.children &&
+                                                            category.children.map((child) => (
+                                                                <option key={child.id} value={child.id}>
+                                                                    &nbsp;&nbsp;&nbsp;Danh mục con: {child.name}
+                                                                </option>
+                                                            ))}
+                                                    </React.Fragment>
                                                 ))}
                                             </select>
-                                            {errors.category_id && <span className="text-danger">{errors.category_id}</span>}
+                                            {errors.category_id && (
+                                                <span className="text-danger">{errors.category_id}</span>
+                                            )}
                                         </div>
                                     </div>
+
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thương hiệu</label>
                                         <div className="col-md-12">

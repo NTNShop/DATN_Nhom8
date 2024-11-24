@@ -6,7 +6,7 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
 const ListCategory = () => {
-    
+
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,36 +16,41 @@ const ListCategory = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     // Fetch categories from API
-    const fetchCategories = async () => {
-        try {
-            setLoading(true);
-            const { data } = await axios.get('http://127.0.0.1:8000/api/v1/categories');
-            // Dữ liệu trả về gồm danh mục và danh mục con
-            const formattedCategories = data.data.map(category => ({
-                id: category.id,
-                parentId: category.parent_id,
-                name: category.name,
-                slug: category.slug,
-                imageUrl: category.image_url,
-                status: category.status,
-                createdAt: category.created_at,
-                updatedAt: category.updated_at,
-                children: category.children || [] // Nếu có children, lấy danh sách con
-            }));
-            setCategories(formattedCategories);
-            setError(null); // Xóa lỗi trước đó nếu có
-        } catch (err) {
-            console.error("Lỗi khi lấy danh mục:", err);
-            setError("Không thể tải danh mục. Vui lòng thử lại sau.");
-        } finally {
-            setLoading(false);
-        }
-    };
-    
+    // Fetch categories from API
+const fetchCategories = async () => {
+    try {
+        setLoading(true);
+        const { data } = await axios.get('http://127.0.0.1:8000/api/v1/categories');
+        const formattedCategories = data.data.map(category => ({
+            id: category.id,
+            parentId: category.parent_id,
+            name: category.name,
+            slug: category.slug,
+            imageUrl: category.image_url,
+            status: category.status,
+            createdAt: category.created_at,
+            updatedAt: new Date(category.updated_at), // Chuyển updated_at thành kiểu Date
+            children: category.children || [] // Nếu có children, lấy danh sách con
+        }));
+
+        // Sắp xếp danh mục theo updatedAt giảm dần
+        formattedCategories.sort((a, b) => b.updatedAt - a.updatedAt);
+
+        setCategories(formattedCategories);
+        setError(null); // Xóa lỗi trước đó nếu có
+    } catch (err) {
+        console.error("Lỗi khi lấy danh mục:", err);
+        setError("Không thể tải danh mục. Vui lòng thử lại sau.");
+    } finally {
+        setLoading(false);
+    }
+};
+
+
     useEffect(() => {
         fetchCategories();
     }, []);
-    
+
 
     // Filtered categories using useMemo for performance optimization
     const filteredCategories = useMemo(() => {
@@ -80,7 +85,7 @@ const ListCategory = () => {
         setShowSuccessModal(false);
     };
 
-    
+
     return (
         <div>
             <Header />
@@ -123,7 +128,7 @@ const ListCategory = () => {
                                                     className="form-control"
                                                     placeholder="Nhập tên danh mục"
                                                     value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
                                                 />
                                                 <span className="input-group-text bg-primary text-white">
                                                     <i className="fa-solid fa-magnifying-glass"></i>
@@ -137,6 +142,8 @@ const ListCategory = () => {
                                             <thead>
                                                 <tr className="table-light">
                                                     <th className="border-top-0">STT</th>
+                                                    <th className="border-top-0">ID</th>
+
                                                     <th className="border-top-0">Tên danh mục</th>
                                                     {/* <th className="border-top-0">Slug</th> */}
                                                     <th className="border-top-0">Hình ảnh</th>
@@ -145,113 +152,115 @@ const ListCategory = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-    {loading ? (
-        <tr>
-            <td colSpan="6" className="text-center">Đang tải...</td>
-        </tr>
-    ) : error ? (
-        <tr>
-            <td colSpan="6" className="text-center text-danger">{error}</td>
-        </tr>
-    ) : filteredCategories.length > 0 ? (
-        filteredCategories.map((category, index) => (
-            <>
-                {/* Hiển thị danh mục chính */}
-                <tr key={category.id}>
-                    <td>{index + 1}</td>
-                    <td>{category.name}</td>
-                    <td>
-                        <img
-                            src={`http://127.0.0.1:8000${category.imageUrl}`}
-                            alt={category.name}
-                            style={{
-                                width: "50px",
-                                height: "50px",
-                                borderRadius: "5px",
-                                objectFit: "cover",
-                            }}
-                        />
-                    </td>
-                    <td>
-                        <span
-                            className={`status-dot ${category.status === 1
-                                ? "dot-success"
-                                : "dot-danger"
-                            }`}
-                        ></span>
-                        {category.status === 1 ? "Kích hoạt" : "Không kích hoạt"}
-                    </td>
-                    <td>
-                        <div className="d-flex gap-2">
-                            <Link
-                                to={`/admin/category/edit/${category.id}`}
-                                className="btn btn-primary"
-                            >
-                                Chỉnh sửa
-                            </Link>
-                            <button
-                                onClick={() => confirmDelete(category.id)}
-                                className="btn btn-danger"
-                            >
-                                Xóa
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                {/* Hiển thị danh mục con */}
-                {category.children && category.children.length > 0 && (
-                    category.children.map((child, childIndex) => (
-                        <tr key={child.id}>
-                            <td>{`${index + 1}.${childIndex + 1}`}</td>
-                            <td>&nbsp;&nbsp;&nbsp;-- {child.name}</td>
-                            <td>
-                                <img
-                                    src={`http://127.0.0.1:8000${child.image_url}`}
-                                    alt={child.name}
-                                    style={{
-                                        width: "50px",
-                                        height: "50px",
-                                        borderRadius: "5px",
-                                        objectFit: "cover",
-                                    }}
-                                />
-                            </td>
-                            <td>
-                                <span
-                                    className={`status-dot ${child.status === 1
-                                        ? "dot-success"
-                                        : "dot-danger"
-                                    }`}
-                                ></span>
-                                {child.status === 1 ? "Kích hoạt" : "Không kích hoạt"}
-                            </td>
-                            <td>
-                                <div className="d-flex gap-2">
-                                    <Link
-                                        to={`/admin/category/edit/${child.id}`}
-                                        className="btn btn-primary"
-                                    >
-                                        Chỉnh sửa
-                                    </Link>
-                                    <button
-                                        onClick={() => confirmDelete(child.id)}
-                                        className="btn btn-danger"
-                                    >
-                                        Xóa
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))
-                )}
-            </>
-        ))
-    ) : (
-        <tr>
-            <td colSpan="6" className="text-center">Không tìm thấy danh mục</td>
-        </tr>
-    )}
-</tbody>
+                                                {loading ? (
+                                                    <tr>
+                                                        <td colSpan="6" className="text-center">Đang tải...</td>
+                                                    </tr>
+                                                ) : error ? (
+                                                    <tr>
+                                                        <td colSpan="6" className="text-center text-danger">{error}</td>
+                                                    </tr>
+                                                ) : filteredCategories.length > 0 ? (
+                                                    filteredCategories.map((category, index) => (
+                                                        <>
+                                                            {/* Hiển thị danh mục chính */}
+                                                            <tr key={category.id}>
+                                                                <td>{index + 1}</td>
+                                                                <td>{category.id}</td>
+                                                                <td>{category.name}</td>
+                                                                <td>
+                                                                    <img
+                                                                        src={`http://127.0.0.1:8000${category.imageUrl}`}
+                                                                        alt={category.name}
+                                                                        style={{
+                                                                            width: "50px",
+                                                                            height: "50px",
+                                                                            borderRadius: "5px",
+                                                                            objectFit: "cover",
+                                                                        }}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <span
+                                                                        className={`status-dot ${category.status === 1
+                                                                            ? "dot-success"
+                                                                            : "dot-danger"
+                                                                            }`}
+                                                                    ></span>
+                                                                    {category.status === 1 ? "Kích hoạt" : "Không kích hoạt"}
+                                                                </td>
+                                                                <td>
+                                                                    <div className="d-flex gap-2">
+                                                                        <Link
+                                                                            to={`/admin/category/edit/${category.id}`}
+                                                                            className="btn btn-primary"
+                                                                        >
+                                                                            Chỉnh sửa
+                                                                        </Link>
+                                                                        <button
+                                                                            onClick={() => confirmDelete(category.id)}
+                                                                            className="btn btn-danger"
+                                                                        >
+                                                                            Xóa
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            {/* Hiển thị danh mục con */}
+                                                            {category.children && category.children.length > 0 && (
+                                                                category.children.map((child, childIndex) => (
+                                                                    <tr key={child.id}>
+                                                                        <td>{`${index + 1}.${childIndex + 1}`}</td>
+                                                                        <td>Danh mục con của {category.name}</td>
+                                                                        <td>&nbsp;&nbsp;&nbsp;-- {child.name}</td>
+                                                                        <td>
+                                                                            <img
+                                                                                src={`http://127.0.0.1:8000${child.image_url}`}
+                                                                                alt={child.name}
+                                                                                style={{
+                                                                                    width: "50px",
+                                                                                    height: "50px",
+                                                                                    borderRadius: "5px",
+                                                                                    objectFit: "cover",
+                                                                                }}
+                                                                            />
+                                                                        </td>
+                                                                        <td>
+                                                                            <span
+                                                                                className={`status-dot ${child.status === 1
+                                                                                    ? "dot-success"
+                                                                                    : "dot-danger"
+                                                                                    }`}
+                                                                            ></span>
+                                                                            {child.status === 1 ? "Kích hoạt" : "Không kích hoạt"}
+                                                                        </td>
+                                                                        <td>
+                                                                            <div className="d-flex gap-2">
+                                                                                <Link
+                                                                                    to={`/admin/category/edit/${child.id}`}
+                                                                                    className="btn btn-primary"
+                                                                                >
+                                                                                    Chỉnh sửa
+                                                                                </Link>
+                                                                                <button
+                                                                                    onClick={() => confirmDelete(child.id)}
+                                                                                    className="btn btn-danger"
+                                                                                >
+                                                                                    Xóa
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))
+                                                            )}
+                                                        </>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="6" className="text-center">Không tìm thấy danh mục</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
 
                                         </table>
                                     </div>

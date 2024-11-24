@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useMemo} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
@@ -6,6 +6,13 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
 const ListProduct = () => {
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(price);
+    };
+
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,6 +20,8 @@ const ListProduct = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("Tất cả");
+    const [showStatus, setShowStatus] = useState(false);
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -21,23 +30,31 @@ const ListProduct = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, [pagination.currentPage]);
+    }, [pagination.currentPage, selectedStatus]);
 
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/v1/products', {
+            const response = await axios.get("http://127.0.0.1:8000/api/v1/products", {
                 params: {
                     page: pagination.currentPage,
-                    per_page: pagination.perPage
-                }
+                    per_page: pagination.perPage,
+                    status: selectedStatus === "Tất cả"
+                        ? null
+                        : (selectedStatus === "Hoạt động" ? 'in_stock' : 'out_of_stock'),
+                },
             });
-            console.log(response.data); // In cấu trúc phản hồi để xác nhận
-            setProducts(response.data.data.data); // Truy cập vào mảng 'data' bên trong 'data'
-            setPagination({
-                ...pagination,
-                totalPages: response.data.data.last_page
-            });
+
+            // Sắp xếp sản phẩm theo `updated_at` giảm dần (mới nhất trước)
+            const sortedProducts = response.data.data.data.sort((a, b) =>
+                new Date(b.updated_at) - new Date(a.updated_at)
+            );
+
+            setProducts(sortedProducts);
+            setPagination((prevPagination) => ({
+                ...prevPagination,
+                totalPages: response.data.data.last_page,
+            }));
         } catch (error) {
             console.error("Lỗi khi tải sản phẩm:", error);
             setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
@@ -45,6 +62,8 @@ const ListProduct = () => {
             setLoading(false);
         }
     };
+
+
 
     const confirmDelete = (id) => {
         setProductToDelete(id);
@@ -74,6 +93,7 @@ const ListProduct = () => {
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
     };
+
     const filteredProducts = useMemo(() => {
         return products.filter((product) =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -98,7 +118,7 @@ const ListProduct = () => {
                         </div>
                     </div>
                 </div>
-    
+
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-10">
@@ -123,8 +143,46 @@ const ListProduct = () => {
                                                 </span>
                                             </div>
                                         </div>
+                                        <div className="d-flex justify-content-start gap-4 mb-3">
+                                            {/* Lọc theo trạng thái */}
+                                            <div className="input-group">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={selectedStatus}
+                                                    onClick={() => setShowStatus(!showStatus)}
+                                                    readOnly
+                                                    style={{ cursor: "pointer" }}
+                                                    placeholder="Chọn trạng thái"
+                                                />
+                                                <span
+                                                    className={`input-group-text ${showStatus ? "bi-chevron-up" : "bi-chevron-down"
+                                                        } text-secondary`}
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => setShowStatus(!showStatus)}
+                                                ></span>
+                                                {showStatus && (
+                                                    <ul className="dropdown-menu show mt-2 position-absolute w-100"
+                                                        style={{ zIndex: 1050 }}>
+                                                        {["Tất cả", "Hoạt động", "Không hoạt động"].map((status) => (
+                                                            <li
+                                                                key={status}
+                                                                className="dropdown-item text-center p-2"
+                                                                onClick={() => {
+                                                                    setSelectedStatus(status);
+                                                                    setShowStatus(false);
+                                                                }}
+                                                            >
+                                                                {status}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+
+                                        </div>
                                     </div>
-    
+
                                     <div className="table-responsive">
                                         <table className="table table-bordered mt-2">
                                             <thead>
@@ -156,7 +214,7 @@ const ListProduct = () => {
                                                             <td>{product.name}</td>
                                                             <td>{product.category?.name || "N/A"}</td>
                                                             <td>{product.brand?.name || "N/A"}</td>
-                                                            <td>{product.price}</td>
+                                                            <td>{formatPrice(product.price)}</td>
                                                             <td>
                                                                 {product.images.length > 0 ? (
                                                                     <img
@@ -209,7 +267,7 @@ const ListProduct = () => {
                                             </tbody>
                                         </table>
                                     </div>
-    
+
                                     {/* Pagination */}
                                     <div className="d-flex justify-content-center">
                                         <ul className="pagination">
@@ -239,9 +297,9 @@ const ListProduct = () => {
                         </div>
                     </div>
                 </div>
-    
+
                 <Footer />
-    
+
                 {/* Modal xác nhận xóa */}
                 <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
@@ -257,7 +315,7 @@ const ListProduct = () => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-    
+
                 {/* Modal thông báo thành công */}
                 <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                     <Modal.Header closeButton>
@@ -273,7 +331,7 @@ const ListProduct = () => {
             </div>
         </div>
     );
-    
+
 };
 
 export default ListProduct;
