@@ -233,11 +233,22 @@ const ListBrand = () => {
                                                                     style={{ width: '70px', height: '70px', objectFit: 'cover' }}
                                                                 />
                                                             </td>
-                                                            <td>
-                                                            <span className={`badge ${brand.status === 0 ? 'bg-success' : 'bg-warning' }`} style={{ fontSize: '14px' }}> 
-                                                            {brand.status === 1 ? 'Hoạt động' : 'Không Hoạt động'}
-                                                            </span>
-                                                            </td>
+                                                            <td
+                                className={`text-center ${
+                                    brand.status === 1 ? "" : ""
+                                }`}
+                              >
+                                <span
+                                  className={`status-dot ${
+                                    brand.status === 1
+                                      ? "dot-success"
+                                      : "dot-danger"
+                                  }`}
+                                ></span>
+                                {brand.status === 1
+                                  ? "Hoạt động"
+                                  : "Không hoạt động"}
+                              </td>
                                                             <td>
                                                                 <div className="d-flex gap-2">
                                                                     <span><Link to={`/admin/brand/edit/${brand.id}`} className="btn btn-primary">Chỉnh sửa</Link></span>
