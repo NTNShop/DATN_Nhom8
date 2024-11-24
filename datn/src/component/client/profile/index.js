@@ -18,7 +18,7 @@ const ProfileS = () => {
     userRole: "",
     avatar: "",
   });
-  const [loading, setLoading] = useState(true); // Ensure it's set to true initially
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
@@ -44,7 +44,6 @@ const ProfileS = () => {
       });
       setEditMode(false); // Quay lại chế độ xem
       setLoading(false);
-      alert("Thông tin đã được cập nhật thành công!");
     } catch (error) {
       setLoading(false);
       alert("Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại!");
@@ -69,9 +68,9 @@ const ProfileS = () => {
 
     try {
       setLoading(true);
-      await updateUserAvatar(avatarFile);
-      setLoading(false);
-      alert("Avatar đã được cập nhật thành công!");
+      await updateUserAvatar(avatarFile); // Gửi ảnh avatar lên server
+
+      window.location.reload(); // Tự động tải lại trang sau khi cập nhật thành công
     } catch (error) {
       setLoading(false);
       alert("Có lỗi khi cập nhật avatar. Vui lòng thử lại!");
@@ -100,12 +99,10 @@ const ProfileS = () => {
     fetchUserProfile();
   }, []);
 
-  // Display loading text if loading is true
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Display error message if there's an error
   if (error) {
     return <div>{error}</div>;
   }
@@ -139,31 +136,46 @@ const ProfileS = () => {
       <div className="container d-flex justify-content-center pt-4">
         <center className="mt-4">
           <img
-             src={`http://127.0.0.1:8000${userInfo.avatar}` || "default-avatar-url"}
-             alt={userInfo.full_name}
+            src={
+              `http://127.0.0.1:8000${userInfo.avatar}` || "default-avatar-url"
+            }
+            alt={userInfo.fullName}
             className="rounded-circle"
             width="100"
             height="100"
-            
           />
-          {editMode && (
-            <div className="mt-2">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                className="form-control"
-              />
-              {avatarFile && (
+          <div className="position-relative d-inline-block">
+            {editMode && (
+              <label
+                htmlFor="avatarUpload"
+                className="position-absolute top-0 end-0 btn btn-light p-1 border rounded-circle shadow"
+                style={{
+                  cursor: "pointer",
+                  transform: "translate(30%, -130%)",
+                }}
+              >
+               <i className="bi bi-camera text-danger"></i>
+              </label>
+            )}
+            <input
+              id="avatarUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="d-none"
+            />
+            {avatarFile && (
+              <div className=" text-center">
                 <button
-                  className="btn btn-danger text-light mt-2"
+                  className="btn btn-danger text-light"
                   onClick={handleSaveAvatar}
                 >
-                  Lưu Avatar
+                  <i className="bi bi-cloud-upload me-2"></i>
                 </button>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+
           <h4 className="card-title mt-2">{userInfo.fullName}</h4>
           <div className="row text-center justify-content-center">
             <div className="col-8">

@@ -21,15 +21,18 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       const response = await registerUser(data);
-      const successMessage = response.message || "Đăng ký thành công!";
+      const successMessage = response.message || "Đăng ký thành công! Vui lòng kiểm tra email của bạn.";
       toast.success(successMessage);
-  
-      
+
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      toast.error(error.message || "Đăng ký thất bại");
+      if (error?.errors?.email) {
+        toast.error(error.errors.email[0]); 
+      } else {
+        toast.error(error.message || "Đăng ký thất bại");
+      }
     }
   };
 
@@ -64,8 +67,8 @@ const Register = () => {
                       {...register("full_name", {
                         required: "Vui lòng nhập họ và tên",
                         minLength: {
-                          value: 2,
-                          message: "Họ và tên phải có ít nhất 2 ký tự",
+                          value: 3,
+                          message: "Họ và tên phải có ít nhất 3 ký tự",
                         },
                         pattern: {
                           value: /^[A-Za-zÀ-ỹ\s]+$/u,
@@ -109,7 +112,7 @@ const Register = () => {
                       {...register("phone", {
                         required: "Vui lòng nhập số điện thoại",
                         pattern: {
-                          value: /^0\d{9,10}$/, // 
+                          value: /^0\d{9,10}$/,
                           message:
                             "Số điện thoại phải bắt đầu bằng 0 và chỉ chứa số",
                         },
@@ -129,10 +132,6 @@ const Register = () => {
                       className="border-inputs"
                       {...register("password", {
                         required: "Vui lòng nhập mật khẩu",
-                        minLength: {
-                          value: 6,
-                          message: "Mật khẩu phải có ít nhất 6 ký tự",
-                        },
                       })}
                     />
                     {errors.password && (
@@ -147,15 +146,15 @@ const Register = () => {
                     <input
                       type="password"
                       className="border-inputs"
-                      {...register("confirmPassword", {
+                      {...register("password_confirmation", {
                         required: "Vui lòng xác nhận lại mật khẩu",
                         validate: (value) =>
                           value === password || "Mật khẩu không khớp",
                       })}
                     />
-                    {errors.confirmPassword && (
+                    {errors.password_confirmation && (
                       <p className="text-danger">
-                        {errors.confirmPassword.message}
+                        {errors.password_confirmation.message}
                       </p>
                     )}
                   </div>
@@ -177,7 +176,6 @@ const Register = () => {
         </div>
       </div>
       <Footer />
-
       <ToastContainer />
     </>
   );
