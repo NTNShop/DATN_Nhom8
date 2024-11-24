@@ -272,7 +272,7 @@ className="form-control-line border-input"
                                                     </option>
                                                 ))}
                                             </select>
-                                            {errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
+{errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
                                         </div>
                                     </div>
 
@@ -289,7 +289,8 @@ className="form-control-line border-input"
                                             />
                                         </div>
                                     </div>
-<div className="form-group mb-3">
+
+                                    <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Giá</label>
                                         <div className="col-md-12">
                                             <input
@@ -323,7 +324,7 @@ className="form-control-line border-input"
                                     {/* Phần thêm variant màu sắc */}
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
-                                        <div className="col-md-12">
+<div className="col-md-12">
                                             <div className="d-flex gap-2 mb-2">
                                                 <input
                                                     type="text"
@@ -337,7 +338,7 @@ className="form-control-line border-input"
                                                     type="number"
                                                     name="price"
                                                     value={currentVariant.price}
-onChange={handleVariantChange}
+                                                    onChange={handleVariantChange}
                                                     placeholder="Nhập giá"
                                                     className="form-control"
                                                 />
@@ -365,7 +366,7 @@ onChange={handleVariantChange}
                                                             Xóa
                                                         </button>
                                                     </div>
-                                                ))}
+))}
                                             </div>
                                         </div>
                                     </div>
@@ -382,7 +383,7 @@ onChange={handleVariantChange}
                                                 placeholder="Nhập mô tả ngắn"
                                                 className="form-control-line border-input"
                                             />
-{errors.short_description && <span className="text-danger">{errors.short_description}</span>}
+                                            {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
                                         </div>
                                     </div>
 
@@ -411,7 +412,7 @@ onChange={handleVariantChange}
                                                 className="form-control"
                                             >
                                                 <option value="6">6 tháng</option>
-                                                <option value="12">12 tháng</option>
+<option value="12">12 tháng</option>
                                             </select>
                                         </div>
                                     </div>
@@ -428,7 +429,7 @@ onChange={handleVariantChange}
                                     </div>
 
                                     <div className="form-group mb-3">
-<label className="col-md-12 mb-0">Trạng Thái</label>
+                                        <label className="col-md-12 mb-0">Trạng Thái</label>
                                         <div className="col-md-12">
                                             <select
                                                 name="status"
@@ -462,7 +463,7 @@ onChange={handleVariantChange}
                     </div>
                 </div>
             </div>
-        </div>
+</div>
     );
 };
 

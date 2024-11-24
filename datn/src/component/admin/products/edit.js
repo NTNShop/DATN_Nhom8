@@ -3,7 +3,7 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Modal, Button } from 'react-bootstrap';
@@ -20,7 +20,7 @@ const EditProduct = () => {
         setShowModal(false);
         navigate(-1); // Quay về trang trước
     };
-     
+
 
     // Sửa hàm handleFileChange để validate và preview ảnh
     const handleFileChange = (e) => {
@@ -62,7 +62,7 @@ const EditProduct = () => {
         warranty: '6',
         images: [],
         variants: [],
-        stock:'',
+        stock: '',
     });
     const [currentVariant, setCurrentVariant] = useState({
         color: '',
@@ -185,8 +185,8 @@ const fetchProductData = async () => {
 
         // Append các trường cơ bản
         formData.append('price', parseFloat(product.price));
-formData.append('category_id', parseInt(product.category_id));
-        formData.append('brand_id', parseInt(product.brand_id));
+        formData.append('category_id', parseInt(product.category_id));
+formData.append('brand_id', parseInt(product.brand_id));
         formData.append('warranty', parseInt(product.warranty));
         formData.append('status', product.status);
         formData.append('name', product.name);
@@ -194,7 +194,7 @@ formData.append('category_id', parseInt(product.category_id));
         formData.append('short_description', product.short_description);
         formData.append('specifications', product.specifications);
         formData.append('stock', product.stock);
-    
+
         // Xử lý variants
         product.variants.forEach((variant, index) => {
             formData.append(`variants[${index}][color]`, variant.color);
@@ -246,7 +246,7 @@ formData.append('category_id', parseInt(product.category_id));
         if (!product.description) errors.description = "Mô tả là bắt buộc";
         if (product.variants.length === 0) errors.variants = "Cần ít nhất một biến thể màu sắc";
 
-        if (!product.stock || isNaN(product.stock) || Number(product.stock) < 0) {
+        if (!product.stock || isNaN(product.stock) || Number(product.stock) <= 0) {
             errors.stock = "Số lượng sản phẩm phải là số dương";
         }
         return errors;
@@ -256,9 +256,9 @@ formData.append('category_id', parseInt(product.category_id));
         <div>
             <Header />
             <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
-<div className="page-breadcrumb">
+                <div className="page-breadcrumb">
                     <div className="row align-items-center">
-                        <div className="col-md-6 col-8 align-self-center">
+<div className="col-md-6 col-8 align-self-center">
                             <div className="d-flex align-items-center">
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
@@ -301,9 +301,19 @@ formData.append('category_id', parseInt(product.category_id));
                                             >
                                                 <option value="">Chọn danh mục</option>
                                                 {categories.map((category) => (
-<option key={category.id} value={category.id}>
-                                                        {category.name}
-                                                    </option>
+                                                    <React.Fragment key={category.id}>
+                                                        {/* Danh mục chính */}
+<option value={category.id}>
+                                                            {category.name}
+                                                        </option>
+                                                        {/* Danh mục con */}
+                                                        {category.children &&
+                                                            category.children.map((child) => (
+                                                                <option key={child.id} value={child.id}>
+                                                                    &nbsp;&nbsp;&nbsp;Danh mục con: {child.name}
+                                                                </option>
+                                                            ))}
+                                                    </React.Fragment>
                                                 ))}
                                             </select>
                                             {errors.category_id && (
@@ -334,37 +344,37 @@ formData.append('category_id', parseInt(product.category_id));
                                     </div>
 
                                     <div className="form-group mb-3">
-                <label className="col-md-12 mb-0">Hình ảnh</label>
-                <div className="col-md-12">
-                    <input
-                        type="file"
-                        name="images"
-                        onChange={handleFileChange}
-                        multiple
-                        accept="image/*"
-                        className="form-control-line border-input"
-                    />
-                    {imageErrors && <span className="text-danger">{imageErrors}</span>}
-                    
-                    {/* Preview ảnh */}
-                    <div className="image-preview mt-2 d-flex flex-wrap gap-2">
-                        {uploadedImages.map((url, index) => (
-                            <div key={index} className="position-relative" style={{width: '100px', height: '100px'}}>
-                                <img
-                                    src={url}
-                                    alt={`Preview ${index + 1}`}
-                                    style={{
-width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover',
-                                        borderRadius: '4px'
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+                                        <label className="col-md-12 mb-0">Hình ảnh</label>
+                                        <div className="col-md-12">
+                                            <input
+                                                type="file"
+name="images"
+                                                onChange={handleFileChange}
+                                                multiple
+                                                accept="image/*"
+                                                className="form-control-line border-input"
+                                            />
+                                            {imageErrors && <span className="text-danger">{imageErrors}</span>}
+
+                                            {/* Preview ảnh */}
+                                            <div className="image-preview mt-2 d-flex flex-wrap gap-2">
+                                                {uploadedImages.map((url, index) => (
+                                                    <div key={index} className="position-relative" style={{ width: '100px', height: '100px' }}>
+                                                        <img
+                                                            src={url}
+                                                            alt={`Preview ${index + 1}`}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                objectFit: 'cover',
+                                                                borderRadius: '4px'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Giá</label>
@@ -380,16 +390,16 @@ width: '100%',
                                         </div>
                                     </div>
                                     <div>
-                                    <label className="col-md-12 mb-0">số lượng</label>
+                                        <label className="col-md-12 mb-0">số lượng</label>
                                         <input
                                             type="number"
-                                            id="stock"
+id="stock"
                                             name="stock"
                                             value={product.stock}
                                             onChange={handleInputChange}
                                             min="0"
                                             className="form-control-line border-input"
-                                            
+
                                         />
                                         {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                     </div>
@@ -404,7 +414,7 @@ width: '100%',
                                                 className="form-control-line border-input"
                                             />
                                             {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
-</div>
+                                        </div>
                                     </div>
 
                                     <div className="form-group mb-3">
@@ -429,7 +439,7 @@ width: '100%',
                                                     name="color"
                                                     value={currentVariant.color}
                                                     onChange={handleVariantChange}
-                                                    placeholder="Nhập màu sắc"
+placeholder="Nhập màu sắc"
                                                     className="form-control"
                                                 />
                                                 <input
@@ -450,7 +460,7 @@ width: '100%',
                                             </div>
 
                                             <div className="variants-list mt-2">
-{product.variants.map((variant, index) => (
+                                                {product.variants.map((variant, index) => (
                                                     <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
                                                         <span className='text-dark'>
                                                             Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
@@ -472,7 +482,7 @@ width: '100%',
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thời gian bảo hành</label>
                                         <div className="col-md-12">
-                                            <select
+<select
                                                 name="warranty"
                                                 value={product.warranty}
                                                 onChange={handleInputChange}
@@ -493,8 +503,8 @@ width: '100%',
                                                 onChange={handleInputChange}
                                                 className="form-control-line border-input"
                                             >
-<option value="in_stock">Còn hàng</option>
-                                                <option value="out_of_stock">Hết hàng</option>
+                                                <option value="in_stock">Hoạt động</option>
+                                                <option value="out_of_stock">Không hoạt động</option>
                                             </select>
                                         </div>
                                     </div>
@@ -522,11 +532,11 @@ width: '100%',
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <Footer />
-               {/* Modal */}
-               <Modal show={showModal} onHide={handleClose} centered>
+{/* Modal */}
+            <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Thành công</Modal.Title>
                 </Modal.Header>

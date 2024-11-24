@@ -23,31 +23,10 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [searchTerm, setSearchTerm] = useState("");
   const [cart, setCart] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
   const itemsPerPage = 9;
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    perPage: 10,
-  });
 
-  // Fetch products and categories on initial load
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, [pagination.currentPage]);
-
-  // Fetch categories
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/api/v1/categories');
-      setCategories(response.data.data); // Assuming `data` holds the category list
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
   // Format price to VND currency
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -63,6 +42,7 @@ const Product = () => {
         const data = await getCategories();
         setCategories(data);
       } catch (err) {
+        setError("Không thể tải danh mục sản phẩm");
       }
     };
     fetchCategories();
@@ -96,31 +76,7 @@ const Product = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
-  // Handle search
-  const handleSearch = (event) => {
-    event.preventDefault();
-    const searchResults = products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredProducts(searchResults);
-    setCurrentPage(1);
-  };
-  // Handle search input change
-  const handleSearchInputChange = (event) => {
-    setSearchTerm(event.target.value);
-    // Nếu muốn tìm kiếm realtime, bỏ comment đoạn code dưới đây
-    const searchResults = products.filter(product =>
-      product.name.toLowerCase().includes(event.target.value.toLowerCase())
-    );
-    setFilteredProducts(searchResults);
-    setCurrentPage(1);
-  };
-  // Clear search
-  const clearSearch = () => {
-    setSearchTerm("");
-    setFilteredProducts(products);
-    setCurrentPage(1);
-  };
+
   // Handle price filter
   const handlePriceChange = () => {
     const [minPrice, maxPrice] = priceRange;
@@ -128,7 +84,7 @@ const Product = () => {
       const price = parseFloat(product.price);
       return price >= minPrice && price <= maxPrice;
     });
-    setFilteredProducts(filtered);
+setFilteredProducts(filtered);
     setCurrentPage(1);
   };
 
@@ -153,7 +109,7 @@ const Product = () => {
 
   // Clear filters
   const clearFilter = () => {
-    setPriceRange([0, 100000000]);
+    setPriceRange([0, 1000000]);
     setFilteredProducts(products);
     setCurrentPage(1);
   };
@@ -163,11 +119,7 @@ const Product = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
-  const toggleCategories = () => {
-    setIsCategoriesOpen(!isCategoriesOpen);
-  };
   // Hàm xử lý khi chọn danh mục
   const handleCategorySelect = (categoryId, categoryName) => {
     const filtered = products.filter((product) => product.category_id === categoryId);
@@ -182,54 +134,6 @@ const Product = () => {
   return (
     <>
       <Header />
-      <section className="hero hero-normal" style={{paddingTop: "100px"}}>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
-              <div className="hero__categories">
-                <div className="hero__categories__all" onClick={toggleCategories}>
-                  <i className="fa fa-bars"></i>
-                  <span>Tất cả danh mục</span>
-                </div>
-                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
-                  <li><Link to="#">Janus</Link></li>
-                  <li><Link to="#">Vario</Link></li>
-                  <li><Link to="#">Vision</Link></li>
-                  <li><Link to="#">Air Black</Link></li>
-                </ul>
-              </div>
-            </div>
-            <div className="col-8">
-              <div className="hero__search">
-                <div className="hero__search__form">
-                  <form action="#" onSubmit={handleSearch}>
-                    <input type="text" placeholder="Tìm kiếm sản phẩm..."  value={searchTerm}
-                      onChange={handleSearchInputChange}/>
-                    <button type="submit" className="site-btn">SEARCH</button>
-                  </form>
-                </div>
-                {searchTerm && (
-                  <button 
-                    onClick={clearSearch}
-                    className="btn btn-outline-secondary mt-2"
-                  >
-                    Xóa tìm kiếm
-                  </button>
-                )}
-                <div className="hero__search__phone">
-                  <div className="hero__search__phone__icon">
-                    <i className="fa fa-phone"></i>
-                  </div>
-                  <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <section
         className="breadcrumb-section set-bg"
         style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
@@ -268,7 +172,7 @@ const Product = () => {
                             style={{ cursor: 'pointer', color: '#808080' }}
                           >
                             {category.name}
-                          </span>
+</span>
 
                           {/* Danh mục con */}
                           {category.children &&
@@ -304,7 +208,7 @@ const Product = () => {
                       <input
                         type="range"
                         min="0"
-                        max="10000000"
+                        max="1000000"
                         step="100000"
                         value={priceRange[1]}
                         onChange={(e) => handleSliderChange([priceRange[0], parseInt(e.target.value)])}
@@ -335,7 +239,7 @@ const Product = () => {
                   <div className="latest-product__text">
                     <h4>SẢN PHẨM MỚI NHẤT</h4>
                     <div className="latest-product__slider">
-                      <div className="latest-product__item">
+<div className="latest-product__item">
                         <Link to="/product-details/1" className="latest-product__item">
                           <div className="latest-product__item__pic">
                             <img src={sp4} alt="Product" />
@@ -405,55 +309,9 @@ const Product = () => {
                 <>
                   {/* Product Grid */}
                   <div className="row">
-                  {paginatedProducts.length > 0 ? (
-                  paginatedProducts.map((product) => (
-                <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
-                <div className="product__item">
-          <div className="product__item__pic position-relative">
-            {product.images && product.images.length > 0 ? (
-              <img
-                src={`http://127.0.0.1:8000${product.images[0].image_url}`}
-                alt={product.name}
-                className="img-fluid"
-              />
-            ) : (
-              <div className="no-image">Không có hình ảnh</div>
-            )}
-
-            {/* Hiển thị nút Hết hàng đè lên hình ảnh nếu stock <= 0 */}
-            {product.stock <= 0 && (
-              <button className="out-of-stock-btn btn btn-danger" disabled>
-                Hết hàng
-              </button>
-            )}
-
-            <ul className="product__item__pic__hover">
-              <li>
-                <Link to={`/product-details/${product.id}`}>
-                  <i className="fa fa-retweet"></i>
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div className="product__item__text">
-            <h5>
-              <Link to={`/product-details/${product.id}`}>
-                {product.name}
-              </Link>
-            </h5>
-            <h5>{formatPrice(product.price)}</h5>
-          </div>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="col-12 text-center">
-      <p>Không tìm thấy sản phẩm nào trong khoảng giá này.</p>
-    </div>
-  )}
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((product) => (
-                        <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
+<div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
                           <div className="product__item">
                             <div className="product__item__pic position-relative">
                               {product.images && product.images.length > 0 ? (

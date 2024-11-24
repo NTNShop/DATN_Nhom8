@@ -79,7 +79,7 @@ const fetchCategories = async () => {
             setError("Không thể xóa danh mục. Vui lòng thử lại sau.");
         } finally {
             setCategoryToDelete(null);
-        }
+}
     };
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
@@ -133,7 +133,7 @@ const fetchCategories = async () => {
                                                 <span className="input-group-text bg-primary text-white">
                                                     <i className="fa-solid fa-magnifying-glass"></i>
                                                 </span>
-                                            </div>
+</div>
                                         </div>
                                     </div>
 
@@ -173,7 +173,7 @@ const fetchCategories = async () => {
                                                                         src={`http://127.0.0.1:8000${category.imageUrl}`}
                                                                         alt={category.name}
                                                                         style={{
-                                                                            width: "50px",
+width: "50px",
                                                                             height: "50px",
                                                                             borderRadius: "5px",
                                                                             objectFit: "cover",
@@ -208,7 +208,7 @@ const fetchCategories = async () => {
                                                             </tr>
                                                             {/* Hiển thị danh mục con */}
                                                             {category.children && category.children.length > 0 && (
-                                                                category.children.map((child, childIndex) => (
+category.children.map((child, childIndex) => (
                                                                     <tr key={child.id}>
                                                                         <td>{`${index + 1}.${childIndex + 1}`}</td>
                                                                         <td>Danh mục con của {category.name}</td>
@@ -239,7 +239,7 @@ const fetchCategories = async () => {
                                                                                 <Link
                                                                                     to={`/admin/category/edit/${child.id}`}
                                                                                     className="btn btn-primary"
-                                                                                >
+>
                                                                                     Chỉnh sửa
                                                                                 </Link>
                                                                                 <button
@@ -283,7 +283,7 @@ const fetchCategories = async () => {
                                                     </button>
                                                 </li>
                                             ))}
-                                        </ul> */}
+</ul> */}
                                     </div>
                                 </div>
                             </div>

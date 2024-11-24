@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useMemo} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
@@ -8,10 +8,11 @@ import Footer from "../layouts/footer";
 const ListProduct = () => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('vi-VN', {
-          style: 'currency',
-          currency: 'VND'
+            style: 'currency',
+            currency: 'VND'
         }).format(price);
-      };
+    };
+
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -78,7 +79,7 @@ const ListProduct = () => {
             setShowDeleteModal(false);
             setShowSuccessModal(true);
         } catch (error) {
-            console.error("Lỗi khi xóa sản phẩm:", error);
+console.error("Lỗi khi xóa sản phẩm:", error);
             setError("Không thể xóa sản phẩm. Vui lòng thử lại.");
         }
     };
@@ -92,11 +93,13 @@ const ListProduct = () => {
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
     };
+
     const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
+        return products.filter((product) =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [products, searchTerm]);
+
     return (
         <div>
             <Header />
@@ -115,7 +118,7 @@ const ListProduct = () => {
                         </div>
                     </div>
                 </div>
-    
+
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-10">
@@ -135,15 +138,53 @@ const ListProduct = () => {
                                                     value={searchTerm}
                                                     onChange={(e) => setSearchTerm(e.target.value)}
                                                 />
-                                                <span className="input-group-text bg-primary text-white">
+<span className="input-group-text bg-primary text-white">
                                                     <i className="fa-solid fa-magnifying-glass"></i>
                                                 </span>
                                             </div>
                                         </div>
+                                        <div className="d-flex justify-content-start gap-4 mb-3">
+                                            {/* Lọc theo trạng thái */}
+                                            <div className="input-group">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={selectedStatus}
+                                                    onClick={() => setShowStatus(!showStatus)}
+                                                    readOnly
+                                                    style={{ cursor: "pointer" }}
+                                                    placeholder="Chọn trạng thái"
+                                                />
+                                                <span
+                                                    className={`input-group-text ${showStatus ? "bi-chevron-up" : "bi-chevron-down"
+                                                        } text-secondary`}
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => setShowStatus(!showStatus)}
+                                                ></span>
+                                                {showStatus && (
+                                                    <ul className="dropdown-menu show mt-2 position-absolute w-100"
+                                                        style={{ zIndex: 1050 }}>
+                                                        {["Tất cả", "Hoạt động", "Không hoạt động"].map((status) => (
+                                                            <li
+                                                                key={status}
+                                                                className="dropdown-item text-center p-2"
+                                                                onClick={() => {
+                                                                    setSelectedStatus(status);
+                                                                    setShowStatus(false);
+                                                                }}
+                                                            >
+                                                                {status}
+                                                            </li>
+                                                        ))}
+</ul>
+                                                )}
+                                            </div>
+
+                                        </div>
                                     </div>
-    
+
                                     <div className="table-responsive">
-<table className="table table-bordered mt-2">
+                                        <table className="table table-bordered mt-2">
                                             <thead>
                                                 <tr className="table-light">
                                                     <th className="border-top-0">STT</th>
@@ -176,10 +217,10 @@ const ListProduct = () => {
                                                             <td>{formatPrice(product.price)}</td>
                                                             <td>
                                                                 {product.images.length > 0 ? (
-                                                                    <img
+<img
                                                                         src={`http://127.0.0.1:8000${product.images[0].image_url}`}
                                                                         alt={product.name}
-style={{
+                                                                        style={{
                                                                             width: "50px",
                                                                             height: "50px",
                                                                             borderRadius: "5px",
@@ -211,11 +252,11 @@ style={{
                                                                     <button
                                                                         onClick={() => confirmDelete(product.id)}
                                                                         className="btn btn-danger"
-                                                                    >
+>
                                                                         Xóa
                                                                     </button>
                                                                 </div>
-</td>
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 ) : (
@@ -226,7 +267,7 @@ style={{
                                             </tbody>
                                         </table>
                                     </div>
-    
+
                                     {/* Pagination */}
                                     <div className="d-flex justify-content-center">
                                         <ul className="pagination">
@@ -256,16 +297,16 @@ style={{
                         </div>
                     </div>
                 </div>
-    
+
                 <Footer />
-    
+
                 {/* Modal xác nhận xóa */}
-                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+<Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>Bạn có chắc chắn muốn xóa sản phẩm này không?</Modal.Body>
-<Modal.Footer>
+                    <Modal.Footer>
                         <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
                             Hủy
                         </Button>
@@ -274,7 +315,7 @@ style={{
                         </Button>
                     </Modal.Footer>
                 </Modal>
-    
+
                 {/* Modal thông báo thành công */}
                 <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                     <Modal.Header closeButton>
@@ -290,7 +331,7 @@ style={{
             </div>
         </div>
     );
-    
+
 };
 
 export default ListProduct;

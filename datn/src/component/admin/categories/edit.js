@@ -79,7 +79,7 @@ const EditCategory = () => {
     };
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
+const file = e.target.files[0];
         setSelectedImage(file);
     };
 
@@ -147,7 +147,7 @@ const EditCategory = () => {
                                 ) : (
                                     <form onSubmit={handleSubmit} className="form-horizontal form-material mx-2">
                                         <div className="form-group mb-3">
-                                            <label className="col-md-12 mb-0">Tên danh mục</label>
+<label className="col-md-12 mb-0">Tên danh mục</label>
                                             <div className="col-md-12">
                                                 <input
                                                     type="text"
@@ -188,7 +188,7 @@ const EditCategory = () => {
                                                     {categories.map((cat) => (
                                                         <option key={cat.id} value={cat.id}>
                                                             {cat.name}
-                                                        </option>
+</option>
                                                     ))}
                                                 </select>
                                             </div>
