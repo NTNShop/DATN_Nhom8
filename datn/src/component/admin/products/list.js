@@ -19,6 +19,8 @@ const ListProduct = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("Tất cả");
+    const [showStatus, setShowStatus] = useState(false);
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -27,23 +29,31 @@ const ListProduct = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, [pagination.currentPage]);
+    }, [pagination.currentPage, selectedStatus]);
 
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/v1/products', {
+            const response = await axios.get("http://127.0.0.1:8000/api/v1/products", {
                 params: {
                     page: pagination.currentPage,
-                    per_page: pagination.perPage
-                }
+                    per_page: pagination.perPage,
+                    status: selectedStatus === "Tất cả"
+                        ? null
+                        : (selectedStatus === "Hoạt động" ? 'in_stock' : 'out_of_stock'),
+                },
             });
-            console.log(response.data); // In cấu trúc phản hồi để xác nhận
-            setProducts(response.data.data.data); // Truy cập vào mảng 'data' bên trong 'data'
-            setPagination({
-                ...pagination,
-                totalPages: response.data.data.last_page
-            });
+
+            // Sắp xếp sản phẩm theo `updated_at` giảm dần (mới nhất trước)
+            const sortedProducts = response.data.data.data.sort((a, b) =>
+                new Date(b.updated_at) - new Date(a.updated_at)
+            );
+
+            setProducts(sortedProducts);
+            setPagination((prevPagination) => ({
+                ...prevPagination,
+                totalPages: response.data.data.last_page,
+            }));
         } catch (error) {
             console.error("Lỗi khi tải sản phẩm:", error);
             setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
@@ -51,6 +61,8 @@ const ListProduct = () => {
             setLoading(false);
         }
     };
+
+
 
     const confirmDelete = (id) => {
         setProductToDelete(id);
@@ -81,11 +93,10 @@ const ListProduct = () => {
         setShowSuccessModal(false);
     };
     const filteredProducts = useMemo(() => {
-return products.filter((product) =>
+    return products.filter((product) =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [products, searchTerm]);
-
     return (
         <div>
             <Header />

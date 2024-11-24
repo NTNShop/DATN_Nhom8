@@ -9,16 +9,16 @@ const EditCategory = () => {
     const navigate = useNavigate();
     const [category, setCategory] = useState({
         name: '',
-        // slug: '',
         status: '',
         parent_id: null,
         image_url: null,
     });
+    const [categories, setCategories] = useState([]); // Danh sách các danh mục cha
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
 
-    // Fetch category data on load
+    // Lấy danh mục chi tiết
     useEffect(() => {
         const fetchCategory = async () => {
             try {
@@ -39,6 +39,37 @@ const EditCategory = () => {
         fetchCategory();
     }, [id]);
 
+    // Lấy danh sách các danh mục cha
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/v1/categories");
+                if (!response.ok) {
+                    throw new Error("Error fetching categories");
+                }
+                const data = await response.json();
+    
+                // Kiểm tra cấu trúc dữ liệu trả về
+                console.log("Fetched categories:", data);
+    
+                // Nếu API trả về `data` là một đối tượng chứa mảng danh mục
+                if (Array.isArray(data)) {
+                    setCategories(data); // Dữ liệu trả về là mảng
+                } else if (data && Array.isArray(data.data)) {
+                    setCategories(data.data); // Trường hợp dữ liệu nằm trong `data.data`
+                } else {
+                    throw new Error("Invalid categories data format");
+                }
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+                setError("Could not load parent categories. Please try again later.");
+            }
+        };
+    
+        fetchCategories();
+    }, []);
+    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCategory((prevCategory) => ({
@@ -54,37 +85,35 @@ const EditCategory = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         const formData = new FormData();
         formData.append('name', category.name);
         formData.append('slug', category.slug);
         formData.append('status', category.status);
         formData.append('parent_id', category.parent_id || '');
         formData.append('_method', 'PUT'); // Add this to specify a PUT method for Laravel
-    
+
         if (selectedImage) {
             formData.append('image', selectedImage);
         }
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/v1/categories/${id}`, {
                 method: 'POST', // Change to POST
                 body: formData,
             });
-    
+
             if (!response.ok) {
                 const errorResponse = await response.json();
                 throw new Error(errorResponse.message || "Failed to update category.");
             }
-    
+
             navigate("/admin/category");
         } catch (error) {
             console.error("Error updating category:", error);
             setError("Could not update category. Please check your input and try again.");
         }
     };
-    
-        
 
     return (
         <div>
@@ -130,19 +159,6 @@ const EditCategory = () => {
                                                 />
                                             </div>
                                         </div>
-                                        {/* <div className="form-group mb-3">
-                                            <label className="col-md-12 mb-0">Slug</label>
-                                            <div className="col-md-12">
-                                                <input
-                                                    type="text"
-                                                    name="slug"
-                                                    value={category.slug}
-                                                    onChange={handleChange}
-                                                    className="form-control-line border-input"
-                                                    required
-                                                />
-                                            </div>
-                                        </div> */}
                                         <div className="form-group mb-3">
                                             <label className="col-md-12 mb-0">Trạng Thái</label>
                                             <div className="col-md-12">
@@ -162,23 +178,29 @@ const EditCategory = () => {
                                         <div className="form-group mb-3">
                                             <label className="col-md-12 mb-0">Danh mục cha</label>
                                             <div className="col-md-12">
-                                                <input
-                                                    type="text"
+                                                <select
                                                     name="parent_id"
                                                     value={category.parent_id || ''}
                                                     onChange={handleChange}
                                                     className="form-control-line border-input"
-                                                />
+                                                >
+                                                    <option value="">Chọn danh mục cha</option>
+                                                    {categories.map((cat) => (
+                                                        <option key={cat.id} value={cat.id}>
+                                                            {cat.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             </div>
                                         </div>
                                         <div className="form-group mb-3">
                                             <label className="col-md-12 mb-0">Hình ảnh</label>
                                             <div className="col-md-12">
                                                 {category.image_url && (
-                                                    <img 
-                                                        src={`http://127.0.0.1:8000${category.image_url}`} 
-                                                        alt="Category" 
-                                                        style={{ maxWidth: "100px", marginBottom: "10px" }} 
+                                                    <img
+                                                        src={`http://127.0.0.1:8000${category.image_url}`}
+                                                        alt="Category"
+                                                        style={{ maxWidth: "100px", marginBottom: "10px" }}
                                                     />
                                                 )}
                                                 <input

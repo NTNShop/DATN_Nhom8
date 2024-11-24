@@ -25,7 +25,7 @@ const EditProduct = () => {
     // Sửa hàm handleFileChange để validate và preview ảnh
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        
+
         // Validate files
         const invalidFiles = files.filter(file => !file.type.startsWith('image/'));
         if (invalidFiles.length > 0) {
@@ -118,30 +118,30 @@ const fetchProductData = async () => {
                 .replace(/đ/g, 'd')
                 .replace(/Đ/g, 'D');
         };
-        
+
         return removeAccents(colorName.toLowerCase())
             .replace(/\s+/g, '_') // Thay thế khoảng trắng bằng dấu gạch dưới
             .replace(/[^a-z0-9_]/g, ''); // Chỉ giữ lại chữ cái, số và dấu gạch dưới
     };
-    
+
 
     const addVariant = () => {
         if (!currentVariant.color || !currentVariant.price) {
             alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
             return;
         }
-    
+
         const colorCode = generateColorCode(currentVariant.color);
-    
+
         setProduct(prev => ({
             ...prev,
-            variants: [...prev.variants, { 
+            variants: [...prev.variants, {
                 color: currentVariant.color,
                 price: currentVariant.price,
                 code: colorCode // Tự động tạo code
             }]
         }));
-    
+
         setCurrentVariant({
             color: '',
             price: '',
@@ -170,9 +170,9 @@ const fetchProductData = async () => {
         }));
     };
 
-    
 
-    
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formErrors = validateForm();
@@ -180,9 +180,9 @@ const fetchProductData = async () => {
             setErrors(formErrors);
             return;
         }
-    
+
         const formData = new FormData();
-    
+
         // Append các trường cơ bản
         formData.append('price', parseFloat(product.price));
 formData.append('category_id', parseInt(product.category_id));
@@ -201,16 +201,16 @@ formData.append('category_id', parseInt(product.category_id));
             formData.append(`variants[${index}][price]`, parseFloat(variant.price));
             formData.append(`variants[${index}][code]`, variant.code); // Code đã được tạo tự động
         });
-    
+
         // Xử lý images
         if (product.images && product.images.length > 0) {
             Array.from(product.images).forEach(file => {
                 formData.append('images[]', file);
             });
         }
-    
+
         formData.append('_method', 'PUT');
-    
+
         try {
             const response = await axios.post(
                 `http://127.0.0.1:8000/api/v1/products/${id}`,
@@ -222,7 +222,7 @@ formData.append('category_id', parseInt(product.category_id));
                     }
                 }
             );
-    
+
             if (response.data.status === 'success') {
                 setShowModal(true);
             }
@@ -306,9 +306,12 @@ formData.append('category_id', parseInt(product.category_id));
                                                     </option>
                                                 ))}
                                             </select>
-                                            {errors.category_id && <span className="text-danger">{errors.category_id}</span>}
+                                            {errors.category_id && (
+                                                <span className="text-danger">{errors.category_id}</span>
+                                            )}
                                         </div>
                                     </div>
+
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thương hiệu</label>
