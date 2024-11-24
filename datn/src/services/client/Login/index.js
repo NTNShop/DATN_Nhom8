@@ -13,7 +13,7 @@ export const loginUser = async (email, password) => {
 
             // Lưu thông tin người dùng và token vào cookie
             Cookies.set("userInfo", JSON.stringify(user), { expires: 1 }); // Lưu trong 1 ngày
-            Cookies.set("authToken", token, { expires: 1 });
+            Cookies.set("authToken", token, { expires: new Date(Date.now() + 1 * 60 * 60 * 1000) }); // Lưu token trong 1 giờ
 
             // Lưu thêm các trường thông tin như email, full_name, phone và userId vào cookie
             Cookies.set("email", user.email, { expires: 1 });

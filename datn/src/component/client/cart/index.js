@@ -7,15 +7,21 @@ import sp from "../../../assets/img/cart/sp1.png";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import { toast } from 'react-toastify';
 import { CartService } from '../../../services/client/Cart';
+
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const response = await CartService.getCartItems();
         console.log('Cart items:', response.data);
         setCartItems(response.data);
+        // Initially select all items
+        setSelectedItems(response.data.map(item => item.id));
       } catch (error) {
         console.error('Error fetching cart items:', error);
         toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
@@ -24,15 +30,20 @@ const Cart = () => {
 
     fetchCartItems();
   }, []);
+
   useEffect(() => {
     calculateTotal();
-  }, [cartItems]);
+  }, [cartItems, selectedItems]);
+
   const calculateTotal = () => {
-    const total = cartItems.reduce((sum, item) => {
-      return sum + (parseFloat(item.unit_price) * item.quantity);
-    }, 0);
+    const total = cartItems
+      .filter(item => selectedItems.includes(item.id))
+      .reduce((sum, item) => {
+        return sum + (parseFloat(item.unit_price) * item.quantity);
+      }, 0);
     setTotalAmount(total);
   };
+
   // Xử lý cập nhật số lượng
   const handleUpdateQuantity = async (cartItemId, newQuantity) => {
     try {
@@ -74,16 +85,25 @@ const Cart = () => {
       }
     }
   };
+
   // Hàm xử lý xóa sản phẩm khỏi giỏ hàng
   const handleRemoveItem = async (cartItemId) => {
     try {
       await CartService.removeFromCart(cartItemId);
-      setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
+      const updatedItems = cartItems.filter(item => item.id !== cartItemId);
+      setCartItems(updatedItems);
+      
+      // Remove from selected items as well
+      setSelectedItems(prevSelected => 
+        prevSelected.filter(id => id !== cartItemId)
+      );
+      
       toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
     } catch (error) {
       toast.error('Có lỗi xảy ra khi xóa sản phẩm');
     }
   };
+
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -91,27 +111,46 @@ const Cart = () => {
       currency: 'VND'
     }).format(amount);
   };
+
+  // Handle item selection
+  const handleItemSelect = (cartItemId) => {
+    setSelectedItems(prevSelected => 
+      prevSelected.includes(cartItemId)
+        ? prevSelected.filter(id => id !== cartItemId)
+        : [...prevSelected, cartItemId]
+    );
+  };
+
+  // Handle checkout
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      toast.error('Vui lòng chọn ít nhất một sản phẩm để thanh toán');
+      return;
+    }
+    navigate('/checkout');
+  };
+
   return(
     <>
     <Header/>
     <section 
-    className="breadcrumb-section set-bg" 
-    style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-  >
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-12 text-center">
-          <div className="breadcrumb__text">
-            <h2>GIỎ HÀNG</h2>
-            <div className="breadcrumb__option">
-              <a href="./">TRANG CHỦ</a>
-              <span>GIỎ HÀNG</span>
+      className="breadcrumb-section set-bg" 
+      style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-12 text-center">
+            <div className="breadcrumb__text">
+              <h2>GIỎ HÀNG</h2>
+              <div className="breadcrumb__option">
+                <a href="./">TRANG CHỦ</a>
+                <span>GIỎ HÀNG</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
     {/* Cart Section */}
     <section className="shoping-cart spad">
       <div className="container">
@@ -121,6 +160,19 @@ const Cart = () => {
               <table>
                 <thead>
                   <tr>
+                    <th>
+                      <input 
+                        type="checkbox" 
+                        checked={selectedItems.length === cartItems.length}
+                        onChange={() => 
+                          setSelectedItems(
+                            selectedItems.length === cartItems.length 
+                              ? [] 
+                              : cartItems.map(item => item.id)
+                          )
+                        }
+                      />
+                    </th>
                     <th className="shoping__product">SẢN PHẨM XE</th>
                     <th>GIÁ SẢN PHẨM</th>
                     <th>SỐ LƯỢNG</th>
@@ -131,8 +183,20 @@ const Cart = () => {
                 <tbody>
                   {cartItems.map(item => (
                     <tr key={item.id}>
+                      <td> 
+                        <input 
+                          type="checkbox"
+                          checked={selectedItems.includes(item.id)}
+                          onChange={() => handleItemSelect(item.id)}
+                        />
+                        
+                      </td>
                       <td className="shoping__cart__item"> 
-                        <img src={`http://127.0.0.1:8000${item.product.image.url}`}   alt={item.product.name} style={{ width: '150px' }} />
+                        <img 
+                          src={`http://127.0.0.1:8000${item.product.image.url}`}   
+                          alt={item.product.name} 
+                          style={{ width: '150px' }} 
+                        />
                         <h5>{item.product.name}</h5>
                       </td>
                       <td className="shoping__cart__price">{item.unit_price}đ</td>
@@ -160,7 +224,9 @@ const Cart = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="shoping__cart__total">{formatCurrency(parseFloat(item.unit_price) * item.quantity)}</td>
+                      <td className="shoping__cart__total">
+                        {formatCurrency(parseFloat(item.unit_price) * item.quantity)}
+                      </td>
                       <td className="shoping__cart__item__close">
                         <span
                           className="icon_close"
@@ -171,8 +237,6 @@ const Cart = () => {
                     </tr>
                   ))}
                 </tbody>
-
-
               </table>
             </div>
           </div>
@@ -180,8 +244,7 @@ const Cart = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="shoping__cart__btns">
-              <a href="/product" className="primary-btn cart-btn">TIẾP TỤC MUA SẮM </a>
-              <a href="#" className="primary-btn cart-btn cart-btn-right"><span className="icon_loading"></span> Update Cart</a>
+              <a href="/product" className="primary-btn cart-btn">Quay lại trang sản phẩm </a>
             </div>
           </div>
           <div className="col-lg-6">
@@ -196,27 +259,31 @@ const Cart = () => {
             </div>
           </div>
           <div className="col-lg-6">
-          <div className="shoping__checkout">
-  <h5>TỔNG ĐƠN</h5>
-  <ul>
-    <li>
-      Tổng cộng{" "}
-      <span>
-      {formatCurrency(totalAmount)}
-      </span>
-    </li>
-  </ul>
-  <a href="/checkout" className="primary-btn">THANH TOÁN</a>
-</div>
+            <div className="shoping__checkout">
+              <h5>TỔNG ĐƠN</h5>
+              <ul>
+                <li>
+                  Tổng cộng{" "}
+                  <span>
+                    {formatCurrency(totalAmount)}
+                  </span>
+                </li>
+              </ul>
+              <button 
+                className="primary-btn"
+                onClick={handleCheckout}
+              >
+                THANH TOÁN
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-  <Footer/>
-  </>
+    <Footer/>
+    </>
   );
 };
-
 
 export default Cart;

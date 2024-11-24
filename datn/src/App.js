@@ -90,7 +90,6 @@ import Qrmomo from "./component/client/paypal/qrmomo";
 // import './assets/css/owl.carousel.css'
 // import './assets/css/meanmenu.min.css'
 // import './assets/css/responsive.css'
-
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -161,8 +160,9 @@ function App() {
   );
  
   return (
+    <>
     <RouterProvider router={router} />
-   
+    </>
   );
 }
 

@@ -226,9 +226,7 @@ const CheckoutSection = () => {
       const response = await OrderService.createOrder(orderData);
       
       if (response.success) {
-        await CartService.clearCart();
         toast.success('Đặt hàng thành công!');
-        
         if (selectedPaymentMethod === PAYMENT_METHODS.VNPAY) {
           // Redirect to VNPAY payment gateway
           window.location.href = PAYMENT_INFO[PAYMENT_METHODS.VNPAY].paymentUrl;
@@ -242,7 +240,8 @@ const CheckoutSection = () => {
         }
       }
     } catch (error) {
-      toast.error(error.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
+      console.error('Full error details:', error);
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
     } finally {
       setLoading(false);
     }
@@ -383,157 +382,27 @@ const CheckoutSection = () => {
             <div className="checkout__order__total">
               Tổng cộng <span>{formatCurrency(total)}</span>
             </div>
-
-              {/* Chọn phương thức thanh toán */}
-              <div className="checkout__input__radio" style={{ position: 'relative', marginBottom: '20px' }}>
-                <label
-                  htmlFor="payment-cod"
-                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '16px' }}
-                >
-                  <input
-                    type="radio"
-                    id="payment-cod"
-                    name="payment-method"
-                    onChange={() => setSelectedPaymentMethod('cod')}
-                    style={{ marginRight: '10px' }}
-                  />
-                  <img
-                    src="https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=6"
-                    alt="Payment Icon"
-                    style={{ width: '40px', height: '40px', marginRight: '10px' }}
-                  />
-                  <span style={{ marginRight: '10px' }}>Thanh toán bằng chuyển khoản ngân hàng</span>
-                  <span className="checkmark"></span>
-                </label>
-
-                      {selectedPaymentMethod === 'cod' && (
-                        <div
-                          style={{
-                            marginTop: '10px',
-                            padding: '15px',
-                            border: '1px solid #f5f5f5',
-                            borderRadius: '8px',
-                            backgroundColor: '#FFFF',
-                            transition: 'all 0.3s ease',
-                            animation: 'fadeIn 2s',
-                          }}
-                        >
-                          <p style={{ margin: '0 0 10px 0', fontWeight: 'bold', color: 'black' }}>
-                            Vui lòng thực hiện chuyển khoản theo thông tin bên dưới:
-                          </p>
-                          <p style={{ margin: '5px 0' }}>
-                            <strong>Nhóm 8</strong><br />
-                            Số tài khoản: <strong>0942785922</strong><br />
-                            Ngân hàng: <strong>VietinBank - Cà Mau</strong>
-                          </p>
-                          <p style={{ margin: '5px 0' }}>
-                            <strong>Hướng dẫn thanh toán:</strong>
-                            <a
-                              href="https://rideplus.vn/pages/thu-tuc-thanh-toan"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ color: '#007BFF', textDecoration: 'underline' }}
-                            >
-                              Xem tại đây
-                            </a>
-                          </p>
-                        </div>
-                      )}
-                </div>
-              {/* Chọn phương thức thanh toán VNpay */}     
-              <div className="checkout__input__radio" style={{ position: 'relative', marginBottom: '20px' }}>
-                <label
-                  htmlFor="payment-cod"
-                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '16px' }}
-                >
-                  <input
-                    type="radio"
-                    id="payment-cod"
-                    name="payment-method"
-                    onChange={() => setSelectedPaymentMethod('cod')}
-                    style={{ marginRight: '10px' }}
-                  />
-                  <img
-                    src="https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=6"
-                    alt="Payment Icon"
-                    style={{ width: '40px', height: '40px', marginRight: '10px' }}
-                  />
-                  <span style={{ marginRight: '10px' }}>Thanh toán bằng Vnpay</span>
-                  <span className="checkmark"></span>
-                </label>
-
-                      {selectedPaymentMethod === 'cod' && (
-                        <div
-                          style={{
-                            marginTop: '10px',
-                            padding: '15px',
-                            border: '1px solid #f5f5f5',
-                            borderRadius: '8px',
-                            backgroundColor: '#FFFF',
-                            transition: 'all 0.3s ease',
-                            animation: 'fadeIn 2s',
-                          }}
-                        >
-                          <p style={{ margin: '0 0 10px 0', fontWeight: 'bold', color: 'black' }}>
-                            Vui lòng thực hiện chuyển khoản theo thông tin bên dưới:
-                          </p>
-                          <p style={{ margin: '5px 0' }}>
-                            <strong>Nhóm 8</strong><br />
-                            Số tài khoản: <strong>0942785922</strong><br />
-                            Ngân hàng: <strong>VietinBank - Cà Mau</strong>
-                          </p>
-                          <p style={{ margin: '5px 0' }}>
-                            <strong>Hướng dẫn thanh toán:</strong>
-                            <a
-                              href="https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ color: '#007BFF', textDecoration: 'underline' }}
-                            >
-                              Xem tại đây
-                            </a>
-                          </p>
-                        </div>
-                      )}
-                </div>
-              <div className="checkout__input__radio">
-                <label
-                  htmlFor="cash-on-delivery"
-                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '16px' }}
-                >
-                  <input
-                    type="radio"
-                    id="cash-on-delivery"
-                    name="payment-method"
-                    onChange={() => setSelectedPaymentMethod('cash-on-delivery')}
-                    style={{ marginRight: '10px' }}
-                  />
-                  <img
-                    src="https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6"
-                    alt="Payment Icon"
-                    style={{ width: '40px', height: '40px', marginRight: '10px' }}
-                  />
-                  Thanh toán khi nhận hàng
-                  <span className="checkmark"></span>
-                </label>
+              <div className="checkout__order__payment">
+      <h4>Phương thức thanh toán</h4>
+      <PaymentMethodRadio method={PAYMENT_METHODS.BANK_TRANSFER} />
+      <PaymentMethodRadio method={PAYMENT_METHODS.VNPAY} />
+      <PaymentMethodRadio method={PAYMENT_METHODS.COD} />
+      {errors.paymentMethod && (
+        <span className="error-message">{errors.paymentMethod}</span>
+      )}
               </div>
-
               <button type="submit" className="site-btn" disabled={loading}>
               {loading ? 'ĐANG XỬ LÝ...' : 'ĐẶT HÀNG'}
               </button>
             </div>
-            {errors.paymentMethod && (
-                <span className="error-message payment-error">
-                  {errors.paymentMethod}
-                </span>
-              )}
+            
+
           </div>
         </div>
       </form>
     </div>
   </div>
 </section>
-
       <Footer />
     </>
   );

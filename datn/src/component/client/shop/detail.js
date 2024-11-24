@@ -7,6 +7,8 @@ import { FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify'; // Thêm thư viện này để hiển thị thông báo
 import { CartService } from "../../../services/client/Cart";
 import Cookies from "js-cookie";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Detail = () => {
     const [mainImage, setMainImage] = useState(null);
@@ -25,29 +27,43 @@ const Detail = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const getContrastColor = (hexColor) => {
+    // Convert hex to RGB
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    
+    // Calculate relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    return luminance > 0.5 ? '#000000' : '#ffffff';
+  };
 
-
-    useEffect(() => {
-        const fetchProductDetail = async () => {
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
-                setProduct(response.data.data);
-
-                // Set the initial main image to the first product image if available
-                if (response.data.data.images.length > 0) {
-                    setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
-                }
-                
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching product details:", error);
+  useEffect(() => {
+    const fetchProductDetail = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
+            setProduct(response.data.data);
+            
+            // Set the initial main image
+            if (response.data.data.images.length > 0) {
+                setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
             }
-        };
+            
+            // Set the first variant as default selected variant
+            if (response.data.data.variants && response.data.data.variants.length > 0) {
+                setSelectedVariant(response.data.data.variants[0]);
+            }
+            
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching product details:", error);
+        }
+    };
 
-        
-
-        fetchProductDetail();
-    }, [id]);
+    fetchProductDetail();
+}, [id]);
 
     const fetchReviews = async () => {
         try {
@@ -74,31 +90,47 @@ const Detail = () => {
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
     const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
-
+    const colorMap = {
+      'Đen': '#000000',
+      'Trắng': '#FFFFFF',
+      'Đỏ': '#FF0000',
+      'Xanh': '#0000FF',
+      'Xám': '#808080',
+      'Vàng': '#FFD700',
+      'Xanh lá': '#008000',
+      'Cam': '#FFA500',
+      'Nâu': '#8B4513',
+      'Hồng': '#FFC0CB',
+      // Add more color mappings as needed
+    };
+    const handleColorSelect = (variant) => {
+      setSelectedVariant(variant);
+  };
+  
     // xử lý cart
     const handleAddToCart = async () => {
-        try {
+      try {
           const token = Cookies.get('authToken');
           if (!token) {
-            // Nếu không có token, nghĩa là người dùng chưa đăng nhập
-            toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
-            window.location.href = '/login'; // Chuyển hướng đến trang đăng nhập
-            return;
+              toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
+              window.location.href = '/login';
+              return;
           }
-      
-          // Lấy thông tin người dùng từ Cookies
+
+          if (!selectedVariant) {
+              toast.error('Vui lòng chọn màu sắc');
+              return;
+          }
+
           const userInfo = JSON.parse(Cookies.get('userInfo'));
-      
-          // Gọi hàm addToCart của CartService
-          const result = await CartService.addToCart(id, quantity, userInfo);
+          const result = await CartService.addToCart(id, quantity, userInfo, selectedVariant.id);
           toast.success('Đã thêm sản phẩm vào giỏ hàng!');
-      
-          // Cập nhật lại giỏ hàng
+
           await updateCartItems();
-        } catch (error) {
+      } catch (error) {
           toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
-        }
-      };
+      }
+  };
       const updateCartItems = async () => {
         try {
           const token = Cookies.get('authToken');
@@ -245,6 +277,38 @@ const Detail = () => {
                                 <p className="mb-4">
                                     {product.description}
                                 </p>
+                                {/* Add Color Selection */}
+                                <div className="product__details__color mb-4">
+                                    <h6 className="mb-3">Màu sắc</h6>
+                                    <div className="color-options">
+                                        {product.variants.map((variant) => (
+                                          
+                                            <label
+                                                key={variant.id}
+                                                className={`color-option ${
+                                                    selectedVariant?.id === variant.id ? 'selected' : ''
+                                                }`}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="color-checkbox"
+                                                    checked={selectedVariant?.id === variant.id}
+                                                    onChange={() => handleColorSelect(variant)}
+                                                    name="color"
+                                                />
+                                                <span className="color-checkmark"></span>
+                                                <span className="color-label">{variant.color}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    
+                                    {selectedVariant && (
+                                        <div className="selected-color-info">
+                                            <i className="fas fa-info-circle mr-2"></i>
+                                            Màu đã chọn: {selectedVariant.color}
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="product__details__quantity">
                                     <div className="quantity">
                                         <div className="pro-qty">
@@ -372,6 +436,8 @@ Gửi bình luận
                             </div>
                         </div>
                 </div>
+    <ToastContainer />
+
             </section>
             <Footer />
         </>

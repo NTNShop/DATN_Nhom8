@@ -351,44 +351,52 @@ const Product = () => {
                 <>
                   {/* Product Grid */}
                   <div className="row">
-                    {paginatedProducts.length > 0 ? (
-                      paginatedProducts.map((product) => (
-                        <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
-                          <div className="product__item">
-                            <div className="product__item__pic">
-                              {product.images && product.images.length > 0 ? (
-                                <img
-                                  src={`http://127.0.0.1:8000${product.images[0].image_url}`}
-                                  alt={product.name}
-                                  className="img-fluid"
-                                />
-                              ) : (
-                                <div className="no-image">Không có hình ảnh</div>
-                              )}
-                              <ul className="product__item__pic__hover">
-                                <li>
-                                  <Link to={`/product-details/${product.id}`}>
-                                    <i className="fa fa-retweet"></i>
-                                  </Link>
-                                </li> 
-                              </ul>
-                            </div>
-                            <div className="product__item__text">
-                              <h5>
-                                <Link to={`/product-details/${product.id}`}>
-                                  {product.name}
-                                </Link>
-                              </h5>
-                              <h5>{formatPrice(product.price)}</h5>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="col-12 text-center">
-                        <p>Không tìm thấy sản phẩm nào trong khoảng giá này.</p>
-                      </div>
-                    )}
+                  {paginatedProducts.length > 0 ? (
+                  paginatedProducts.map((product) => (
+                <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
+                <div className="product__item">
+          <div className="product__item__pic position-relative">
+            {product.images && product.images.length > 0 ? (
+              <img
+                src={`http://127.0.0.1:8000${product.images[0].image_url}`}
+                alt={product.name}
+                className="img-fluid"
+              />
+            ) : (
+              <div className="no-image">Không có hình ảnh</div>
+            )}
+
+            {/* Hiển thị nút Hết hàng đè lên hình ảnh nếu stock <= 0 */}
+            {product.stock <= 0 && (
+              <button className="out-of-stock-btn btn btn-danger" disabled>
+                Hết hàng
+              </button>
+            )}
+
+            <ul className="product__item__pic__hover">
+              <li>
+                <Link to={`/product-details/${product.id}`}>
+                  <i className="fa fa-retweet"></i>
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div className="product__item__text">
+            <h5>
+              <Link to={`/product-details/${product.id}`}>
+                {product.name}
+              </Link>
+            </h5>
+            <h5>{formatPrice(product.price)}</h5>
+          </div>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="col-12 text-center">
+      <p>Không tìm thấy sản phẩm nào trong khoảng giá này.</p>
+    </div>
+  )}
                   </div>
 
                   {/* Pagination */}

@@ -3,16 +3,24 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Modal, Button } from 'react-bootstrap';
 
 const EditProduct = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
     const [uploadedImages, setUploadedImages] = useState([]); // Thêm state để lưu ảnh hiện tại
     const [imageErrors, setImageErrors] = useState(null); // Thêm state để xử lý lỗi ảnh
+    const [showModal, setShowModal] = useState(false);
+    const handleClose = () => {
+        setShowModal(false);
+        navigate(-1); // Quay về trang trước
+    };
+     
 
     // Sửa hàm handleFileChange để validate và preview ảnh
     const handleFileChange = (e) => {
@@ -53,7 +61,8 @@ const EditProduct = () => {
         status: 'in_stock',
         warranty: '6',
         images: [],
-        variants: []
+        variants: [],
+        stock:'',
     });
     const [currentVariant, setCurrentVariant] = useState({
         color: '',
@@ -72,8 +81,7 @@ const EditProduct = () => {
                 console.error("Error fetching categories and brands:", error);
             }
         };
-
-        const fetchProductData = async () => {
+const fetchProductData = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
                 setProduct(response.data.data);
@@ -147,7 +155,12 @@ const EditProduct = () => {
         }));
     };
 
-   
+    // const handleFileChange = (e) => {
+    //     setProduct((prevState) => ({
+    //         ...prevState,
+    //         images: e.target.files,
+    //     }));
+    // };
 
     const handleCKEditorChange = (event, editor) => {
         const data = editor.getData();
@@ -170,9 +183,9 @@ const EditProduct = () => {
     
         const formData = new FormData();
     
-    
+        // Append các trường cơ bản
         formData.append('price', parseFloat(product.price));
-        formData.append('category_id', parseInt(product.category_id));
+formData.append('category_id', parseInt(product.category_id));
         formData.append('brand_id', parseInt(product.brand_id));
         formData.append('warranty', parseInt(product.warranty));
         formData.append('status', product.status);
@@ -180,6 +193,7 @@ const EditProduct = () => {
         formData.append('description', product.description);
         formData.append('short_description', product.short_description);
         formData.append('specifications', product.specifications);
+        formData.append('stock', product.stock);
     
         // Xử lý variants
         product.variants.forEach((variant, index) => {
@@ -210,8 +224,9 @@ const EditProduct = () => {
             );
     
             if (response.data.status === 'success') {
-                alert('Cập nhật sản phẩm thành công');
+                setShowModal(true);
             }
+            // navigate("/admin/product");
         } catch (error) {
             console.error("Error:", error.response?.data || error.message);
             alert("Có lỗi xảy ra: " + (error.response?.data?.message || "Lỗi không xác định"));
@@ -230,6 +245,10 @@ const EditProduct = () => {
         if (!product.short_description) errors.short_description = "Mô tả ngắn là bắt buộc";
         if (!product.description) errors.description = "Mô tả là bắt buộc";
         if (product.variants.length === 0) errors.variants = "Cần ít nhất một biến thể màu sắc";
+
+        if (!product.stock || isNaN(product.stock) || Number(product.stock) < 0) {
+            errors.stock = "Số lượng sản phẩm phải là số dương";
+        }
         return errors;
     };
 
@@ -237,7 +256,7 @@ const EditProduct = () => {
         <div>
             <Header />
             <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
-                <div className="page-breadcrumb">
+<div className="page-breadcrumb">
                     <div className="row align-items-center">
                         <div className="col-md-6 col-8 align-self-center">
                             <div className="d-flex align-items-center">
@@ -282,7 +301,7 @@ const EditProduct = () => {
                                             >
                                                 <option value="">Chọn danh mục</option>
                                                 {categories.map((category) => (
-                                                    <option key={category.id} value={category.id}>
+<option key={category.id} value={category.id}>
                                                         {category.name}
                                                     </option>
                                                 ))}
@@ -332,7 +351,7 @@ const EditProduct = () => {
                                     src={url}
                                     alt={`Preview ${index + 1}`}
                                     style={{
-                                        width: '100%',
+width: '100%',
                                         height: '100%',
                                         objectFit: 'cover',
                                         borderRadius: '4px'
@@ -357,6 +376,20 @@ const EditProduct = () => {
                                             {errors.price && <span className="text-danger">{errors.price}</span>}
                                         </div>
                                     </div>
+                                    <div>
+                                    <label className="col-md-12 mb-0">số lượng</label>
+                                        <input
+                                            type="number"
+                                            id="stock"
+                                            name="stock"
+                                            value={product.stock}
+                                            onChange={handleInputChange}
+                                            min="0"
+                                            className="form-control-line border-input"
+                                            
+                                        />
+                                        {errors.stock && <span className="text-danger">{errors.stock}</span>}
+                                    </div>
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Mô tả ngắn</label>
@@ -368,7 +401,7 @@ const EditProduct = () => {
                                                 className="form-control-line border-input"
                                             />
                                             {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
-                                        </div>
+</div>
                                     </div>
 
                                     <div className="form-group mb-3">
@@ -414,7 +447,7 @@ const EditProduct = () => {
                                             </div>
 
                                             <div className="variants-list mt-2">
-                                                {product.variants.map((variant, index) => (
+{product.variants.map((variant, index) => (
                                                     <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
                                                         <span className='text-dark'>
                                                             Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
@@ -457,7 +490,7 @@ const EditProduct = () => {
                                                 onChange={handleInputChange}
                                                 className="form-control-line border-input"
                                             >
-                                                <option value="in_stock">Còn hàng</option>
+<option value="in_stock">Còn hàng</option>
                                                 <option value="out_of_stock">Hết hàng</option>
                                             </select>
                                         </div>
@@ -486,8 +519,21 @@ const EditProduct = () => {
                         </div>
                     </div>
                 </div>
+                
             </div>
             <Footer />
+               {/* Modal */}
+               <Modal show={showModal} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Thành công</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Cập nhật sản phẩm thành công!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="success" onClick={handleClose}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

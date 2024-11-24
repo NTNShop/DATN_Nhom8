@@ -54,20 +54,15 @@ axiosInstance.interceptors.response.use(
 
 export const CartService = {
   // Thêm sản phẩm vào giỏ hàng
-  addToCart: async (productId, quantity, userInfo, variant_id) => {
-    try {
-      const response = await axiosInstance.post('/cart/add', {
-        product_id: productId,
-        quantity: quantity,
-        variant_id: variant_id,
-        user_id: userInfo.id
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Lỗi khi thêm vào giỏ hàng:', error);
-      throw error;
-    }
-  },
+  // Trong CartService
+addToCart: async (productId, quantity, userInfo, variantId) => {
+  return await axios.post('http://127.0.0.1:8000/api/v1/cart/add', {
+      product_id: productId,
+      quantity: quantity,
+      variant_id: variantId, // Sử dụng variant_id thay vì color_id
+      user_id: userInfo.id
+  });
+},
 
   // Cập nhật số lượng sản phẩm
   updateCartItem: async (id, quantity) => {
@@ -104,5 +99,6 @@ export const CartService = {
       throw error;
     }
   },
+
 
 };
