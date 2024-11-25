@@ -224,7 +224,7 @@ const Contact = () => {
                                 <textarea className='bg-input-contact border border-dark' placeholder="Lời nhắn" value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
                                 {messageError && <p className="text-danger">{messageError}</p>}
                                 <div>
-                                <button type="submit" className="site-btn">Gửi lời nhắn <i class="bi bi-arrow-right"></i></button>
+                                <button type="submit" className="site-btn2">Gửi lời nhắn <i class="bi bi-arrow-right"></i></button>
                                 </div>
                             </div>
                             <div className="col-lg-6 col-md-6">
