@@ -28,43 +28,65 @@ const Detail = () => {
   const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [productType, setProductType] = useState('');
   const getContrastColor = (hexColor) => {
-    // Convert hex to RGB
+    // Chuyển đổi hex sang RGB
     const r = parseInt(hexColor.slice(1, 3), 16);
     const g = parseInt(hexColor.slice(3, 5), 16);
     const b = parseInt(hexColor.slice(5, 7), 16);
     
-    // Calculate relative luminance
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    
-    return luminance > 0.5 ? '#000000' : '#ffffff';
+    // Tính toán độ tương phản theo công thức YIQ
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq >= 128) ? '#000000' : '#ffffff';
+};
+
+useEffect(() => {
+  const fetchProductDetail = async () => {
+      try {
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
+          setProduct(response.data.data);
+          
+          // Set the initial main image
+          if (response.data.data.images.length > 0) {
+              setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
+          }
+          
+          // Chỉ set selected variant nếu sản phẩm là xe đạp và có variants
+          if (response.data.data.category === 'bicycle' && response.data.data.variants && response.data.data.variants.length > 0) {
+              setSelectedVariant(response.data.data.variants[0]);
+          }
+          
+          // Set product type
+          setProductType(response.data.data.category);
+          setLoading(false);
+      } catch (error) {
+          console.error("Error fetching product details:", error);
+      }
   };
 
-  useEffect(() => {
-    const fetchProductDetail = async () => {
-        try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
-            setProduct(response.data.data);
-            
-            // Set the initial main image
-            if (response.data.data.images.length > 0) {
-                setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
-            }
-            
-            // Set the first variant as default selected variant
-            if (response.data.data.variants && response.data.data.variants.length > 0) {
-                setSelectedVariant(response.data.data.variants[0]);
-            }
-            
-            setLoading(false);
-        } catch (error) {
-            console.error("Error fetching product details:", error);
-        }
-    };
-
-    fetchProductDetail();
+  fetchProductDetail();
 }, [id]);
+  // Validate input trước khi thêm vào giỏ hàng
+  const validateCartInput = () => {
+    if (!Cookies.get('authToken')) {
+        toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
+        return false;
+    }
 
+    // Chỉ kiểm tra variant nếu là xe đạp
+    if (productType === 'bicycle' && !selectedVariant) {
+        toast.warning('Vui lòng chọn màu sắc xe đạp');
+        return false;
+    }
+
+    if (quantity < 1) {
+        toast.warning('Số lượng sản phẩm phải lớn hơn 0');
+        return false;
+    }
+
+    return true;
+};
     const fetchReviews = async () => {
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/v1/reviews');
@@ -89,7 +111,7 @@ const Detail = () => {
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
-    const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
+    // const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
     const colorMap = {
       'Đen': '#000000',
       'Trắng': '#FFFFFF',
@@ -101,51 +123,120 @@ const Detail = () => {
       'Cam': '#FFA500',
       'Nâu': '#8B4513',
       'Hồng': '#FFC0CB',
-      // Add more color mappings as needed
-    };
-    const handleColorSelect = (variant) => {
-      setSelectedVariant(variant);
+      'Bạc': '#C0C0C0',
+      'Tím': '#800080',
+      'Be': '#F5F5DC',
+      'Xanh dương': '#1E90FF',
+      'Xanh rêu': '#556B2F',
+      'Đỏ đô': '#8B0000',
+      'Xám đậm': '#696969',
+      'Xám nhạt': '#D3D3D3'
   };
-  
+  //   const handleColorSelect = (variant) => {
+  //     setSelectedVariant(variant);
+  // };
+  // Render phần chi tiết sản phẩm với điều kiện
+  const renderProductDetails = () => (
+    <div className="product__details__text">
+        <h3>{product.name}</h3>
+        <div className="product__details__rating mb-3">
+            <span className="text-warning me-1">
+                <i className="fa fa-star"></i>
+                <i className="fa fa-star"></i>
+                <i className="fa fa-star"></i>
+                <i className="fa fa-star"></i>
+                <i className="fa fa-star-half-o"></i>
+            </span>
+            <span>(18 reviews)</span>
+        </div>
+        <div className="product__details__price fs-4 mb-3 text-danger">
+            {formatCurrency(parseFloat(product.price))}VND
+        </div>
+        <p className="mb-4">
+            {product.description}
+        </p>
+        
+        {/* Chỉ hiển thị phần chọn màu nếu là xe đạp */}
+        {productType === 'bicycle' && product.variants && product.variants.length > 0 && renderColorOptions()}
+
+        <div className="product__details__quantity">
+            <div className="quantity">
+                <div className="pro-qty">
+                    <span className="dec qtybtn" onClick={decrementQuantity}>-</span>
+                    <input
+                        type="text"
+                        value={quantity}
+                        onChange={handleQuantityChange}
+                    />
+                    <span className="inc qtybtn" onClick={incrementQuantity}>+</span>
+                </div>
+            </div>
+        </div>
+        
+        <button 
+            className="primary-btn"
+            onClick={handleAddToCart}
+            disabled={isAddingToCart}
+        >
+            {isAddingToCart ? 'ĐANG THÊM...' : 'THÊM VÀO GIỎ HÀNG'}
+        </button>
+        <a href="#" className="heart-icon">
+            <span className="icon_heart_alt"></span>
+        </a>
+    </div>
+);
     // xử lý cart
     const handleAddToCart = async () => {
       try {
-          const token = Cookies.get('authToken');
-          if (!token) {
+          if (!validateCartInput()) {
+              return;
+          }
+
+          setIsAddingToCart(true);
+
+          const userInfo = Cookies.get('userInfo');
+          if (!userInfo) {
               toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
-              window.location.href = '/login';
               return;
           }
 
-          if (!selectedVariant) {
-              toast.error('Vui lòng chọn màu sắc');
-              return;
+          const parsedUserInfo = JSON.parse(userInfo);
+          
+          // Thêm vào giỏ hàng với hoặc không có variant tùy thuộc vào loại sản phẩm
+          const response = await CartService.addToCart(
+              id,
+              quantity,
+              parsedUserInfo,
+              productType === 'bicycle' ? selectedVariant?.id : null
+          );
+
+          if (response && response.data) {
+              toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+              await updateCartItems();
           }
-
-          const userInfo = JSON.parse(Cookies.get('userInfo'));
-          const result = await CartService.addToCart(id, quantity, userInfo, selectedVariant.id);
-          toast.success('Đã thêm sản phẩm vào giỏ hàng!');
-
-          await updateCartItems();
       } catch (error) {
-          toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+          console.error('Add to cart error:', error);
+          toast.error(error.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng');
+      } finally {
+          setIsAddingToCart(false);
       }
   };
-      const updateCartItems = async () => {
-        try {
+       // Cập nhật giỏ hàng
+    const updateCartItems = async () => {
+      try {
           const token = Cookies.get('authToken');
-          if (!token) {
-            // Nếu không có token, nghĩa là người dùng chưa đăng nhập
-            return;
-          }
-      
+          if (!token) return;
+
           const response = await CartService.getCartItems();
-          setCartItems(response.data);
-        } catch (error) {
-          console.error('Error fetching cart items:', error);
-          toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
-        }
-      };
+          if (response && response.data) {
+              setCartItems(response.data);
+          }
+      } catch (error) {
+          console.error('Error updating cart:', error);
+          // Không hiển thị toast lỗi ở đây vì đây là thao tác ngầm
+      }
+  };
+  
         // Handle search
   const handleSearch = (event) => {
     event.preventDefault();
@@ -181,6 +272,62 @@ const Detail = () => {
     setFilteredProducts(filtered);
     setCurrentPage(1);
   };
+  
+  // Component render phần màu sắc
+  const renderColorOptions = () => (
+    <div className="product__details__color mb-4">
+        <h6 className="mb-3">Màu sắc {selectedVariant && `(Đã chọn: ${selectedVariant.color})`}</h6>
+        <div className="color-options d-flex flex-wrap">
+        {product.variants.map((variant) => (
+                            <div
+                                key={variant.id}
+                                className={`color-option ${selectedVariant?.id === variant.id ? 'selected' : ''}`}
+                                onClick={() => handleColorSelect(variant)}
+                                style={{
+                                    cursor: 'pointer',
+                                    padding: '10px',
+                                    margin: '5px',
+                                    border: `2px solid ${selectedVariant?.id === variant.id ? '#000' : '#ddd'}`,
+                                    borderRadius: '4px',
+                                    backgroundColor: colorMap[variant.color] || '#fff',
+                                    color: getContrastColor(colorMap[variant.color] || '#fff'),
+                                }}
+                            >
+                                {variant.color}
+                            </div>
+                        ))}
+        </div>
+        
+        {selectedVariant && (
+            <div className="selected-color-info mt-3" style={{
+                padding: '8px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '4px'
+            }}>
+                <i className="fas fa-info-circle mr-2"></i>
+                Màu đã chọn: <strong>{selectedVariant.color}</strong>
+            </div>
+        )}
+    </div>
+);
+  // Xử lý chọn variant
+  const handleColorSelect = (variant) => {
+    setSelectedVariant(variant);
+    console.log('Selected variant:', variant);
+};
+
+// Xử lý thay đổi số lượng
+const handleQuantityChange = (e) => {
+    const value = parseInt(e.target.value) || 1;
+    setQuantity(Math.max(1, value));
+};
+// Format tiền tệ
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(amount);
+};
     return (
         <>
             <Header />
@@ -261,89 +408,7 @@ const Detail = () => {
                         {/* Other Product Details */}
                  
                         <div className="col-lg-6 col-md-6">
-                            <div className="product__details__text">
-                                <h3>{product.name}</h3>
-                                <div className="product__details__rating mb-3">
-                                    <span className="text-warning me-1">
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star-half-o"></i>
-                                    </span>
-                                    <span>(18 reviews)</span>
-                                </div>
-                                <div className="product__details__price fs-4 mb-3 text-danger">{product.price}đ</div>
-                                <p className="mb-4">
-                                    {product.description}
-                                </p>
-                                {/* Add Color Selection */}
-                                <div className="product__details__color mb-4">
-                                    <h6 className="mb-3">Màu sắc</h6>
-                                    <div className="color-options">
-                                        {product.variants.map((variant) => (
-                                          
-                                            <label
-                                                key={variant.id}
-                                                className={`color-option ${
-                                                    selectedVariant?.id === variant.id ? 'selected' : ''
-                                                }`}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    className="color-checkbox"
-                                                    checked={selectedVariant?.id === variant.id}
-                                                    onChange={() => handleColorSelect(variant)}
-                                                    name="color"
-                                                />
-                                                <span className="color-checkmark"></span>
-                                                <span className="color-label">{variant.color}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                    
-                                    {selectedVariant && (
-                                        <div className="selected-color-info">
-                                            <i className="fas fa-info-circle mr-2"></i>
-                                            Màu đã chọn: {selectedVariant.color}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="product__details__quantity">
-                                    <div className="quantity">
-                                        <div className="pro-qty">
-                                            <span className="dec qtybtn" onClick={decrementQuantity}>-</span>
-                                            <input
-                                                type="text"
-                                                value={quantity}
-                                                onChange={handleQuantityChange}
-                                            />
-                                            <span className="inc qtybtn" onClick={incrementQuantity}>+</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* cart api */}
-                                <button 
-                className="primary-btn"
-                onClick={handleAddToCart} > ADD TO CART
-            </button>
-                                <a href="#" className="heart-icon">
-                                    <span className="icon_heart_alt"></span>
-                                </a>
-
-
-                                {/* <ul className="list-group list-group-flush mb-4">
-                                    <li className="list-group-item">
-                                        <strong>Động cơ:</strong> Động cơ eSP+ 4 van
-                                    </li>
-                                    <li className="list-group-item">
-                                        <strong>Tiện ích:</strong> Hộc để đồ phía trước có trang bị cổng sạc USB...
-                                    </li>
-                                    <li className="list-group-item">
-                                        <strong>An toàn:</strong> Hệ thống chống bó cứng phanh (ABS)...
-                                    </li>
-                                </ul> */}
-                            </div>
+                        {renderProductDetails()}
                         </div>
 
                         {/* Bảng thông số kỹ thuật */}
@@ -437,7 +502,6 @@ Gửi bình luận
                         </div>
                 </div>
     <ToastContainer />
-
             </section>
             <Footer />
         </>

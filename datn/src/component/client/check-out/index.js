@@ -36,6 +36,7 @@ const CheckoutSection = () => {
     paymentMethod: ''
   });
   
+
   // Fetch cart items when component mounts
   useEffect(() => {
     fetchCartItems();
@@ -46,6 +47,37 @@ const CheckoutSection = () => {
       calculateTotals();
     }
   }, [cartItems]);
+  useEffect(() => {
+    const fetchSelectedItems = async () => {
+      try {
+        // Lấy danh sách ID sản phẩm đã chọn từ sessionStorage
+        const selectedIds = JSON.parse(sessionStorage.getItem('selectedCartItems') || '[]');
+  
+        if (selectedIds.length === 0) {
+          toast.error('Vui lòng chọn sản phẩm từ giỏ hàng');
+          navigate('/cart');
+          return;
+        }
+  
+        // Lấy thông tin chi tiết của các sản phẩm đã chọn
+        const selectedItems = await CartService.getSelectedCartItems(selectedIds);
+        setCartItems(selectedItems);
+  
+        // Tính toán tổng tiền
+        const newSubtotal = selectedItems.reduce((sum, item) =>
+          sum + (parseFloat(item.unit_price) * item.quantity), 0
+        );
+        setSubtotal(newSubtotal);
+        setTotal(newSubtotal + shipping);
+      } catch (error) {
+        console.error('Lỗi khi lấy sản phẩm đã chọn:', error);
+        toast.error('Không thể tải thông tin sản phẩm đã chọn');
+        navigate('/cart');
+      }
+    };
+  
+    fetchSelectedItems();
+  }, [navigate]);
   const fetchCartItems = async () => {
     try {
       const response = await CartService.getCartItems();
@@ -200,52 +232,63 @@ const CheckoutSection = () => {
     
     setLoading(true);
     try {
-      const orderItems = cartItems.map(item => ({
-        product_id: parseInt(item.product.id),
-        variant_id: item.variant_id || null,
-        quantity: parseInt(item.quantity),
-        price: parseFloat(item.unit_price)
-      }));
+        const orderItems = cartItems.map(item => ({
+            product_id: parseInt(item.product.id),
+            variant_id: item.variant_id || null,
+            quantity: parseInt(item.quantity),
+            price: parseFloat(item.unit_price)
+        }));
 
-      const orderData = {
-        items: orderItems,
-        shipping_address: {
-          full_name: formData.fullName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          address: formData.address.trim(),
-          city: formData.city.trim(),
-          note: formData.note?.trim() || ''
-        },
-        payment_method: selectedPaymentMethod,
-        shipping_fee: shipping,
-        subtotal: subtotal,
-        total_amount: total
-      };
+        const orderData = {
+            items: orderItems,
+            shipping_address: {
+                full_name: formData.fullName.trim(),
+                email: formData.email.trim(),
+                phone: formData.phone.trim(),
+                address: formData.address.trim(),
+                city: formData.city.trim(),
+                note: formData.note?.trim() || ''
+            },
+            payment_method: selectedPaymentMethod,
+            shipping_fee: shipping,
+            subtotal: subtotal,
+            total_amount: total
+        };
 
-      const response = await OrderService.createOrder(orderData);
-      
-      if (response.success) {
-        toast.success('Đặt hàng thành công!');
-        if (selectedPaymentMethod === PAYMENT_METHODS.VNPAY) {
-          // Redirect to VNPAY payment gateway
-          window.location.href = PAYMENT_INFO[PAYMENT_METHODS.VNPAY].paymentUrl;
-        } else {
-          navigate('/success', { 
-            state: { 
-              orderId: response.data.id,
-              orderDetails: response.data
+        const response = await OrderService.createOrder(orderData);
+        
+        if (response.success) {
+            // Xóa dữ liệu đã lưu trong sessionStorage
+            sessionStorage.removeItem('selectedCartItems');
+            sessionStorage.removeItem('selectedProducts');
+            
+            toast.success('Đặt hàng thành công!');
+            
+            if (selectedPaymentMethod === PAYMENT_METHODS.VNPAY) {
+                window.location.href = PAYMENT_INFO[PAYMENT_METHODS.VNPAY].paymentUrl;
+            } else {
+                navigate('/success', { 
+                    state: { 
+                        orderId: response.data.id,
+                        orderCode: response.data.order_code,
+                        orderDetails: {
+                            ...response.data,
+                            total: response.data.total,
+                            payment_status: selectedPaymentMethod,
+                            address: response.data.address,
+                            city: response.data.city,
+                        }
+                    }
+                });
             }
-          });
         }
-      }
     } catch (error) {
-      console.error('Full error details:', error);
-      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
+        console.error('Chi tiết lỗi:', error);
+        toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   
   return (

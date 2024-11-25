@@ -23,9 +23,7 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [cart, setCart] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
-  const itemsPerPage = 9;
 
   // Format price to VND currency
   const formatPrice = (price) => {
@@ -113,13 +111,6 @@ setFilteredProducts(filtered);
     setFilteredProducts(products);
     setCurrentPage(1);
   };
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   // Hàm xử lý khi chọn danh mục
   const handleCategorySelect = (categoryId, categoryName) => {
     const filtered = products.filter((product) => product.category_id === categoryId);
@@ -130,7 +121,13 @@ setFilteredProducts(filtered);
     setFilteredProducts(products); // Hiển thị toàn bộ sản phẩm
     setCurrentCategory(null); // Xóa danh mục hiện tại
   };
-
+  // Format tiền tệ
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
   return (
     <>
       <Header />
@@ -172,7 +169,7 @@ setFilteredProducts(filtered);
                             style={{ cursor: 'pointer', color: '#808080' }}
                           >
                             {category.name}
-</span>
+                                </span>
 
                           {/* Danh mục con */}
                           {category.children &&
@@ -343,7 +340,7 @@ setFilteredProducts(filtered);
                               <h5>
                                 <Link to={`/product-details/${product.id}`}>{product.name}</Link>
                               </h5>
-                              <h5>{product.price.toLocaleString()}đ</h5>
+                              <h5>{formatCurrency(parseFloat(product.price))}VND</h5>
                             </div>
                           </div>
                         </div>

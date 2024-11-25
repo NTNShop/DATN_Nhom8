@@ -1,6 +1,6 @@
 
 import React from "react"
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements,  Outlet,  Navigate  } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements  } from "react-router-dom";
 import Home from "./component/client/home";
 import Blog from './component/client/blog';
 import Cart from "./component/client/cart";
@@ -22,7 +22,6 @@ import './assets/css/font-awesome.min.css'
 import './assets/css/nice-select.css'
 import './assets/css/slicknav.min.css'
 import './assets/css/style2.css'
-
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -142,6 +141,7 @@ function App() {
       <Route path="/admin/login" element={<Authentication />} />
       <Route path="/admin/editUser/:id" element={<EditUser />} />
       <Route path="/admin/order" element={<ListOrder />} />
+      {/* <Route path="/admin/order" element={<EditOrderPayment />} /> */}
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/blog/:id" element={<EditBlog />} />

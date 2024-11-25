@@ -58,7 +58,14 @@ export const OrderService = {
 
       return {
         success: true,
-        data: response.data
+        data: {
+          id: response.data.data.id,
+          order_code: response.data.data.order_code, // Thêm order_code
+          total: response.data.data.total,    // Thêm total
+          payment_status: response.data.data.payment_status,
+          address: response.data.data.address,
+          city:response.data.data.city
+        }
       };
 
     } catch (error) {

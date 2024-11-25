@@ -138,7 +138,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     value={searchTerm}
                                                     onChange={(e) => setSearchTerm(e.target.value)}
                                                 />
-<span className="input-group-text bg-primary text-white">
+                                                <span className="input-group-text bg-primary text-white">
                                                     <i className="fa-solid fa-magnifying-glass"></i>
                                                 </span>
                                             </div>
