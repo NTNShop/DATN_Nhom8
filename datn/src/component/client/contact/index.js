@@ -183,20 +183,23 @@ const Contact = () => {
             {/* Contact Form Begin */}
             <div className="contact-form spad">
                 <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <h2>Để lại tin nhắn</h2>
+                    <form className='bg_contact' onSubmit={handleFormSubmit} noValidate>
+                    <div className="pb-3">
+                            <h2 className='text-dark'>Để lại tin nhắn</h2>
+                            <p>Chúng tôi sẽ phản hồi qua <b className='text-dark'>Email</b> của bạn nếu  chúng tôi nhận được lời nhắn của bạn !</p>
                             {successMessage && <p className="alert alert-success text-center">{successMessage}</p>}
                         </div>
-                    </div>
-                    <form onSubmit={handleFormSubmit} noValidate>
                         <div className="row">
-                            <div className="col-lg-12 col-md-12">
-                                <input type="text" placeholder="Họ và tên" value={name} onChange={(e) => setName(e.target.value)} required />
+                            <div className="col-lg-6 col-md-6">
+                                <label><h4 className='text-dark'>Họ và tên</h4></label>
+                                <input className='bg-input-contact border border-dark' type="text" placeholder="Họ và tên" value={name} onChange={(e) => setName(e.target.value)} required />
                                 {nameError && <p className="text-danger">{nameError}</p>}
                             </div>
                             <div className="col-lg-6 col-md-6">
+                            <label><h4 className='text-dark'>Số điện thoại</h4></label>
+
                                 <input
+                                    className='bg-input-contact border border-dark'
                                     type="tel"
                                     placeholder="Số điện thoại"
                                     value={phone}
@@ -215,16 +218,20 @@ const Contact = () => {
                                 />
                                 {phoneError && <p className="text-danger">{phoneError}</p>}
                             </div>
+                            <div className="col-lg-6">
+                            <label><h4 className='text-dark'>Để lại lời nhắn của bạn</h4></label>
 
-
-                            <div className="col-lg-6 col-md-6">
-                                <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                                {emailError && <p className="text-danger">{emailError}</p>}
-                            </div>
-                            <div className="col-lg-12 text-center">
-                                <textarea placeholder="Lời nhắn" value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
+                                <textarea className='bg-input-contact border border-dark' placeholder="Lời nhắn" value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
                                 {messageError && <p className="text-danger">{messageError}</p>}
-                                <button type="submit" className="site-btn">Gửi</button>
+                                <div>
+                                <button type="submit" className="site-btn">Gửi lời nhắn <i class="bi bi-arrow-right"></i></button>
+                                </div>
+                            </div>
+                            <div className="col-lg-6 col-md-6">
+                            <label><h4 className='text-dark'>Email</h4></label>
+
+                                <input className='bg-input-contact border border-dark' type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                                {emailError && <p className="text-danger">{emailError}</p>}
                             </div>
                         </div>
                     </form>

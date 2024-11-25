@@ -60,59 +60,6 @@ const Home = () => {
   return (
     <div>
      <Header/>
-     
-        {/* <section className="header sticky">
-          <div className="khungmenu">
-            <Link to="/" className="logo">BIKESCHOOL</Link>
-            <nav className="dmcc">
-              <ul id="main-menu">
-                <li><Link className="ten-menu" to="/">TRANG CHỦ</Link></li>
-                <li>
-                  <Link className="ten-menu" to="/product">SẢN PHẨM</Link>
-                  <ul className="menu-con">
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ VIỆT</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ THẾ GIỚI</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ CẢM HỨNG</Link></li>
-                    <li><Link className="name-menucon" to="/">SẢN PHẨM KHÁC</Link></li>
-                  </ul>
-                </li>
-                <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
-                <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
-                <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
-                <li>
-                  <Link className="main-dangnhap ten-menu" to="/profile">
-                    <i className="bi bi-person-fill"></i>
-                  </Link>
-                </li>
-                <div className="nav">
-                  <label htmlFor="nav_pc_input" className="btn-bar">
-                    <i className="bx bxs-search-alt-2" style={{ color: 'black', fontSize: '30px', textShadow: '0px 0px 3px rgb(255, 255, 255)' }}></i>
-                  </label>
-                  <li>
-                      <a href="/cart">
-                        <i className="fa fa-shopping-cart"></i> <span>3</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="pl-1">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                  <input hidden type="checkbox" className="nav_input" name="nav_pc_input" id="nav_pc_input" />
-                  <label htmlFor="nav_pc_input" className="nav_overplay"></label>
-                  <div className="nav_pc">
-                    <div className="logointk">
-                      <img src={logo} width="120px" alt="Logo" />
-                    </div>
-                    <div className="nd-timkiem">Tìm kiếm</div>
-                    <input className="timkiem-main" type="text" placeholder="Tìm kiếm ..." />
-                  </div>
-                </div>
-              </ul>
-            </nav>
-          </div>
-        </section> */}
-
         <section className="video">
           <video className="videoheader" src={videoBanner} width="100%" autoPlay muted loop />
           <div className="tieude1">
@@ -193,7 +140,7 @@ const Home = () => {
     <div className="row h-100 d-flex justify-content-center align-items-center">
     <div className="col-4 d-flex justify-content-start align-items-center">
         <div className="image-moto-color d-flex align-items-center">
-          <img className="moto-color" src={motorcycle} alt="motorcycle" style={{ width:"100px", height: 'auto', maxHeight: '100px'}} />
+          <img className="moto-color" src={motorcycle} alt="motorcycle" style={{ height: 'auto', maxHeight: '100px'}} />
         </div>
         <div className="d-flex flex-column justify-content-center ms-3 text-start">
           <h3>SẢN PHẨM BÁN RA</h3>
@@ -218,7 +165,7 @@ const Home = () => {
 
       <div className="col-4 d-flex justify-content-start align-items-center">
         <div className="image-moto-color d-flex align-items-center">
-          <img className="moto-color" src={truecar} alt="motorcycle" style={{ height: 'auto', maxHeight: '100px' }} />
+          <img className="moto-color" src={truecar} alt="motorcycle" style={{ height: 'auto', maxHeight: '100px', }} />
         </div>
         <div className="d-flex flex-column justify-content-center ms-3 text-start">
           <h3>CHẤT LƯỢNG SẢN PHẨM</h3>

@@ -9,7 +9,8 @@ import intro2 from "../../../assets/img/hero/img-intro2.jpg"
 import intro3 from "../../../assets/img/hero/img-intro3.jpg"
 import mark from "../../../assets/img/hero/mark.png"
 import blog1 from "../../../assets/img/hero/blog1.jpg"
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const introduce = () => {
 
@@ -28,23 +29,25 @@ const introduce = () => {
         </section>
 
 
-        
+        {/* <div data-aos="fade-up"
+     data-aos-duration="3000">
+</div> */}
         <div className='p-0'>
             <div className='section-intro2'>
                 <div className='container '>
                     <div className='row justify-content-center feature-card-wrap'>
-                        <div className='col-xl-4 col-md-4'>
+                        <div  className='col-xl-4 col-md-4'>
                             <img src={"https://themes.hibootstrap.com/eura/wp-content/uploads/2024/02/gps-tracking.svg"}/>
                             <h3 className='pt-3 text-dark'>Theo dõi GPS / Chống trộm</h3>
                             <p className='text-muted'>Thiết bị theo dõi GPS giúp xác định vị trí của phương tiện hoặc thiết bị cá nhân theo thời gian thực. Với thiết bị GPS, bạn có thể dễ dàng theo dõi và xác định vị trí của xe, xe máy, hoặc các tài sản có giá trị</p>
                         </div>
-                        <div className='col-xl-4 col-md-4'>
+                        <div  className='col-xl-4 col-md-4'>
                         <img src={"https://themes.hibootstrap.com/eura/wp-content/uploads/2024/02/battery.svg"}/>
                         <h3 className='pt-3 text-dark'>Độ bền của xe </h3>
                         <p className='text-muted'>Xe được đánh giá cao về độ bền nhờ những đặc điểm vượt trội về chất liệu và thiết kế. Đây là một mẫu xe đạp được thiết kế để phục vụ cho những người đam mê thể thao lẫn người yêu thích các chuyến phiêu lưu đường dài.</p>
                         </div>
 
-                        <div className='col-xl-4 col-md-4'>
+                        <div  className='col-xl-4 col-md-4'>
                         <img src={"https://themes.hibootstrap.com/eura/wp-content/uploads/2024/02/shield.svg"}/>
                         <h3 className='pt-3 text-dark'>Bảo hành 5 năm</h3>
                         <p className='text-muted'>Chế độ bảo hành 5 năm là một cam kết đảm bảo chất lượng của nhà sản xuất dành cho người mua sản phẩm. Bạn sẽ nhận được sự hỗ trợ từ nhà sản xuất hoặc nhà phân phối trong suốt thời gian bảo hành này.</p>

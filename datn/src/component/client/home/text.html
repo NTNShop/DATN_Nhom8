@@ -1,189 +1,447 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-  <style>
-    .row{
-      color: rgb(13, 144, 200);
-    }
-  </style>
-<body>
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import axios from "axios";
+import Header from "../home/header";
+import Footer from "../home/footer";
+import { toast } from 'react-toastify';
+import { CartService } from "../../../services/client/Cart";
+import sp from "../../../assets/img/cart/sp1.webp";
+import Cookies from "js-cookie";
+import { FaStar } from 'react-icons/fa';
+
+const Detail = ({ min = 1, max = 99, onChange }) => {
+    const [mainImage, setMainImage] = useState(null);
+    const [quantity, setQuantity] = useState(1);
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [reviews, setReviews] = useState([]);
+    const [error, setError] = useState(null);
+    const [comment, setComment] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
+    const { id } = useParams();
+
+    useEffect(() => {
+        fetchProductDetail();
+        fetchReviews();
+    }, [id]);
+
+    const fetchProductDetail = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
+            setProduct(response.data.data);
+            
+            // Set the initial main image to the first product image if available
+            if (response.data.data.images.length > 0) {
+                setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
+            }
+            
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching product details:", error);
+        }
+    };
+
+    const handleThumbnailClick = (image) => {
+        setMainImage(image); // Set the main image to the selected thumbnail
+    };
+
+    const fetchReviews = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/reviews');
+            if (response.data && response.data.data) {
+                setReviews(response.data.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+            setError("Không thể tải bình luận. Vui lòng thử lại sau.");
+        }
+    };
+
+    const handleAddToCart = async () => {
+        try {
+            const token = Cookies.get('authToken');
+            if (!token) {
+                toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
+                window.location.href = '/login';
+                return;
+            }
+            const userInfo = JSON.parse(Cookies.get('userInfo'));
+            await CartService.addToCart(id, quantity, userInfo);
+            toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+        } catch (error) {
+            toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+        }
+    };
+    
+    const addReview = async () => {
+        const token = Cookies.get('authToken');
+        if (!token) {
+            toast.error('Vui lòng đăng nhập để bình luận');
+            window.location.href = '/login';
+            return;
+        }
+    
+        const reviewData = {
+            product_id: id,
+            review_content: comment.trim()
+        };
+        
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/v1/reviews',
+                reviewData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+    
+            if (response.status === 201) {
+                toast.success('Đã thêm bình luận thành công!');
+                setComment('');
+                fetchReviews();
+            }
+        } catch (error) {
+            console.error('Error adding review:', error);  
+            toast.error('Có lỗi xảy ra khi thêm bình luận');
+        }
+    };
+    
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+    const toggleCategories = () => {
+      setIsCategoriesOpen(!isCategoriesOpen);
+    };
+
+    const colors = [
+        { value: 'black', style: { backgroundColor: 'black' } },
+        { value: 'white', style: { backgroundColor: 'white', border: '1px solid #ccc' } },
+        { value: 'blue', style: { backgroundColor: 'blue', border: '1px solid #ccc' } },
+        { value: 'yellow', style: { backgroundColor: 'yellow', border: '1px solid #ccc' } }
+    ];
+    
+    const handleColorChange = (color) => {
+        setSelectedColor(color);
+    };
   
-    <section className="hero">
-        <div className="">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="hero__search">
-                <img src={banner} width={"100%"} alt="Logo" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div>
-        <header className="header">
-          <div className="header__top">
-            <div className="container">
-              <div className="row">
-                <div className="col-lg-6 col-md-6">
-                  <div className="header__top__left">
-                    <ul>
-                      <li><i className="fa fa-envelope"></i> hello@colorlib.com</li>
-                      <li>Free Shipping for all Order of $99</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <div className="header__top__right">
-                    <div className="header__top__right__social">
-                      <a href="#"><i className="bi bi-facebook"></i></a>
-                      <a href="#"><i className="bi bi-twitter"></i></a>
-                      <a href="#"><i className="bi bi-linkedin"></i></a>
-                      <a href="#"><i className="bi bi-pinterest"></i></a>
+    const handleDecrease = () => {
+      if (quantity > min) {
+        const newQuantity = quantity - 1;
+        setQuantity(newQuantity);
+        onChange && onChange(newQuantity);
+      }
+    };
+  
+    const handleIncrease = () => {
+      if (quantity < max) {
+        const newQuantity = quantity + 1;
+        setQuantity(newQuantity);
+        onChange && onChange(newQuantity);
+      }
+    };
+  
+    const handleChange = (e) => {
+      const value = parseInt(e.target.value) || min;
+      const newQuantity = Math.min(Math.max(value, min), max);
+      setQuantity(newQuantity);
+      onChange && onChange(newQuantity);
+    };
+  
+    if (loading) return <div>Loading...</div>;
+    
+    return (
+        <>
+            <Header />
+            <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+                {/* ... (previous header section remains the same) */}
+            </section>
+            <section className="product-details py-5">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-12 col-md-12 row">
+                            <div className="col-lg-7 col-md-12" style={{backgroundColor:"rgb(238, 238, 238)"}}>
+                                {/* Main Image */}
+                                <img 
+                                    style={{padding: "80px 80px", maxWidth: "100%", height: "auto"}}
+                                    src={mainImage} 
+                                    alt="Product Image"
+                                />
+                                
+                                {/* Thumbnails */}
+                                <div className="row mt-3 justify-content-center">
+                                    {product.images.map((imageObj, index) => (
+                                        <div className="col-3" key={index}>
+                                            <img
+                                                src={`http://127.0.0.1:8000${imageObj.image_url}`}
+                                                alt={`Thumbnail ${index + 1}`}
+                                                className={`img-thumbnail ${mainImage === `http://127.0.0.1:8000${imageObj.image_url}` ? 'border-primary' : ''}`}
+                                                onClick={() => handleThumbnailClick(`http://127.0.0.1:8000${imageObj.image_url}`)}
+                                                style={{ cursor: "pointer", maxWidth: "100%", height: "auto" }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <div className="col-lg-5 col-md-12 pl-5">
+                                <div className="product__details__text">
+                                    <div className="pb-3" style={{fontSize:"16px"}}>
+                                        Thương Hiệu:<b className="text-dark">Merida</b>
+                                    </div>
+                                    <div className="pb-3" style={{fontSize:"13px"}}>
+                                        <i className="fa fa-star text-warning"></i>
+                                        <i className="fa fa-star text-warning"></i>
+                                        <i className="fa fa-star text-warning"></i>
+                                        <i className="fa fa-star text-warning"></i>
+                                        <i className="fa fa-star text-warning"></i>
+                                        (Một đánh giá của khách hàng)
+                                    </div>
+                                    <h3>
+                                        {product.name}
+                                    </h3>
+                                    <div className="product__details__price fs-4 fw-bold">
+                                         {product.price} VNĐ
+                                    </div>
+                                    <div className="pb-3" style={{fontSize:"16px"}}>
+                                        {product.description}
+                                    </div>  
+                                    <div className="pb-3" style={{fontSize:"16px"}}>
+                                        Danh mục: <b>Xe đạp đua</b>
+                                    </div>
+                                    <div className="pb-3" style={{fontSize:"16px"}}>
+                                        Mã sản phẩm: <b>{product.id}</b>
+                                    </div>
+                                    <hr/>
+                                    <div className="pb-5 color-picker" style={{fontSize:"16px"}}>Chọn màu sắc: 
+                                        {colors.map((color) => (
+                                            <label key={color.value} className="mb-0 mt-2">
+                                                <input type="radio" name="color" value={color.value} checked={selectedColor === color.value} onChange={() => handleColorChange(color.value)}/>
+                                                <span className="color-circle" style={color.style}/>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    
+                                    {/* tăng giảm sản phẩm và thêm vào giỏ hàng */}
+                                    <div className="d-flex align-items-center gap-3">
+                                        <div className="quantity-input">
+                                            <button className="quantity-btn fw-bold" onClick={handleDecrease} disabled={quantity <= min}>
+                                            -
+                                            </button>
+                                            <input className="fw-bold fs-6" type="number" value={quantity} onChange={handleChange} min={min} max={max}/>
+                                            <button className="quantity-btn fw-bold" onClick={handleIncrease} disabled={quantity >= max}>
+                                            +
+                                            </button>
+                                        </div>
+                                        <button className="primary-btn" onClick={handleAddToCart}>Thêm vào giỏ hàng <i className="bi bi-cart-check-fill"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Phần đánh giá */}
+                        <div className="row mt-5">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-header">
+                                        <h4>Đánh giá sản phẩm</h4>
+                                    </div>
+                                    <div className="card-body">
+                                        {error ? (
+                                            <p>{error}</p>
+                                        ) : reviews.length > 0 ? (
+                                            reviews.map((review) => (
+                                                <div key={review.id} className="mb-4">
+                                                    <div className="d-flex justify-content-between">
+                                                        <strong>ID Khách hàng: {review.user_id}</strong>
+                                                        <span className="text-muted">{review.created_at}</span>
+                                                    </div>
+                                                    <p>{review.review_content}</p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>Không có bình luận nào</p>
+                                        )}
+                                        {/* Phần nhập bình luận */}
+                                        <div className="mt-4">
+                                            <h5>Viết bình luận</h5>
+                                            <textarea
+                                                className="form-control"
+                                                rows="4"
+                                                placeholder="Nhập bình luận của bạn..."
+                                                value={comment}
+                                                onChange={(e) => setComment(e.target.value)}
+                                            ></textarea>
+                                           <button
+                                                className="btn btn-primary mt-3"
+                                                onClick={() => {
+                                                    if (!comment.trim()) {
+                                                        alert("Vui lòng nhập bình luận.");
+                                                        return;
+                                                    }
+                                                    addReview();
+                                                }}
+                                            >
+                                                Gửi bình luận
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="header__top__right__language">
-                      <i className="bi bi-globe-americas"></i>
-                      <div className="pl-2">English</div>
-                      <span className="arrow_carrot-down"></span>
-                      <ul>
-                        <li><a href="#">Spanish</a></li>
-                        <li><a href="#">English</a></li>
-                      </ul>
-                    </div>
-                    <div className="header__top__right__auth">
-                      <a href="/login"><i className="fa fa-user"></i> Login</a>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-3">
-                <div className="header__logo">
-                  <a href="./index.html">
-                    <img src={logo} width={150} height={75} alt="Logo" />
-                  </a>
-                </div>
-              </div>
-              <div className="col-lg-7">
-                <nav className="header__menu">
-                  <ul>
-                    <li>
-                      <Link to="/">Trang chủ</Link>
-                    </li>
-                    <li>
-                      <Link to="/product">Cửa Hàng</Link>
-                    </li>
-                    <li>
-                      <a href="/introduce">Giới Thiệu</a>
-                    </li>
-                    <li>
-                      <Link to="/blog">Bài viết</Link>
-                    </li>
-                    <li>
-                      <Link to="/contact">Liên Hệ</Link>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-              <div className="col-lg-2">
-                <div className="header__cart">
-                  <ul>
-                    <li>
-                      <Link to="/profile"><i className="fa fa-user"></i></Link>
-                    </li>
-                    <li>
-                      <a href="/cart">
-                        <i className="fa fa-shopping-cart"></i> <span>3</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="pl-1">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="humberger__open">
-              <i className="fa fa-bars"></i>
-            </div>
-          </div>
-        </header>
-        <section className="hero hero-normal">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-3">
-                <div className="hero__categories">
-                  {/* Thêm sự kiện onClick để toggle danh sách */}
-                  <div className="hero__categories__all" onClick={toggleCategories}>
-                    <i className="fa fa-bars"></i>
-                    <span>Tất cả danh mục</span>
-                  </div>
-                  {/* Hiển thị danh sách khi state isCategoriesOpen là true */}
-                  <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
-                    <li><a  href="#">Janus</a></li>
-                    <li><a  href="#">Vario</a></li>
-                    <li><a  href="#">Vision</a></li>
-                    <li><a  href="#">Air Black</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-8">
-                <div className="hero__search">
-                  <div className="hero__search__form">
-                    <form action="#">
-                      <input type="text" placeholder="What do you need?" />
-                      <button type="submit" className="site-btn">SEARCH</button>
-                    </form>
-                  </div>
-                  <div className="hero__search__phone">
-  <div className="hero__search__phone__icon">
-                      <i className="fa fa-phone"></i>
-                    </div>
-                    <div className="hero__search__phone__text">
-                      <h5>+65 11.188.888</h5>
-                      <span>support 24/7 time</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      {/* Danh mục nằm ở đầu chia làm 4 cột */}
-      {/* <div className="category spad">
+            </section>
+
+            <div className="featured spad">
+            
         <div className="container">
           <div className="row">
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="category__item">
-              <span>Xe tay ga</span>
+            <div className="col-lg-12 d-flex justify-content-center pb-5">
+              <div className="div-title text-center ">
+                <h1 className='text-dark'>SẢN PHẨM LIÊN QUAN</h1>
+                <p>Chào mừng đến với <span className='text-dark'> BIKESCHOOL</span> , nơi hành trình đạp xe của bạn bắt đầu! <br/>
+                Là những người đam mê đạp xe, chúng tôi hiểu được niềm vui và sự tự do khi đạp xe trên hai bánh xe</p>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="category__item">
-                <span>Xe số</span>
+          </div>
+          <div className="row featured__filter">
+            {/* Sản phẩm 1 */}
+            <div className="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
+              <div className="featured__item">
+              <h4>
+                    <a className="text-dark" href="#">Xe đạp đua carbon Nesto Rhino</a>
+                  </h4>
+                <div className="featured__item__pic set-bg">
+                  <div className="image-zoom">
+                  <img  src={sp} />
+                  </div>
+                  <ul className="featured__item__pic__hover pl-0">
+                    <li>
+                      <a href="/cart">
+                        <i className="fa fa-shopping-cart"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="text-dark">
+                  <h5>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(29000000)}
+                  </h5>
+                </div>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="category__item">
-              <span>Xe côn tay</span>
+
+            <div className="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
+              <div className="featured__item">
+              <h4>
+                    <a className="text-dark " href="#">Xe đạp đua carbon Nesto Rhino</a>
+                  </h4>
+                <div className="featured__item__pic set-bg">
+                  <div className="image-zoom">
+                  <img  src={sp} />
+                  </div>
+                  <ul className="featured__item__pic__hover pl-0">
+                    <li>
+                      <a href="/cart">
+                        <i className="fa fa-shopping-cart"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="text-dark">
+                  <h5>
+                    <span
+                      style={{ textDecoration: "line-through", color: "#000000" }}
+                    >
+                      {/* Giá gốc nếu có */}
+                    </span>{" "}
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(29000000)}
+                  </h5>
+                </div>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="category__item">
-              <span>Xe phân khối lớn</span>
+            <div className="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
+              <div className="featured__item">
+              <h4>
+                    <a className="text-dark " href="#">Xe đạp đua carbon Nesto Rhino</a>
+                  </h4>
+                <div className="featured__item__pic set-bg">
+                  <div className="image-zoom">
+                  <img  src={sp} />
+                  </div>
+                  <ul className="featured__item__pic__hover pl-0">
+                    <li>
+                      <a href="/cart">
+                        <i className="fa fa-shopping-cart"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="text-dark">
+                  
+                  <h5>
+                    <span
+                      style={{ textDecoration: "line-through", color: "#999" }}
+                    >
+                      {/* Giá gốc nếu có */}
+                    </span>{" "}
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(29000000)}
+                  </h5>
+                 
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
+              <div className="featured__item">
+              <h4>
+                    <a className="text-dark " href="#">Xe đạp đua carbon Nesto Rhino</a>
+                  </h4>
+                <div className="featured__item__pic set-bg">
+                  <div className="image-zoom">
+                  <img  src={sp} />
+                  </div>
+                  <ul className="featured__item__pic__hover pl-0">
+                    <li>
+                      <a href="/cart">
+                        <i className="fa fa-shopping-cart"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="text-dark">
+                  
+                  <h5>
+                    <span
+                      style={{ textDecoration: "line-through", color: "#999" }}
+                    >
+                      {/* Giá gốc nếu có */}
+                    </span>{" "}
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(29000000)}
+                  </h5>
+                 
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div> */}
-</body>
-</html>
+      </div>
+            <Footer />
+        </>
+    );
+};
+
+export default Detail;

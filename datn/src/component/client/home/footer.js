@@ -1,16 +1,16 @@
 import React from "react";
-import logo from "../../../assets/img/logo.png";
+import logo from "../../../assets/img/logo2.png";
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="edit-footer col-12">
+    <footer className="container pt-5 pb-5">
+      <div className="edit-footer col-12 ">
         <div className="row">
           <div className="col-lg-3 col-md-6 col-sm-6 pl-4">
             <div className="footer__about">
-              <div className="footer__about__logo">
+              <div className="pl-3 pb-4">
                 <a href="./index.html">
-                  <img src={logo} width={150} height={75} alt="Logo" />
+                  <img className="" src={logo} width={150} alt="Logo" />
                 </a>
               </div>
               <ul>
@@ -24,53 +24,57 @@ const Footer = () => {
             </div>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-            <div className="footer__widget">
-              <h6>Liên kết hữu ích</h6>
-              <ul className="p-0">
-                <li>
-                  <a href="#">Về chúng tôi</a>
+            <div className="footer__widget row">
+              <div className="col-lg-6">
+                <h4 style={{ width: "150px", color: "black" }}>Liên kết hữu ích</h4>
+                <ul className="p-0 w-100">
+                  <li>
+                    <a href="#">Về chúng tôi</a>
+                  </li>
+                  <li>
+                    <a href="#">Về cửa hàng của chúng tôi</a>
+                  </li>
+                  <li>
+                    <a href="#">Mua sắm an toàn</a>
+                  </li>
+                  <li>
+                    <a href="#">Thông tin giao hàng</a>
+                  </li>
+                  <li>
+                    <a href="#">Chính sách bảo mật</a>
+                  </li>
+                  <li>
+                    <a href="#">Sơ đồ trang web</a>
+                  </li>
+                </ul>
+              </div>
+              <div className="col-lg-6">
+              <h4  style={{ width: "150px", color: "black" }}>Danh mục</h4>
+              <ul className="p-0 w-100">
+              <li>
+                  <a href="#">Trang chủ</a>
                 </li>
                 <li>
-                  <a href="#">Về cửa hàng của chúng tôi</a>
+                  <a href="#">Sản phẩm</a>
+                </li>
+                
+                <li>
+                  <a href="#">Giới thiệu</a>
                 </li>
                 <li>
-                  <a href="#">Mua sắm an toàn</a>
-                </li>
-                <li>
-                  <a href="#">Thông tin giao hàng</a>
-                </li>
-                <li>
-                  <a href="#">Chính sách bảo mật</a>
-                </li>
-                <li>
-                  <a href="#">Sơ đồ trang web</a>
-                </li>
-              </ul>
-              <ul>
-                <li>
-                  <a href="#">Chúng tôi là ai</a>
-                </li>
-                <li>
-                  <a href="#">Dịch vụ của chúng tôi</a>
-                </li>
-                <li>
-                  <a href="#">Dự án</a>
+                  <a href="#">Bài viết</a>
                 </li>
                 <li>
                   <a href="#">Liên hệ</a>
                 </li>
-                <li>
-                  <a href="#">Đổi mới</a>
-                </li>
-                <li>
-                  <a href="#">Nhận xét khách hàng</a>
-                </li>
               </ul>
+              </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-12">
-            <div className="footer__widget">
-              <h6>Tham gia bản tin của chúng tôi</h6>
+            
+            <div className="footer__widget pr-5">
+              <h4 className="text-dark">Tham gia bản tin của chúng tôi</h4>
               <p>
                 Nhận các cập nhật qua email về cửa hàng và ưu đãi đặc biệt của
                 chúng tôi.
@@ -82,16 +86,16 @@ const Footer = () => {
                 </button>
               </form>
               <div className="footer__widget__social">
-                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                <a style={{ border: '1px solid #E9A625', color: '#E9A625'}} href="#">
                   <i className="bi bi-facebook"></i>
                 </a>
-                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                <a style={{ border: '1px solid #E9A625', color: '#E9A625'}} href="#">
                   <i className="bi bi-instagram"></i>
                 </a>
-                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                <a style={{ border: '1px solid #E9A625', color: '#E9A625'}} href="#">
                   <i className="bi bi-twitter"></i>
                 </a>
-                <a style={{ border: '1px solid #de0000', color: '#de0000'}} href="#">
+                <a style={{ border: '1px solid #E9A625', color: '#E9A625'}} href="#">
                   <i className="bi bi-pinterest"></i>
                 </a>
               </div>

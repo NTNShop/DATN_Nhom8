@@ -3,8 +3,8 @@ import { getPosts } from "../../../services/posts"; // Đảm bảo đúng đư�
 import { Link } from "react-router-dom"; 
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
-import Cart from "../../../assets/img/cart/cart.png";
-import Cart1 from "../../../assets/img/cart/cart1.png";
+import blog1 from "../../../assets/img/hero/blog1.jpg"
+import blogmini from "../../../assets/img/hero/img-intro2.jpg"
 import banner from "../../../assets/img/hero/banner2.jpg";
 
 const Blog = () => {
@@ -83,80 +83,202 @@ const Blog = () => {
           </div>
         </div>
       </section>
-      <div className="blog spad text-center">
+      <div className="blog spad">
         <div className="container">
           <div className="row">
-            <div className="col-lg-4 col-md-5">
-              <div className="blog__sidebar">
-                <div className="blog__sidebar__item">
-                  <h4>Tin tức xe máy gần đây</h4>
-                  <div className="blog__sidebar__recent">
-                    {/* Danh sách bài viết mới */}
-                    {posts.slice(0, 3).map((post) => (
-                      <a href="#" className="blog__sidebar__recent__item" key={post.id}>
-                        <div className="blog__sidebar__recent__item__pic">
-                          <img src={Cart1} width={100} alt="thumbnail" />
-                        </div>
-                        <div className="blog__sidebar__recent__item__text">
-                          <h6>{post.title}</h6>
-                          <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-8 col-md-7">
-              <div className="row">
-                {/* Hiển thị các bài viết */}
-                {loading ? (
-                  <p>Đang tải bài viết...</p>
-                ) : (
-                  posts.map((post) => (
-                    <div className="col-lg-6 col-md-6 col-sm-6" key={post.id}>
+            <div className="col-lg-8 col-md-12">
+                <div className="row">
+                    <div className="col-lg-6 col-md-6 col-sm-6">
                       <div className="blog__item">
-                        <div className="blog__item__pic">
-                          <img src={Cart} alt="Post Image" />
+                        <div className="blog__item__pic" style={{height: "250px"}}>
+                          <img src={blog1} alt="" style={{ 
+                                width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
+                                height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
+                                objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
+                              }}
+                          />
                         </div>
-                        <div className="blog__item__text">
-                          <ul>
+                        <div className="blog__item__text p-3">
+                          <ul className='p-0'>
                             <li>
-                              <i className="fa fa-calendar-o"></i> {new Date(post.created_at).toLocaleDateString()}
+                              Hà Nội
                             </li>
                             <li>
-                              <i className="fa fa-comment-o"></i> 5
+                              <i className="fa fa-calendar-o"></i> 27 tháng 9, 2024
                             </li>
+                            
                           </ul>
-                          <h5>
-                            <Link to={`/blog-details/${post.id}`}>{post.title}</Link>
+                          <h5 className="title-color-blog">
+                            <a href="#">237 vận động viên tranh tài tại Giải Đua xe đạp</a>
                           </h5>
-                          <p>{post.content}</p>
-                          <Link to={`/blog-details/${post.id}`} className="blog__btn">
-                            ĐỌC THÊM <span className="arrow_right"></span>
-                          </Link>
+                          <p>
+                            Sed quia non numquam modi tempora indunt ut labore et dolore
+                            magnam aliquam quaerat.
+                          </p>
                         </div>
                       </div>
                     </div>
-                  ))
-                )}
-                {/* Pagination */}
-                <div className="col-lg-12">
-                  <div className="product__pagination blog__pagination">
-                    {pagination.total > 1 && (
-                      <>
-                        {pagination.current_page > 1 && (
-                          <a href={pagination.links.prev}>« Trước</a>
-                        )}
-                        <span>{pagination.current_page}</span> {/* Hiển thị trang hiện tại */}
-                        {pagination.current_page < pagination.last_page && (
-                          <a href={pagination.links.next}>Tiếp theo »</a>
-                        )}
-                      </>
-                    )}
+                    <div className="col-lg-6 col-md-6 col-sm-6">
+                      <div className="blog__item">
+                        <div className="blog__item__pic" style={{height: "250px"}}>
+                          <img src={blog1} alt="" style={{ 
+                                width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
+                                height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
+                                objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
+                              }}
+                          />
+                        </div>
+                        <div className="blog__item__text">
+                          <ul className='p-0'>
+                            <li>
+                              Hà Nội
+                            </li>
+                            <li>
+                              <i className="fa fa-calendar-o"></i> 27 tháng 9, 2024
+                            </li>
+                            
+                          </ul>
+                          <h5 className="title-color-blog">
+                            <a href="#">237 vận động viên tại Giải Đua xe đạp</a>
+                          </h5>
+                          <p>
+                            Sed quia non numquam modi tempora indunt ut labore et dolore
+                            magnam aliquam quaerat.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-6 col-md-6 col-sm-6">
+                      <div className="blog__item">
+                        <div className="blog__item__pic" style={{height: "250px"}}>
+                          <img src={blog1} alt="" style={{ 
+                                width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
+                                height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
+                                objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
+                              }}
+                          />
+                        </div>
+                        <div className="blog__item__text">
+                          <ul className='p-0'>
+                            <li>
+                              Hà Nội
+                            </li>
+                            <li>
+                              <i className="fa fa-calendar-o"></i> 27 tháng 9, 2024
+                            </li>
+                            
+                          </ul>
+                          <h5 className="title-color-blog">
+                            <a href="#">237 vận động viên tranh tài tại Giải Đua xe đạp</a>
+                          </h5>
+                          <p>
+                            Sed quia non numquam modi tempora indunt ut labore et dolore
+                            magnam aliquam quaerat.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-6 col-md-6 col-sm-6">
+                      <div className="blog__item">
+                        <div className="blog__item__pic" style={{height: "250px"}}>
+                          <img src={blog1} alt="" style={{ 
+                                width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
+                                height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
+                                objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
+                              }}
+                          />
+                        </div>
+                        <div className="blog__item__text">
+                          <ul className='p-0'>
+                            <li>
+                              Hà Nội
+                            </li>
+                            <li>
+                              <i className="fa fa-calendar-o"></i> 27 tháng 9, 2024
+                            </li>
+                            
+                          </ul>
+                          <h5 className="title-color-blog">
+                            <a href="#">237 vận động viên tranh tài tại Giải Đua xe đạp</a>
+                          </h5>
+                          <p>
+                            Sed quia non numquam modi tempora indunt ut labore et dolore
+                            magnam aliquam quaerat.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div className="col-lg-4 col-md-12">
+                <div className="sidebar-blog">
+                  <div class="search-box2">
+                      <input type="text" placeholder="Tìm kiếm ở đây..." />
+                      <button>
+                          <i class="fa fa-search"></i>
+                      </button>
+                  </div>            
+                  <h3 className="text-dark p-0 pt-5">Bài viết mới nhất</h3>
+                  <div className="col-lg-12 pb-4 row">
+                    <div className="col-lg-4 p-0">
+                        <img src={blogmini} alt="" style={{ width: "auto", height: "100%", objectFit: "contain"}}/>
+                    </div>
+                    <div className="col-lg-8 p-0 pl-3 text-dark">
+                        <h6 className="title-color-blog"> 
+                          <a href="#">Cách lái xe của bạn không đúng cách khiến bạn chế...</a> 
+                        </h6>
+                        <ul class="ps-0 mb-0 list-unstyled">
+                          <span>Ngày 14 tháng 2 năm 2024</span>
+                        </ul>
+                    </div>
+                  </div>
+                  <div className="col-lg-12 pb-4 row">
+                    <div className="col-lg-4 p-0">
+                        <img src={blogmini} alt="" style={{ width: "auto", height: "100%", objectFit: "contain"}}/>
+                    </div>
+                    <div className="col-lg-8 p-0 pl-3 text-dark">
+                      <h6 className="title-color-blog"> 
+                        <a href="#">Cách lái xe của bạn không đúng cách khiến bạn chế...</a> 
+                      </h6>                        
+                      <ul class="ps-0 mb-0 list-unstyled">
+                        <span>Ngày 14 tháng 2 năm 2024</span>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="col-lg-12 pb-4 row">
+                    <div className="col-lg-4 p-0">
+                        <img src={blogmini} alt="" style={{ width: "auto", height: "100%", objectFit: "contain"}}/>
+                    </div>
+                    <div className="col-lg-8 p-0 pl-3 text-dark">
+                      <h6 className="title-color-blog"> 
+                        <a href="#">Cách lái xe của bạn không đúng cách khiến bạn chế...</a> 
+                      </h6>                        
+                      <ul class="ps-0 mb-0 list-unstyled">
+                        <span>Ngày 14 tháng 2 năm 2024</span>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="pt-4">
+                      <h3 className="text-dark">Bài viết nổi bật</h3>
+                      <div>
+                        <img src={blog1} alt="" style={{ 
+                                width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
+                                height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
+                                objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
+                              }}
+                          />
+                          <h5 className="pt-3 text-dark title-color-blog">
+                            <a href="#">237 vận động  viên tranh giải bát hương vàng tại Giải Đua xe đạp</a>
+                          </h5>
+                          <ul className='p-0'>
+                            <li>
+                            Hà Nội &ensp;&ensp;<i className="fa fa-calendar-o"></i> 27 tháng 9, 2024
+                            </li>
+                          </ul>
+                      </div>
+                      
                   </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>

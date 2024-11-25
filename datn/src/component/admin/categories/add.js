@@ -115,40 +115,7 @@ const AddCategory = () => {
                                         </div>
                                     </div>
                                     <div>
-            <h4>Chọn màu:</h4>
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <input 
-                    type="radio" 
-                    name="color" 
-                    value="black" 
-                    checked={selectedColor === 'black'}
-                    onChange={() => setSelectedColor('black')}
-                    style={{ accentColor: '#000000' }}
-                />
-            </label>
-            
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <input 
-                    type="radio" 
-                    name="color" 
-                    value="red" 
-                    checked={selectedColor === 'red'}
-                    onChange={() => setSelectedColor('red')}
-                    style={{ accentColor: '#FF0000' }}
-                />
-            </label>
-            
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <input 
-                    type="radio" 
-                    name="color" 
-                    value="blue" 
-                    checked={selectedColor === 'blue'}
-                    onChange={() => setSelectedColor('blue')}
-                    style={{ accentColor: '#0000FF' }}
-                />
-            </label>
-        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>

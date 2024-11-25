@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from '../../../assets/images/users/avt.png';
@@ -48,16 +50,58 @@ const ProfileS = () => {
       });
     }
   }, []);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
   return (
     <>
       <Header />
-      
+      <section className="hero hero-normal">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Xe đạp trẻ em</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#">
+                    <input type="text" placeholder="What do you need?" />
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <div className="container">
         <div className="row">
           <div className="col-lg-12 text-center">
             <div className="breadcrumb__text">
-              <h2 className="text-danger pt-5" style={{ borderBottom: '2px solid #de0000'}}>Tài khoản của tôi</h2>
+              <h2 className=" text-dark pt-5" style={{ borderBottom: '2px solid #ffbc34'}}>Tài khoản của tôi</h2>
             </div>
           </div>
         </div>
@@ -66,7 +110,7 @@ const ProfileS = () => {
       <div className="container">
         <div>
           <p>Thông tin tài khoản</p>
-          <span>Xin chào, </span> <span className="text-danger">{userInfo.fullName}</span>
+          <span>Xin chào, </span> <span className="text-warning">{userInfo.fullName}</span>
         </div>
       </div>
 
@@ -101,7 +145,7 @@ const ProfileS = () => {
             <div className="card">
               <div className="pt-3 pb-3">
                 <form className="form-horizontal form-material col-lg-12 col-12 row">
-                  <p className="text-danger fw-bold">Thông tin tài khoản</p>
+                  <p className="text-warning fw-bold">Thông tin tài khoản</p>
                   <div className="col-lg-6 col-6">
                     <div className="form-group">
                       <label className="col-md-12 mb-0">Họ và tên</label>
@@ -138,7 +182,7 @@ const ProfileS = () => {
                   </div>
 
                   <div>
-                    <button type="button" className="btn btn-danger text-light" onClick={toggleEditMode}>
+                    <button type="button" className="btn btn-dark text-light" onClick={toggleEditMode}>
                       {editMode ? "Hủy chỉnh sửa" : "Chỉnh sửa thông tin"}
                     </button>
                   </div>
