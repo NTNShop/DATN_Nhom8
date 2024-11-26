@@ -39,21 +39,32 @@ export const updateUserAvatar = async (avatarFile) => {
   try {
     const token = Cookies.get('authToken');
     const formData = new FormData();
-    formData.append('avatar', avatarFile); // Thêm avatar vào form data
+    
+    // Thêm avatar vào formData
+    formData.append('avatar', avatarFile);
 
-    const response = await axios.put(`${apiUrl}/avatar`, formData, {
+   
+    formData.append('_method', 'PUT'); 
+
+    const response = await axios.post(`${apiUrl}`, formData, {
       headers: {
-        'Authorization': token ? `Bearer ${token}` : undefined,
-        'Content-Type': 'multipart/form-data', // Cần thiết cho việc gửi file
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data', 
       },
     });
 
-    return response.data;
+    // Kiểm tra phản hồi từ server
+    if (response.status === 200) {
+      return response.data; 
+    } else {
+      throw new Error("Update failed");
+    }
   } catch (error) {
     console.error('Error updating avatar:', error);
-    throw error;
+    throw error; 
   }
 };
+
 
 
 

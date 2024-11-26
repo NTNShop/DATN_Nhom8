@@ -880,6 +880,66 @@ ol {
   .badge-success {
 	background-color: #28a745; /* Màu nền cho trạng thái "Hoạt động" */
   }
+  .text-ellipsis {
+	max-width: 200px; /* Độ rộng tối đa, thay đổi theo nhu cầu */
+	white-space: nowrap; /* Không xuống dòng */
+	overflow: hidden; /* Ẩn phần vượt quá */
+	text-overflow: ellipsis; /* Hiển thị dấu ba chấm */
+  }
+  
+  /* User Details Page Styling */
+.user-details-card {
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-avatar {
+	max-width: 150px;
+	max-height: 150px;
+	border-radius: 50%;
+  }
+  
+  .no-avatar {
+	background-color: #f0f0f0;
+	border: 2px dashed #ccc;
+	color: #aaa;
+  }
+  
+  .card-header {
+	font-size: 1.5rem;
+	padding: 20px;
+	text-align: center;
+  }
+  
+  .card-body {
+	padding: 30px;
+  }
+  
+  .card-body p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+  }
+  
+  .card-body strong {
+	color: #007bff;
+  }
+  
+  .text-muted {
+	color: #6c757d !important;
+  }
+  
+  .text-right button {
+	font-size: 20px;
+	color: #007bff;
+  }
+  
+  .text-right button:hover {
+	color: #0056b3;
+  }
+  
+  .container {
+	max-width: 1200px;
+  }
   
   .badge-danger {
 	background-color: #dc3545; /* Màu nền cho trạng thái "Không hoạt động" */

@@ -7,13 +7,13 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
 const UserDetails = () => {
-  const { userId } = useParams(); // Lấy userId từ URL
-  const navigate = useNavigate(); // Thay thế useHistory bằng useNavigate
-  const [user, setUser] = useState(null); // Dữ liệu người dùng
-  const [loading, setLoading] = useState(true); // Trạng thái tải
-  const [error, setError] = useState(null); // Lỗi
+  const { userId } = useParams(); // Get userId from the URL
+  const navigate = useNavigate(); // Replace useHistory with useNavigate
+  const [user, setUser] = useState(null); // User data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
-  // Gọi API để lấy thông tin người dùng
+  // Fetch user details from the API
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -28,14 +28,14 @@ const UserDetails = () => {
         setError("Không thể tải chi tiết người dùng.");
         toast.error("Tải thông tin người dùng thất bại!");
       } finally {
-        setLoading(false); // Kết thúc trạng thái tải
+        setLoading(false); // End loading state
       }
     };
 
     fetchUserDetails();
   }, [userId]);
 
-  // Xử lý trạng thái lỗi
+  // Error state handling
   if (error) {
     return (
       <div>
@@ -49,7 +49,7 @@ const UserDetails = () => {
     );
   }
 
-  // Xử lý trạng thái tải
+  // Loading state handling
   if (loading) {
     return (
       <div>
@@ -65,12 +65,12 @@ const UserDetails = () => {
     );
   }
 
-  // Xử lý giao diện hiển thị thông tin người dùng
+  // User details display
   return (
     <div>
       <Header />
       <div className="container my-5 d-flex justify-content-center">
-        <div className="card w-75 shadow-lg">
+        <div className="card user-details-card shadow-lg w-75">
           <div className="card-header bg-primary text-white">
             <h4>Thông tin cá nhân</h4>
           </div>
@@ -79,18 +79,14 @@ const UserDetails = () => {
               <div className="col-12 col-md-4 text-center">
                 {user?.avatar ? (
                   <img
-                  src={
-                    `http://127.0.0.1:8000${user.avatar}` ||
-                    "default-avatar-url"
-                  }
+                    src={`http://127.0.0.1:8000${user.avatar}` || "default-avatar-url"}
                     alt="Avatar"
-                    className="img-fluid rounded-circle"
-                    style={{ maxWidth: "150px" }}
+                    className="img-fluid rounded-circle user-avatar"
                   />
                 ) : (
                   <div
-                    className="d-flex justify-content-center align-items-center"
-                    style={{ width: "150px", height: "150px", backgroundColor: "#f0f0f0", borderRadius: "50%" }}
+                    className="d-flex justify-content-center align-items-center no-avatar"
+                    style={{ width: "150px", height: "150px", borderRadius: "50%" }}
                   >
                     <span className="text-muted">No Image</span>
                   </div>
@@ -103,19 +99,16 @@ const UserDetails = () => {
                 <p><strong>Số điện thoại:</strong> {user?.phone || "Không có dữ liệu"}</p>
                 <p><strong>Địa chỉ:</strong> {user?.address || "Không có dữ liệu"}</p>
                 <p><strong>Vai trò:</strong> {user?.role || "Không có dữ liệu"}</p>
-                <p>
-                  <strong>Trạng thái:</strong>{" "}
-                  {user?.status === 1 ? "Hoạt động" : "Không hoạt động"}
-                </p>
+                <p><strong>Trạng thái:</strong> {user?.status === 1 ? "Hoạt động" : "Không hoạt động"}</p>
               </div>
             </div>
             <div className="text-right">
-              {/* Biểu tượng mũi tên quay lại */}
+              {/* Back button */}
               <button
                 className="btn btn-link p-0"
-                onClick={() => navigate("/admin/user")} // Điều hướng tới trang danh sách người dùng
+                onClick={() => navigate("/admin/user")} // Navigate back to user list page
               >
-                <i className="fas fa-arrow-right" style={{ fontSize: "24px" }}></i>
+                <i className="fas fa-arrow-left" style={{ fontSize: "24px" }}></i>
               </button>
             </div>
           </div>
