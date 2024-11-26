@@ -157,6 +157,7 @@ const AddProduct = () => {
             if (response.data.status === 'success') {
                 alert('Thêm sản phẩm thành công');
                 // Reset form or redirect
+                navigate("/admin/product");
             }
         } catch (error) {
             console.error("Error response:", error.response?.data);

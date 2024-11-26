@@ -89,6 +89,7 @@ const AddCategory = () => {
             setSuccessMessage("Danh mục đã được thêm thành công!");
             setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
             setShowModal(true); // Show the success modal
+            navigate("/admin/category");
         } catch (error) {
             setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
             console.error("Error response:", error.response);
