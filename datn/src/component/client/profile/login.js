@@ -3,10 +3,11 @@ import Cookies from "js-cookie";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
-import { loginUser } from "../../../services/client/Login"; 
+import { loginUser } from "../../../services/client/Login";
 import { useForm } from "react-hook-form";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "../../../services/client/Login";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -16,41 +17,36 @@ const Login = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1500); // Giả lập quá trình tải
+    setTimeout(() => setLoading(false), 1500); // Simulate loading process
   }, []);
 
   const onSubmit = async (data) => {
     setError("");
 
-    // Kiểm tra nếu người dùng đã đăng nhập (có cookie authToken)
+    // Check if the user is already logged in (has an authToken cookie)
     const authToken = Cookies.get("authToken");
     if (authToken) {
-      // Nếu đã đăng nhập, kiểm tra quyền người dùng
-      const userRole = Cookies.get("userRole"); // Lấy role của người dùng từ cookie
-      if (userRole === 'admin') {
-        // Nếu là admin, cho phép đăng nhập lại
+      const userRole = Cookies.get("userRole"); // Get the user's role from the cookie
+      if (userRole === "admin") {
         setError("Bạn đã đăng nhập với quyền Admin.");
         setTimeout(() => {
-          window.location.href = "/admin"; // Điều hướng về trang quản lý admin
+          window.location.href = "/admin"; // Redirect to admin dashboard
         }, 2000);
         return;
       } else {
-        // Nếu là người dùng thông thường, yêu cầu đăng xuất
         setError("Bạn đã đăng nhập rồi. Vui lòng đăng xuất trước khi tiếp tục.");
         setTimeout(() => {
-          window.location.href = "/"; // Điều hướng về trang chủ sau khi thông báo
+          window.location.href = "/"; // Redirect to home page after the message
         }, 2000);
         return;
       }
     }
 
-    // Tiến hành đăng nhập cho người dùng
+    // Proceed with login
     try {
       const response = await loginUser(data.email, data.password);
       if (response?.status && response.data?.token) {
-        // Lưu token vào cookie
         Cookies.set("authToken", response.data.token, { expires: 7 });
-        // Lưu role người dùng vào cookie để tiện cho việc kiểm tra
         const userRole = response.data.user.role;
         Cookies.set("userRole", userRole, { expires: 7 });
 
@@ -58,7 +54,7 @@ const Login = () => {
 
         setTimeout(() => {
           setSuccessMessage("");
-          window.location.href = userRole === 'admin' ? "/admin" : "/"; // Điều hướng theo vai trò
+          window.location.href = userRole === 'admin' ? "/admin" : "/"; // Redirect based on user role
         }, 2000);
       } else {
         setError("Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu.");
@@ -68,29 +64,28 @@ const Login = () => {
     }
   };
 
-
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setError("");
       setSuccessMessage("");
 
       if (!credentialResponse.credential) {
-        throw new Error('Không nhận được thông tin xác thực từ Google');
+        throw new Error("Không nhận được thông tin xác thực từ Google");
       }
 
-      const result = await googleAuth(credentialResponse.credential); // Gọi service googleAuth
+      const result = await googleAuth(credentialResponse.credential); // Call googleAuth service
 
       if (result.status && result.data?.user) {
         setSuccessMessage("Đăng nhập bằng Google thành công!");
 
-        // Lưu thông tin auth vào localStorage
-        localStorage.setItem('accessToken', result.data.token);
-        localStorage.setItem('refreshToken', result.data.refreshToken);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        localStorage.setItem('tokenExpiry', result.data.expiresAt);
+        // Store auth info in localStorage
+        localStorage.setItem("accessToken", result.data.token);
+        localStorage.setItem("refreshToken", result.data.refreshToken);
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+        localStorage.setItem("tokenExpiry", result.data.expiresAt);
 
         setTimeout(() => {
-          window.location.href = result.data.user.role === 'admin' ? "/admin" : "/";
+          window.location.href = result.data.user.role === "admin" ? "/admin" : "/";
         }, 2000);
       } else {
         throw new Error(result.message || "Đăng nhập thất bại");
@@ -100,7 +95,6 @@ const Login = () => {
       setError(error.message || "Đăng nhập Google thất bại. Vui lòng thử lại!");
     }
   };
-
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -112,7 +106,7 @@ const Login = () => {
         {`
           .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-background-size: 200% 100%;
+            background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
           @keyframes shimmer {
@@ -164,7 +158,7 @@ background-size: 200% 100%;
                           required: "Email không được để trống.",
                           pattern: {
                             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-message: "Email không hợp lệ.",
+                            message: "Email không hợp lệ.",
                           },
                         })}
                       />
@@ -184,13 +178,15 @@ message: "Email không hợp lệ.",
                             },
                           })}
                         />
+                        <div>
                         <button
                           type="button"
                           className="btn btn-light"
                           onClick={togglePasswordVisibility}
                         >
-                          {showPassword ? "Ẩn" : "Hiện"}
+                          {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
+                        </div>
                       </div>
                       {errors.password && <p className="error-message">{errors.password.message}</p>}
                     </div>
@@ -205,19 +201,12 @@ message: "Email không hợp lệ.",
                         <a href="/forgotPassword" className="quenmatkhau">Quên mật khẩu?</a>
                       </div>
                     </div>
-                    {/* <div className="form-group">
-                      <div className="bg-primary loginGG mt-3">
-                        <i className="bi bi-facebook text-light" style={{ fontSize: "20px" }}></i>
-                        <span className="text-loginGG">Đăng nhập bằng Facebook</span>
-                      </div>
-                    </div> */}
                     <div className="form-group">
-                    <GoogleLogin
-                      onSuccess={handleGoogleSuccess}
-                      onError={() => setError("Đăng nhập Google thất bại. Vui lòng thử lại!")}
-                      useOneTap
-                    />
-
+                      <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => setError("Đăng nhập Google thất bại. Vui lòng thử lại!")}
+                        useOneTap
+                      />
                     </div>
                   </form>
                 </div>
