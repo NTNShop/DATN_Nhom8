@@ -6,7 +6,10 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Modal, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// import { Modal, Button } from 'react-bootstrap';
 
 const EditProduct = () => {
     const navigate = useNavigate();
@@ -224,7 +227,11 @@ formData.append('brand_id', parseInt(product.brand_id));
             );
 
             if (response.data.status === 'success') {
-                setShowModal(true);
+                // setShowModal(true);
+                toast.success('Sản phẩm đã được cập nhật thành công!');
+                setTimeout(() => {
+                    navigate('/admin/product'); // Điều hướng sau 2 giây
+                }, 2000);
             }
             // navigate("/admin/product");
         } catch (error) {
@@ -528,6 +535,7 @@ placeholder="Nhập màu sắc"
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
@@ -536,7 +544,7 @@ placeholder="Nhập màu sắc"
             </div>
             <Footer />
 {/* Modal */}
-            <Modal show={showModal} onHide={handleClose} centered>
+            {/* <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Thành công</Modal.Title>
                 </Modal.Header>
@@ -546,7 +554,7 @@ placeholder="Nhập màu sắc"
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };

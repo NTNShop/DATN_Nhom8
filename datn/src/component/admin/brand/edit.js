@@ -4,6 +4,7 @@ import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
 
 const EditBrand = () => {
     const { id } = useParams(); 
@@ -88,8 +89,10 @@ const EditBrand = () => {
             );
 
             if (response.data.status === 'success') {
-                setSuccessMessage("Thương hiệu đã được cập nhật thành công!");
+                toast.success("Thương hiệu đã được cập nhật thành công!");
                 setShowModal(true);
+                navigate('/admin/brand');
+
             } else {
                 setErrorMessage("Có lỗi xảy ra khi cập nhật thương hiệu.");
             }
@@ -189,6 +192,8 @@ const EditBrand = () => {
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
+
                             </div>
                         </div>
                     </div>
@@ -196,7 +201,7 @@ const EditBrand = () => {
             </div>
 
             {/* Modal thông báo thành công */}
-            <Modal show={showModal} onHide={handleCloseModal}>
+            {/* <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Thông báo</Modal.Title>
                 </Modal.Header>
@@ -206,7 +211,7 @@ const EditBrand = () => {
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };

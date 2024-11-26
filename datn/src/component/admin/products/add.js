@@ -5,6 +5,8 @@ import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useNavigate, } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -151,17 +153,20 @@ const AddProduct = () => {
             const response = await axios.post('http://127.0.0.1:8000/api/v1/products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                }
+                },
             });
 
             if (response.data.status === 'success') {
-                alert('Thêm sản phẩm thành công');
-                // Reset form or redirect
+                toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+                setTimeout(() => {
+                    navigate('/admin/product'); // Điều hướng sau 2 giây
+                }, 2000);
             }
         } catch (error) {
             console.error("Error response:", error.response?.data);
-            alert(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
+            toast.error(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
         }
+
     };
 
 
@@ -317,7 +322,7 @@ className="form-control-line border-input"
                                             className="form-control-line border-input"
 
                                         />
-                                        {errors.stock && <span className="error">{errors.stock}</span>}
+                                        {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                     </div>
 
 
@@ -458,11 +463,14 @@ className="form-control-line border-input"
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+
 </div>
     );
 };

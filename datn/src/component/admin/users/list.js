@@ -58,8 +58,8 @@ const ListUser = () => {
   useEffect(() => {
     const filtered = users.filter(
       (user) =>
-        user.full_name &&
-        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+        user.phone &&
+        user.phone.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredUsers(filtered);
   }, [searchTerm, users]);

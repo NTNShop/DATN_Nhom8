@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
+import { FaDownload, FaTrashAlt } from "react-icons/fa";
 
 const ListProduct = () => {
     const formatPrice = (price) => {
@@ -245,15 +246,15 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                                 <div className="d-flex gap-2">
                                                                     <Link
                                                                         to={`/admin/product/edit/${product.id}`}
-                                                                        className="btn btn-primary"
-                                                                    >
-                                                                        Chỉnh sửa
+                                                                        className="btn btn-outline-dark "
+                                >
+                                  <i className="fa-solid fa-pen-to-square"></i>
                                                                     </Link>
                                                                     <button
                                                                         onClick={() => confirmDelete(product.id)}
-                                                                        className="btn btn-danger"
+                                                                        className="btn btn-outline-dark mx-1"
 >
-                                                                        Xóa
+<FaTrashAlt />
                                                                     </button>
                                                                 </div>
                                                             </td>

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
+import { FaDownload, FaTrashAlt } from "react-icons/fa";
 
 const ListCategory = () => {
 
@@ -193,15 +194,15 @@ width: "50px",
                                                                     <div className="d-flex gap-2">
                                                                         <Link
                                                                             to={`/admin/category/edit/${category.id}`}
-                                                                            className="btn btn-primary"
-                                                                        >
-                                                                            Chỉnh sửa
+                                                                            className="btn btn-outline-dark "
+                                                                            >
+                                                                            <i className="fa-solid fa-pen-to-square"></i>
                                                                         </Link>
                                                                         <button
                                                                             onClick={() => confirmDelete(category.id)}
-                                                                            className="btn btn-danger"
+                                                                            className="btn btn-outline-dark mx-1"
                                                                         >
-                                                                            Xóa
+                                                                            <FaTrashAlt />
                                                                         </button>
                                                                     </div>
                                                                 </td>
@@ -238,15 +239,15 @@ category.children.map((child, childIndex) => (
                                                                             <div className="d-flex gap-2">
                                                                                 <Link
                                                                                     to={`/admin/category/edit/${child.id}`}
-                                                                                    className="btn btn-primary"
->
-                                                                                    Chỉnh sửa
+                                                                                    className="btn btn-outline-dark "
+                                                                                >
+                                                                                <i className="fa-solid fa-pen-to-square"></i>
                                                                                 </Link>
                                                                                 <button
                                                                                     onClick={() => confirmDelete(child.id)}
-                                                                                    className="btn btn-danger"
+                                                                                    className="btn btn-outline-dark mx-1"
                                                                                 >
-                                                                                    Xóa
+                                                                                    <FaTrashAlt />
                                                                                 </button>
                                                                             </div>
                                                                         </td>

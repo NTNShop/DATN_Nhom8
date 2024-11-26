@@ -107,7 +107,7 @@ const Contact = () => {
               <div className="hero__search">
                 <div className="hero__search__form">
                   <form action="#">
-                    <input type="text" placeholder="What do you need?" />
+                    <input type="text" placeholder="Bạn cần gì?" />
                     <button type="submit" className="site-btn">SEARCH</button>
                   </form>
                 </div>

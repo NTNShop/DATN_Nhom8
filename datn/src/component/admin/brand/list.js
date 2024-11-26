@@ -6,6 +6,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import { FaDownload, FaTrashAlt } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify';
 
 const ListBrand = () => {
     const [brand, setBrand] = useState([]);
@@ -90,7 +91,8 @@ const ListBrand = () => {
             setBrand(brand.filter(brand => brand.id !== brandToDelete));
             setBrandToDelete(null);
             setShowDeleteModal(false);
-            setShowSuccessModal(true); // Hiển thị modal thông báo xóa thành công
+            toast.success('Thương hiệu đã được xóa!');
+
         } catch (error) {
             console.error("Lỗi khi xóa danh mục:", error);
             setError("Không thể xóa danh mục. Vui lòng thử lại sau.");
@@ -251,9 +253,9 @@ const ListBrand = () => {
                               </td>
                                                             <td>
                                                                 <div className="d-flex gap-2">
-                                                                    <span><Link to={`/admin/brand/edit/${brand.id}`} className="btn btn-primary">Chỉnh sửa</Link></span>
+                                                                    <Link to={`/admin/brand/edit/${brand.id}`} className="btn btn-outline-dark "><i className="fa-solid fa-pen-to-square"></i></Link>
                                                                     <span>
-                                                                        <button onClick={() => confirmDelete(brand.id)} className="btn btn-danger">Xóa</button>
+                                                                        <button onClick={() => confirmDelete(brand.id)} className="btn btn-outline-dark mx-1"><FaTrashAlt /></button>
                                                                     </span>
                                                                 </div>
                                                             </td>
@@ -266,6 +268,8 @@ const ListBrand = () => {
                                                 )}
                                             </tbody>
                                         </table>
+                                        <ToastContainer />
+
                                     </div>
                                 </div>
                             </div>
@@ -291,7 +295,7 @@ const ListBrand = () => {
                 </Modal>
 
                 {/* Modal thông báo xóa thành công */}
-                <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
+                {/* <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xóa thành công</Modal.Title>
                     </Modal.Header>
@@ -301,7 +305,7 @@ const ListBrand = () => {
                             Đóng
                         </Button>
                     </Modal.Footer>
-                </Modal>
+                </Modal> */}
             </div>
         );
 };

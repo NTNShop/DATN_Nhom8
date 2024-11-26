@@ -4,6 +4,7 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
 
 const AddBrand = () => {
     const navigate = useNavigate();
@@ -127,12 +128,16 @@ const AddBrand = () => {
                     'Content-Type': 'multipart/form-data',
                 }
             });
-            setSuccessMessage("Thương hiệu đã được thêm thành công!");
+            // toast.success('Danh mục đã được thêm');
+
+            toast.success("Thương hiệu đã được thêm thành công!");
             setBrandData({ name: "", logo: null, status: "1" });
             setShowModal(true);
             // Lưu ID của brand mới vào localStorage
             localStorage.setItem('newBrandId', response.data.data.id);
             localStorage.setItem('newBrandTimestamp', Date.now().toString());
+            navigate('/admin/brand');
+
         } catch (error) {
             if (error.response) {
                 // Xử lý lỗi từ server
@@ -263,13 +268,15 @@ const AddBrand = () => {
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
+            {/* <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Thông báo</Modal.Title>
                 </Modal.Header>
@@ -279,7 +286,7 @@ const AddBrand = () => {
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };

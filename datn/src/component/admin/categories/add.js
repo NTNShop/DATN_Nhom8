@@ -4,6 +4,8 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddCategory = () => {
     const navigate = useNavigate();
@@ -86,9 +88,13 @@ const AddCategory = () => {
             const response = await axios.post('http://127.0.0.1:8000/api/v1/categories', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setSuccessMessage("Danh mục đã được thêm thành công!");
+            // setSuccessMessage("Danh mục đã được thêm thành công!");
 setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
-            setShowModal(true); // Show the success modal
+toast.success('Danh mục đã được thêm');
+setTimeout(() => {
+    navigate('/admin/category'); // Điều hướng sau 2 giây
+}, 2000);
+            // setShowModal(true); // Show the success modal
         } catch (error) {
             setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
             console.error("Error response:", error.response);
@@ -191,6 +197,7 @@ setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
 </button>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
@@ -198,7 +205,7 @@ setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
             </div>
 
             {/* Success Modal */}
-            <Modal show={showModal} onHide={handleCloseModal}>
+            {/* <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Thông báo</Modal.Title>
                 </Modal.Header>
@@ -208,7 +215,7 @@ setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };
