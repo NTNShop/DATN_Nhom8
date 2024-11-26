@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Header from "../home/header";
 import Footer from "../home/footer";
@@ -7,17 +7,27 @@ import { FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify'; // Thêm thư viện này để hiển thị thông báo
 import { CartService } from "../../../services/client/Cart";
 import Cookies from "js-cookie";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Detail = () => {
     const [mainImage, setMainImage] = useState(null);
+  const [filteredProducts, setFilteredProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [rating, setRating] = useState(0);
+    const [reviews, setReviews] = useState([]);
+    const [error, setError] = useState(null);
     const [hover, setHover] = useState(null);
     const [comment, setComment] = useState('');
     const { id } = useParams();
     const [cartItems, setCartItems] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 1000000]);
+
 
     useEffect(() => {
         const fetchProductDetail = async () => {
@@ -36,9 +46,27 @@ const Detail = () => {
             }
         };
 
+        
+
         fetchProductDetail();
     }, [id]);
 
+    const fetchReviews = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/reviews');
+            if (response.data && response.data.data) {
+                setReviews(response.data.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+            setError("Không thể tải bình luận. Vui lòng thử lại sau.");
+        }
+    };
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
     if (loading) return <div>Loading...</div>;
 
     const handleThumbnailClick = (image) => {
@@ -46,7 +74,7 @@ const Detail = () => {
     };
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
-    const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
     const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
 
     // xử lý cart
@@ -88,9 +116,92 @@ const Detail = () => {
           toast.error('Có lỗi xảy ra khi lấy giỏ hàng');
         }
       };
+        // Handle search
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const searchResults = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(searchResults);
+    setCurrentPage(1);
+  };
+  // Handle search input change
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
+    // Nếu muốn tìm kiếm realtime, bỏ comment đoạn code dưới đây
+    const searchResults = products.filter(product =>
+      product.name.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredProducts(searchResults);
+    setCurrentPage(1);
+  };
+  // Clear search
+  const clearSearch = () => {
+    setSearchTerm("");
+    setFilteredProducts(products);
+    setCurrentPage(1);
+  };
+  // Handle price filter
+  const handlePriceChange = () => {
+    const [minPrice, maxPrice] = priceRange;
+    const filtered = products.filter((product) => {
+      const price = parseFloat(product.price);
+      return price >= minPrice && price <= maxPrice;
+    });
+    setFilteredProducts(filtered);
+    setCurrentPage(1);
+  };
     return (
         <>
             <Header />
+            <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+        <div className="container">
+          <div className="row">
+<div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#" onSubmit={handleSearch}>
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..."  value={searchTerm}
+                      onChange={handleSearchInputChange}/>
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                {searchTerm && (
+                  <button 
+                    onClick={clearSearch}
+                    className="btn btn-outline-secondary mt-2"
+                  >
+                    Xóa tìm kiếm
+                  </button>
+                )}
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
             <section className="product-details py-5">
                 <div className="container">
                     <div className="row">
@@ -108,7 +219,7 @@ const Detail = () => {
                                             <img
                                                 src={`http://127.0.0.1:8000${imageObj.image_url}`}
                                                 alt={`Thumbnail ${index + 1}`}
-                                                className={`img-thumbnail ${mainImage === `http://127.0.0.1:8000${imageObj.image_url}` ? 'border-primary' : ''}`}
+className={`img-thumbnail ${mainImage === `http://127.0.0.1:8000${imageObj.image_url}` ? 'border-primary' : ''}`}
                                                 onClick={() => handleThumbnailClick(`http://127.0.0.1:8000${imageObj.image_url}`)}
                                                 style={{ cursor: "pointer" }}
                                             />
@@ -150,13 +261,12 @@ const Detail = () => {
                                     </div>
                                 </div>
                                 {/* cart api */}
-                                <a href="" className="primary-btn" onClick={handleAddToCart}>ADD TO CART</a>
                                 <button 
                 className="primary-btn"
                 onClick={handleAddToCart} > ADD TO CART
             </button>
                                 <a href="#" className="heart-icon">
-                                    <span className="icon_heart_alt"></span>
+<span className="icon_heart_alt"></span>
                                 </a>
 
 
@@ -211,88 +321,61 @@ const Detail = () => {
                         </div>
                     </div>
 
-                    {/* Giao diện phần đánh giá */}
-                    <div className="row mt-5">
-                        <div className="col-12">
-                            <div className="card">
-                                <div className="card-header">
-                                    <h4>Đánh giá sản phẩm</h4>
-                                </div>
-                                <div className="card-body">
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between">
-                                            <div><strong>Nguyễn Văn A</strong></div>
-                                            <div><span className="text-warning">★★★★★</span></div>
-                                        </div>
-                                        <p>Xe chạy rất êm, thiết kế đẹp, đáng tiền mua.</p>
+                   {/* Phần đánh giá */}
+                   <div className="row mt-5">
+                            <div className="col-12">
+                                <div className="card">
+<div className="card-header">
+                                        <h4>Đánh giá sản phẩm</h4>
                                     </div>
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between">
-                                            <div><strong>Trần B</strong></div>
-                                            <div><span className="text-warning">★★★★☆</span></div>
+                                    <div className="card-body">
+                                        {/* Phần danh sách bình luận */}
+                                        {error ? (
+                                            <p>{error}</p>
+                                        ) : reviews.length > 0 ? (
+                                            reviews.map((review) => (
+                                                <div key={review.id} className="mb-4">
+                                                    <div className="d-flex justify-content-between">
+                                                        <strong>ID Khách hàng: {review.user_id}</strong>
+                                                        <span className="text-muted">{review.created_at}</span>
+                                                    </div>
+                                                    <p>{review.review_content}</p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>Không có bình luận nào</p>
+                                        )}
+                                        {/* Phần nhập bình luận */}
+                                        <div className="mt-4">
+                                            <h5>Viết bình luận</h5>
+                                            <textarea
+                                                className="form-control"
+                                                rows="4"
+                                                placeholder="Nhập bình luận của bạn..."
+                                                value={comment}
+                                                onChange={(e) => setComment(e.target.value)}
+                                            ></textarea>
+                                           <button
+                                                className="btn btn-primary mt-3"
+                                                onClick={() => {
+                                                    if (!comment.trim()) {
+                                                        alert("Vui lòng nhập bình luận.");
+                                                        return;
+                                                    }
+                                                    
+                                                }}
+                                            >
+Gửi bình luận
+                                            </button>
+
                                         </div>
-                                        <p>Tiết kiệm nhiên liệu và dễ điều khiển.</p>
                                     </div>
-
-                                    {/* Phần bình luận */}
-                                    <div>
-                                        <h5>Viết bình luận</h5>
-
-                                        {/* Hiển thị đánh giá sao */}
-                                        <div className="mb-3">
-                                            {[...Array(5)].map((star, index) => {
-                                                const ratingValue = index + 1;
-                                                return (
-                                                    <label key={index}>
-                                                        <input
-                                                            type="radio"
-                                                            name="rating"
-                                                            value={ratingValue}
-                                                            onClick={() => setRating(ratingValue)}
-                                                            style={{ display: 'none' }} // Ẩn radio button
-                                                        />
-                                                        <FaStar
-                                                            className="star"
-                                                            color={ratingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
-                                                            size={30}
-                                                            onMouseEnter={() => setHover(ratingValue)}
-                                                            onMouseLeave={() => setHover(null)}
-                                                            style={{ cursor: "pointer" }}
-                                                        />
-                                                    </label>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {/* Textarea để nhập bình luận */}
-                                        <textarea
-                                            className="form-control"
-                                            rows="4"
-                                            placeholder="Nhập bình luận của bạn..."
-                                            value={comment}
-                                            onChange={(e) => setComment(e.target.value)}
-                                        ></textarea>
-
-                                        {/* Nút gửi bình luận */}
-                                        <button
-                                            className="btn btn-primary mt-3"
-                                            onClick={() => {
-                                                if (!comment) {
-                                                    alert("Vui lòng nhập bình luận.");
-                                                    return;
-                                                }
-                                                alert(`Bình luận: ${comment}\nĐánh giá: ${rating} sao`);
-                                            }}
-                                        >
-                                            Gửi bình luận
-                                        </button>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
+<ToastContainer />
+
             </section>
             <Footer />
         </>

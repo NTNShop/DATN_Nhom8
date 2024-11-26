@@ -13,7 +13,7 @@ export const loginUser = async (email, password) => {
 
             // Lưu thông tin người dùng và token vào cookie
             Cookies.set("userInfo", JSON.stringify(user), { expires: 1 }); // Lưu trong 1 ngày
-            Cookies.set("authToken", token, { expires: 1 });
+            Cookies.set("authToken", token, { expires: new Date(Date.now() + 1 * 60 * 60 * 1000) }); // Lưu token trong 1 giờ
 
             // Lưu thêm các trường thông tin như email, full_name, phone và userId vào cookie
             Cookies.set("email", user.email, { expires: 1 });
@@ -68,3 +68,83 @@ export const logoutUser = async () => {
         console.error("Lỗi khi đăng xuất:", error.response ? error.response.data : error.message);
     }
 };
+
+
+
+//google 
+export const googleAuth = async (credential) => {
+    try {
+      // Lấy token từ localStorage
+      const token = localStorage.getItem('accessToken');
+      
+      // Nếu không có token, yêu cầu người dùng đăng nhập
+      if (!token) {
+        throw new Error("Không tìm thấy token. Vui lòng đăng nhập lại.");
+      }
+  
+      console.log("Sending credential:", credential);
+  
+      // Gửi yêu cầu API đến backend
+      const response = await axios.get('http://127.0.0.1:8000/api/v1/auth/google/callback', {
+        params: {
+          credential: credential,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`, // Gửi token trong header Authorization
+        },
+      });
+  
+      const { status, message, data } = response.data;
+  
+      if (!status) {
+        throw new Error(message || 'Đăng nhập thất bại');
+      }
+  
+      if (!data?.user || !data?.token) {
+        throw new Error('Invalid response data');
+      }
+  
+      // Lưu thông tin vào localStorage
+      localStorage.setItem('accessToken', data.token);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('tokenExpiry', new Date().getTime() + (24 * 60 * 60 * 1000)); // Token hết hạn sau 24 giờ
+  
+      return {
+        status: true,
+        data: {
+          token: data.token,
+          refreshToken: data.refreshToken,
+          user: data.user,
+        },
+      };
+    } catch (error) {
+      console.error('Google Auth Error:', error);
+  
+      // Xử lý lỗi: xóa các thông tin cũ
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('tokenExpiry');
+  
+      return {
+        status: false,
+        message: error.message || 'Lỗi trong quá trình đăng nhập Google',
+      };
+    }
+  };
+  
+  
+
+
+  
+  // Add function to check token expiry
+  export const checkTokenExpiry = () => {
+    const tokenExpiry = localStorage.getItem('tokenExpiry');
+    if (!tokenExpiry) return true;
+  
+    const currentTime = new Date().getTime();
+    return currentTime >= parseInt(tokenExpiry);
+  };

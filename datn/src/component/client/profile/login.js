@@ -5,6 +5,8 @@ import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
 import { loginUser } from "../../../services/client/Login"; 
 import { useForm } from "react-hook-form";
+import { GoogleLogin } from "@react-oauth/google";
+import { googleAuth } from "../../../services/client/Login";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -66,6 +68,40 @@ const Login = () => {
     }
   };
 
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setError("");
+      setSuccessMessage("");
+
+      if (!credentialResponse.credential) {
+        throw new Error('Không nhận được thông tin xác thực từ Google');
+      }
+
+      const result = await googleAuth(credentialResponse.credential); // Gọi service googleAuth
+
+      if (result.status && result.data?.user) {
+        setSuccessMessage("Đăng nhập bằng Google thành công!");
+
+        // Lưu thông tin auth vào localStorage
+        localStorage.setItem('accessToken', result.data.token);
+        localStorage.setItem('refreshToken', result.data.refreshToken);
+        localStorage.setItem('user', JSON.stringify(result.data.user));
+        localStorage.setItem('tokenExpiry', result.data.expiresAt);
+
+        setTimeout(() => {
+          window.location.href = result.data.user.role === 'admin' ? "/admin" : "/";
+        }, 2000);
+      } else {
+        throw new Error(result.message || "Đăng nhập thất bại");
+      }
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      setError(error.message || "Đăng nhập Google thất bại. Vui lòng thử lại!");
+    }
+  };
+
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -76,7 +112,7 @@ const Login = () => {
         {`
           .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
+background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
           @keyframes shimmer {
@@ -128,7 +164,7 @@ const Login = () => {
                           required: "Email không được để trống.",
                           pattern: {
                             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: "Email không hợp lệ.",
+message: "Email không hợp lệ.",
                           },
                         })}
                       />
@@ -158,7 +194,7 @@ const Login = () => {
                       </div>
                       {errors.password && <p className="error-message">{errors.password.message}</p>}
                     </div>
-                    <div className="col-6 p-0">
+                    <div className="form-group">
                       <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button>
                     </div>
                     <div className="row">
@@ -169,17 +205,19 @@ const Login = () => {
                         <a href="/forgotPassword" className="quenmatkhau">Quên mật khẩu?</a>
                       </div>
                     </div>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <div className="bg-primary loginGG mt-3">
                         <i className="bi bi-facebook text-light" style={{ fontSize: "20px" }}></i>
                         <span className="text-loginGG">Đăng nhập bằng Facebook</span>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="form-group">
-                      <div className="bg-danger loginGG">
-                        <i className="bi bi-google text-light" style={{ fontSize: "20px" }}></i>
-                        <span className="text-loginGG">Đăng nhập bằng Google</span>
-                      </div>
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => setError("Đăng nhập Google thất bại. Vui lòng thử lại!")}
+                      useOneTap
+                    />
+
                     </div>
                   </form>
                 </div>
