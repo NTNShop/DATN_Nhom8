@@ -4,6 +4,7 @@ import Footer from "../home/footer";
 import Header from "../home/header";
 import Cart from "../../../assets/img/cart/cart.png";
 import Cart1 from "../../../assets/img/cart/cart1.png";
+import blog1 from "../../../assets/img/hero/blog1.jpg"
 
 const BlogDetails = () => {
   // Đặt useState vào trong component
@@ -250,7 +251,7 @@ const BlogDetails = () => {
           <div className="col-lg-4 col-md-4 col-sm-4">
               <div className="blog__item">
                 <div className="blog__item__pic" style={{height: "250px"}}>
-                  <img src={Cart1} alt="" style={{ 
+                  <img src={blog1} alt="" style={{ 
                         width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
                         height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
                         objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
@@ -280,7 +281,7 @@ const BlogDetails = () => {
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div className="blog__item">
                 <div className="blog__item__pic" style={{height: "250px"}}>
-                  <img src={Cart1} alt="" style={{ 
+                  <img src={blog1} alt="" style={{ 
                         width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
                         height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
                         objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài
@@ -310,7 +311,7 @@ const BlogDetails = () => {
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div className="blog__item">
                 <div className="blog__item__pic" style={{height: "250px"}}>
-                  <img src={Cart1} alt="" style={{ 
+                  <img src={blog1} alt="" style={{ 
                         width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
                         height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa
                         objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh mà không bị kéo dài

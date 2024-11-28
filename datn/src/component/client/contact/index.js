@@ -239,34 +239,34 @@ const Contact = () => {
             </div>
             {/* Contact Form End */}
 {/* Contact Section Begin */}
-<section className="contact spad">
+<section className=" contact-title">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-3 col-md-3 col-sm-6 text-center">
                             <div className="contact__widget">
-                                <span className="icon_phone"></span>
-                                <h4>Điện thoại</h4>
+                                <span className="icon_phone icon-contact"></span>
+                                <h4 className='icon-contact'>Điện thoại</h4>
                                 <p>0975.643.777</p>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-3 col-sm-6 text-center">
                             <div className="contact__widget">
-                                <span className="icon_pin_alt"></span>
-                                <h4>Địa chỉ</h4>
+                                <span className="icon_pin_alt icon-contact"></span>
+                                <h4 className='icon-contact'>Địa chỉ</h4>
                                 <p>50, Nguyễn Văn Linh, phường An Khánh, quận Ninh Kiều, TP. Cần Thơ</p>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-3 col-sm-6 text-center">
                             <div className="contact__widget">
-                                <span className="icon_clock_alt"></span>
-                                <h4>Thời gian mở cửa</h4>
+                                <span className="icon_clock_alt icon-contact"></span>
+                                <h4 className='icon-contact'>Thời gian mở cửa</h4>
                                 <p>7h:00 - 23h:00 </p>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-3 col-sm-6 text-center">
                             <div className="contact__widget">
-                                <span className="icon_mail_alt"></span>
-                                <h4>Email</h4>
+                                <span className="icon_mail_alt icon-contact"></span>
+                                <h4 className='icon-contact'>Email</h4>
                                 <p>hondanambinh@gmail.com</p>
                             </div>
                         </div>

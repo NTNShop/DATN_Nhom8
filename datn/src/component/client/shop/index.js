@@ -219,38 +219,37 @@ const handleAddToCart = async () => {
                 </div>
                 <div className="row">
                   <div className="col-lg-4 col-md-6 mb-4">
-                  <div className="featured__item">
-              <h4>
-                    <a className="text-dark" href="#">Xe đạp đua carbon Nesto Rhino</a>
-                  </h4>
-                <div className="featured__item__pic set-bg">
-                  <div className="image-zoom">
-                  <img  src={sp} />
-                  </div>
-                  <div className="product__discount__percent">-20%</div>
-                  <ul className="featured__item__pic__hover pl-0">
-                    <li>
-                      <a href="/cart">
-                        <i className="fa fa-shopping-cart"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="">
-                  <h5>
-                    <span
-                      style={{ textDecoration: "line-through", color: "#999" }}
-                    >
-                      {/* Giá gốc nếu có */}
-                    </span>{" "}
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(29000000)}
-                  </h5>
-                 
-                </div>
-              </div>
+                    <div className="featured__item">
+                        <h4>
+                          <a className="text-dark" href="#">Xe đạp đua carbon Nesto Rhino</a>
+                        </h4>
+                        <div className="featured__item__pic set-bg">
+                          <div className="image-zoom">
+                          <img  src={sp} />
+                          </div>
+                          <div className="product__discount__percent">-20%</div>
+                          <ul className="featured__item__pic__hover pl-0">
+                            <li>
+                              <a href="/cart">
+                                <i className="fa fa-shopping-cart"></i>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="">
+                          <h5>
+                            <span
+                              style={{ textDecoration: "line-through", color: "#999" }}
+                            >
+                              {/* Giá gốc nếu có */}
+                            </span>{" "}
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(29000000)}
+                          </h5>
+                        </div>
+                    </div>
                   </div>
                   <div className="col-lg-4 col-md-6 mb-4">
                   <div className="featured__item">
@@ -336,6 +335,103 @@ const handleAddToCart = async () => {
                 </div>
               </div>
               <div className="row">
+              <div className="col-lg-4 col-md-6 mb-4">
+                <div className="featured__item">
+                    <h4>
+                      <a className="text-dark" href="#">Xe đạp đua carbon Nesto Rhino</a>
+                    </h4>
+                    <div className="featured__item__pic set-bg">
+                      <div className="image-zoom">
+                      <img  src={sp} />
+                      </div>
+                      <ul className="featured__item__pic__hover pl-0">
+                        <li>
+                          <a href="/cart">
+                            <i className="fa fa-shopping-cart"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="">
+                      <h5>
+                        <span
+                          style={{ textDecoration: "line-through", color: "#999" }}
+                        >
+                          {/* Giá gốc nếu có */}
+                        </span>{" "}
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(29000000)}
+                      </h5>
+                    </div>
+                </div>
+              </div>
+              <div className="col-lg-4 col-md-6 mb-4">
+                <div className="featured__item">
+                    <h4>
+                      <a className="text-dark" href="#">Xe đạp đua carbon Nesto Rhino</a>
+                    </h4>
+                    <div className="featured__item__pic set-bg">
+                      <div className="image-zoom">
+                      <img  src={sp} />
+                      </div>
+                      <ul className="featured__item__pic__hover pl-0">
+                        <li>
+                          <a href="/cart">
+                            <i className="fa fa-shopping-cart"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="">
+                      <h5>
+                        <span
+                          style={{ textDecoration: "line-through", color: "#999" }}
+                        >
+                          {/* Giá gốc nếu có */}
+                        </span>{" "}
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(29000000)}
+                      </h5>
+                    </div>
+                </div>
+              </div>
+              <div className="col-lg-4 col-md-6 mb-4">
+                <div className="featured__item">
+                    <h4>
+                      <a className="text-dark" href="#">Xe đạp đua carbon Nesto Rhino</a>
+                    </h4>
+                    <div className="featured__item__pic set-bg">
+                      <div className="image-zoom">
+                      <img  src={sp} />
+                      </div>
+                      <ul className="featured__item__pic__hover pl-0">
+                        <li>
+                          <a href="/cart">
+                            <i className="fa fa-shopping-cart"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="">
+                      <h5>
+                        <span
+                          style={{ textDecoration: "line-through", color: "#999" }}
+                        >
+                          {/* Giá gốc nếu có */}
+                        </span>{" "}
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(29000000)}
+                      </h5>
+                    </div>
+                </div>
+              </div>
+              
                 {products.length > 0 ? (
                   products.map((product) => (
                     <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>

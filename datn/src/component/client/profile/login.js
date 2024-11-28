@@ -96,7 +96,7 @@ const Login = () => {
         `}
       </style>
       <Header />
-      <div className="container pb-5">
+      <div className="container pb-5 pt-4">
         <div className="border p-5 m-5 formLogin">
           {loading ? (
             <div className="skeleton-content">
@@ -111,7 +111,7 @@ const Login = () => {
           ) : (
             <div className="col-lg-12 col-12">
               <div className="row">
-                <div className="col-4 d-flex justify-content-center">
+                <div className="col-5 d-flex justify-content-center">
                   <img src={avt} className="rounded-circle" alt="User Avatar" />
                 </div>
                 <div className="col-6">
