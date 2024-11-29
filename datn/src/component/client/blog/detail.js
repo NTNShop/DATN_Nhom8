@@ -2,47 +2,49 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Footer from "../home/footer";
 import Header from "../home/header";
-import Cart from "../../../assets/img/cart/cart.png";
-import Cart1 from "../../../assets/img/cart/cart1.png";
-import blog1 from "../../../assets/img/hero/blog1.jpg";
-import { getPostById } from "../../../services/admin/posts";
+import { getPostById, getPosts } from "../../../services/admin/posts";
 
 const BlogDetails = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-
   const toggleCategories = () => {
     setIsCategoriesOpen(!isCategoriesOpen);
   };
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
-        const response = await getPostById(id);
-        setPost(response.data);
+        // Fetch current post details
+        const postResponse = await getPostById(id);
+        setPost(postResponse.data);
+
+        // Fetch related posts (same category or recent posts)
+        const relatedResponse = await getPosts(1, "", postResponse.data.category);
+        setRelatedPosts(relatedResponse.data.posts.slice(0, 3));
       } catch (error) {
         setError("Không thể tải bài viết");
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPost();
+    fetchData();
   }, [id]);
 
-  if (loading)
-    return (
-      <div className="loading-spinner">
-        <div className="spinner"></div>
-        <p>Đang tải bài viết...</p>
-      </div>
-    );
+  if (loading) return (
+    <div className="loading-container">
+      <div className="spinner"></div>
+      <p className="loading-text">Đang tải bài viết...</p>
+    </div>
+  );
 
   if (error) return <p className="error-message">{error}</p>;
+  if (!post) return null;
 
   return (
     <>
@@ -57,280 +59,279 @@ const BlogDetails = () => {
                   <span>Tất cả danh mục</span>
                 </div>
                 <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
-                  <li><Link to="#">Janus</Link></li>
-                  <li><Link to="#">Vario</Link></li>
-                  <li><Link to="#">Vision</Link></li>
-                  <li><Link to="#">Air Black</Link></li>
+                  <li><Link to="#">Xe Đạp Địa Hình</Link></li>
+                  <li><Link to="#">Xe Đạp Đua</Link></li>
+                  <li><Link to="#">Xe Đạp Touring</Link></li>
+                  <li><Link to="#">Xe Đạp Điện</Link></li>
                 </ul>
               </div>
             </div>
-            <div className="col-8">
-              <div className="hero__search">
-                <div className="hero__search__form">
-                  <form action="#">
-                    <input type="text" placeholder="What do you need?" />
-                    <button type="submit" className="site-btn">SEARCH</button>
-                  </form>
-                </div>
-                <div className="hero__search__phone">
-                  <div className="hero__search__phone__icon">
-                    <i className="fa fa-phone"></i>
-                  </div>
-                  <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div></div>
+          </div>
+        </div>
       </section>
 
-      <section className="blog-details">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-4 col-md-5 order-md-1 order-2">
-              <div className="blog__sidebar">
-              <div className="card mb-4 search-card">
-  <div className="card-body">
-    <h4 className="card-title search-title">Tìm kiếm</h4>
-    <div className="search-box2">
-      <input type="text" placeholder="Tìm kiếm ở đây..." />
-      <button><i className="fa fa-search"></i></button>
-    </div>
-  </div>
-</div>
-
-
-                <div className="card mb-4">
-                  <div className="card-body">
-                    <h4 className="card-title">Tìm kiếm theo</h4>
-                    <div className="blog__sidebar__item__tags">
-                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Địa Hình</a>
-                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Đua</a>
-                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Touring</a>
-                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Điện</a>
-                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Gấp</a>
-                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Cũ</a>
-                    </div>
-                  </div>
+      <div className="container blog-details-wrapper">
+        <div className="row">
+          {/* Main Content */}
+          <div className="col-lg-8" style={{ paddingLeft: '90px', paddingRight: '20px' }}>
+            <article className="blog-post">
+              <header className="post-header">
+                <h1 className="post-title">{post.title}</h1>
+                <div className="post-meta">
+                  <span className="author">
+                    <i className="fa fa-user"></i> {post.user?.name || "Quản trị viên"}
+                  </span>
+                  <p className="date">
+                    <i className="fa fa-calendar"></i> {new Date(post.created_at).toLocaleDateString()}
+                  </p>
+                  <span className="category">
+                    <i className="fa fa-folder"></i> {post.category || "Tin Tức Xe Đạp"}
+                  </span>
                 </div>
+              </header>
 
-                <div className="card mb-4">
-                  <div className="card-body">
-                    <h4 className="card-title">Tin tức gần đây</h4>
-                    <div className="blog__sidebar__recent">
-                      {/* Recent news items */}
-                      <a href="#" className="blog__sidebar__recent__item d-flex mb-3">
-                        <div className="blog__sidebar__recent__item__pic">
-                          <img src={Cart1} width={100} height={65} alt="" className="img-fluid" />
-                        </div>
-                        <div className="blog__sidebar__recent__item__text pl-3">
-                          <h6>Những mẫu xe đạp địa hình<br />Được ưa chuộng năm 2024</h6>
-                          <span>05 THÁNG 09, 2024</span>
-                        </div>
-                      </a>
-                      {/* Add more recent news items as needed */}
-                    </div>
-                  </div>
-                </div>
+              <div className="post-thumbnail">
+                <img 
+                  src={`http://127.0.0.1:8000${post.featured_image}`} 
+                  alt={post.title} 
+                  className="img-fluid"
+                />
+              </div>
+              <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+
+            </article>
+          </div>
+
+          {/* Sidebar */}
+          <div className="col-lg-4">
+            {/* Advertisement Section */}
+            <div className="sidebar-section advertisement">
+              <div className="ad-card">
+                <h2 className="text-warning">MobiFone chiều lòng fan bóng với loạt ưu đãi hấp dẫn hòa nhịp EURO 2024</h2>
+                <p className="text-danger" >EURO 2024 quay trở lại khiến cư dân mạng thổn thức theo từng nhịp bóng lăn. Đồng hành cùng các fan cứng bóng đá lúc này có một nhà mạng ‘chơi lớn’ tung ra nhiều gói cước ưu đãi.</p>
+                <img 
+                  src="https://images2.thanhnien.vn/528068263637045248/2024/6/24/anh-km-50-17192042709781391655788.jpg" 
+                  alt="Khuyến Mãi" 
+                  className="img-fluid"
+                />
+                {/* <Link to="/products" className="btn btn-primary">Mua Ngay</Link> */}
+              </div>
+            </div>
+            <div className="sidebar-section advertisement">
+              <div className="ad-card">
+                <h3>Khuyến Mãi Đặc Biệt</h3>
+                <p className="text-danger">Casino online EUBET - EU9: Nhà cái số 1 hiện nay độ uy tín cao</p>
+                <img 
+                  src="https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/730151_713206/EU9%20Q4/2TRIEU%20%283%29.jpg" 
+                  alt="Khuyến Mãi" 
+                  className="img-fluid"
+                />
+                {/* <Link to="/products" className="btn btn-primary">Mua Ngay</Link> */}
               </div>
             </div>
 
-            <div className="col-lg-8 col-md-7 order-md-1 order-1">
-              {post && (
-                <div className="blog__details__text">
-                  <img
-                    src={`http://127.0.0.1:8000${post.featured_image}`}
-                    alt={post.title}
-                    className="featured-image"
+            {/* Related Posts Section */}
+            <div className="sidebar-section related-posts">
+              <h3>Bài Viết Liên Quan</h3>
+              {relatedPosts.map(relatedPost => (
+                <div key={relatedPost.id} className="related-post-item">
+                  <img 
+                    src={`http://127.0.0.1:8000${relatedPost.featured_image}`} 
+                    alt={relatedPost.title}
                   />
-                  <div className="blog__details__widget">
-                    <ul className="pl-0">
-                      <li><span>Danh mục:</span> {post.category || "Xe Đạp"}</li>
-                    </ul> </div>
-                  <h3>{post.title}</h3>
-                  <div className="blog-meta">
-                    <span><strong>Ngày đăng:</strong> {new Date(post.created_at).toLocaleDateString()}</span>
-                    <span><strong>Tác giả:</strong> {post.user?.name || "N/A"}</span>
+                  <div className="related-post-details">
+                    <Link to={`/blogdetail/${relatedPost.id}`}>
+                      {relatedPost.title}
+                    </Link>
+                    <span>{new Date(relatedPost.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p>{post.content}</p>
                 </div>
-              )}
+              ))}
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="related-blog spad">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="section-title related-blog-title">
-                <h2>Bài Viết Bạn Có Thể Thích</h2>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            {/* Related blog items */}
-            <div className="col-lg-4 col-md-4 col-sm-4">
-            <div className="col-lg-12 pb-4 row" key={post.id}>
-                    <div className="col-lg-4 p-0">
-                      <img
-                        src={`http://127.0.0.1:8000${post.featured_image}`}
-                        alt={post.title}
-                        style={{
-                          width: "auto",
-                          height: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </div>
-                    <div className="col-lg-8 p-0 pl-3 text-dark">
-                      <h6 className="title-color-blog">
-                        <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
-                      </h6>
-                      <ul className="ps-0 mb-0 list-unstyled">
-                        <span>
-                          {new Date(post.created_at).toLocaleDateString("vi-VN")}
-                        </span>
-                      </ul>
-                    </div>
-                  </div>
-            </div>
-            {/* Add more related blog items as needed */}
-          </div>
-        </div>
-      </section>
+      </div>
 
       <Footer />
 
-      <style>
-        {`
-          .blog-details {
-            padding: 30px 0;
-          }
+      <style jsx>{`
+      
+        .blog-details-wrapper {
+          padding: 40px 0;
+        }
 
-          .featured-image {
+        .post-header {
+          margin-bottom: 20px;
+          border-bottom: 2px solid #7fad39;
+          padding-bottom: 15px;
+        }
+
+        .post-title {
+          color: #333;
+          margin-bottom: 10px;
+          font-size: 2rem;
+        }
+
+        .post-meta {
+          display: flex;
+          justify-content: space-between;
+          color: #777;
+          font-size: 0.9rem;
+        }
+
+        .post-meta span {
+          margin-right: 15px;
+        }
+
+        .post-meta i {
+          margin-right: 5px;
+          color: #7fad39;
+        }
+
+        .post-thumbnail {
+          margin-bottom: 20px;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .post-thumbnail img {
+          width: 100%;
+          height: auto;
+          transition: transform 0.3s ease;
+        }
+
+        .post-thumbnail img:hover {
+          transform: scale(1.05);
+        }
+
+        .sidebar-section {
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+
+        .advertisement .ad-card {
+          text-align: center;
+        }
+
+        .advertisement .ad-card h3 {
+          color: #7fad39;
+          margin-bottom: 10px;
+        }
+
+        .related-posts .related-post-item {
+          display: flex;
+          margin-bottom: 15px;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 10px;
+        }
+
+        .related-posts img {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-right: 15px;
+        }
+
+        .related-posts .related-post-details a {
+          color: #333;
+          font-weight: bold;
+          text-decoration: none;
+        }
+
+        .related-posts .related-post-details span {
+          display: block;
+          color: #777;
+          font-size: 0.8rem;
+        }
+
+        .loading-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+        }
+
+        .spinner {
+          border: 4px solid rgba(0, 0, 0, 0.1);
+          border-left-color: #7fad39;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+          .col-lg-8, .col-lg-4 {
             width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
+            padding-left: 0;
+            padding-right: 0;
           }
 
-          .featured-image:hover {
-            transform: scale(1.02);
+          .post-title {
+            font-size: 1.5rem;
           }
 
-          .loading-spinner {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 50px 0;
+          .sidebar-section {
+            padding: 15px;
           }
 
-          .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+          .post-meta {
+            font-size: 0.8rem;
           }
+        }
+      .loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
 
-          @keyframes spin { 0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
 
-          .error-message {
-            text-align: center;
-            color: #dc3545;
-            padding: 20px;
-            margin: 20px 0;
-          }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-          .blog-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #777;
-            margin: 15px 0;
-            flex-wrap: wrap;
-          }
+.loading-text {
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
 
-          .blog-meta span {
-            background: #f9f9f9;
-            padding: 5px 10px;
-            border-radius: 4px;
-            margin: 5px;
-          }
- /* Phần thẻ card */
-    .search-card {
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border: none;
-      border-radius: 10px;
-      background: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+@keyframes fadeIn {
+  0% { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-    .search-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Tiêu đề */
-    .search-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      text-transform: uppercase;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    /* Hộp tìm kiếm */
-    .search-box2 {
-      display: flex;
-      position: relative;
-      border-radius: 5px;
-      overflow: hidden;
-      border: 1px solid #ddd;
-    }
-
-    .search-box2 input {
-      flex: 1;
-      padding: 10px 15px;
-      border: none;
-      outline: none;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .search-box2 input::placeholder {
-      color: #aaa;
-    }
-
-    .search-box2 button {
-      padding: 10px 15px;
-      background-color: #7fad39;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .search-box2 button:hover {
-      background-color: #68a332;
-    }
-
-    .search-box2 button i {
-      font-size: 16px;
-    }
-
-        `}
-      </style>
+      `}</style>
     </>
   );
 };

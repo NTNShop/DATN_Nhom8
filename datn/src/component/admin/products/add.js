@@ -13,6 +13,10 @@ const AddProduct = () => {
     const handleGoBack = () => {
         navigate(-1); // Điều hướng về trang trước
     };
+    const navigate = useNavigate();
+    const handleGoBack = () => {
+        navigate(-1); // Điều hướng về trang trước
+    };
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
     const [product, setProduct] = useState({
@@ -20,6 +24,7 @@ const AddProduct = () => {
         category_id: '',
         brand_id: '',
         price: '',
+        stock: '',
         stock: '',
         description: '',
         short_description: '',
@@ -30,8 +35,49 @@ const AddProduct = () => {
         images: [],
         variants: [],
 
+        variants: [],
+
     });
     // Thêm state để quản lý variant đang nhập
+    const [currentVariant, setCurrentVariant] = useState({
+        color: '',
+        price: '',
+        code: ''
+    });
+    const handleVariantChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentVariant(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    const addVariant = () => {
+        if (!currentVariant.color || !currentVariant.price) {
+            alert('Vui lòng nhập đầy đủ thông tin màu sắc và giá');
+            return;
+        }
+
+        // Tạo mã code ngẫu nhiên cho variant
+        const variantCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+
+        setProduct(prev => ({
+            ...prev,
+            variants: [...prev.variants, { ...currentVariant, code: variantCode }]
+        }));
+
+        // Reset form variant
+        setCurrentVariant({
+            color: '',
+            price: '',
+            code: ''
+        });
+    };
+    const removeVariant = (index) => {
+        setProduct(prev => ({
+            ...prev,
+            variants: prev.variants.filter((_, i) => i !== index)
+        }));
+    };
     const [currentVariant, setCurrentVariant] = useState({
         color: '',
         price: '',
@@ -86,6 +132,13 @@ const AddProduct = () => {
 
                 setCategories(filteredCategories);
                 setBrands(filteredBrands);
+
+                // Lọc dữ liệu có status === 1
+                const filteredCategories = categoryResponse.data.data.filter(item => item.status === 1);
+                const filteredBrands = brandResponse.data.data.filter(item => item.status === 1);
+
+                setCategories(filteredCategories);
+                setBrands(filteredBrands);
             } catch (error) {
                 console.error("Error fetching categories and brands:", error);
             }
@@ -126,8 +179,11 @@ const AddProduct = () => {
         }
 
 
+
+
         try {
             const formData = new FormData();
+
 
             // Append basic product data
             Object.keys(product).forEach(key => {
@@ -143,10 +199,15 @@ const AddProduct = () => {
                 } else {
                     formData.append(key, product[key]);
 
+
                 }
 
 
+
             });
+            // console.log("FormData:", Array.from(formData.entries()));
+
+
             // console.log("FormData:", Array.from(formData.entries()));
 
 
@@ -155,6 +216,7 @@ const AddProduct = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+
 
             if (response.data.status === 'success') {
                 toast.success('Đã thêm sản phẩm vào giỏ hàng!');
@@ -168,6 +230,8 @@ const AddProduct = () => {
         }
 
     };
+
+
 
 
 
@@ -294,10 +358,9 @@ className="form-control-line border-input"
                                             />
                                         </div>
                                     </div>
-
-                                    <div className="form-group mb-3">
+<div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Giá</label>
-                                        <div className="col-md-12">
+<div className="col-md-12">
                                             <input
                                                 type="text"
                                                 name="price"
@@ -324,6 +387,7 @@ className="form-control-line border-input"
                                         />
                                         {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                     </div>
+
 
 
                                     {/* Phần thêm variant màu sắc */}
@@ -388,9 +452,9 @@ className="form-control-line border-input"
                                                 placeholder="Nhập mô tả ngắn"
                                                 className="form-control-line border-input"
                                             />
-                                            {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
+{errors.short_description && <span className="text-danger">{errors.short_description}</span>}
                                         </div>
-                                    </div>
+</div>
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Mô tả</label>
@@ -434,10 +498,10 @@ className="form-control-line border-input"
                                     </div>
 
                                     <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Trạng Thái</label>
+<label className="col-md-12 mb-0">Trạng Thái</label>
                                         <div className="col-md-12">
                                             <select
-                                                name="status"
+name="status"
                                                 value={product.status}
                                                 onChange={handleInputChange}
                                                 className="form-control-line border-input"
@@ -452,6 +516,13 @@ className="form-control-line border-input"
                                         <div className="col-sm-12 d-flex">
                                             <button className="btn btn-success mx-auto mx-md-0 text-white" type="submit">
                                                 Thêm sản phẩm
+                                            </button>
+                                            <button
+                                                className="btn btn-secondary  mx-auto mx-md-0 text-white"
+                                                type="button"
+                                                onClick={handleGoBack}
+                                            >
+                                                Trở về
                                             </button>
                                             <button
                                                 className="btn btn-secondary  mx-auto mx-md-0 text-white"

@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditProduct = () => {
     const navigate = useNavigate();
+    const navigate = useNavigate();
     const { id } = useParams();
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
@@ -84,6 +85,7 @@ const EditProduct = () => {
                 console.error("Error fetching categories and brands:", error);
             }
         };
+const fetchProductData = async () => {
 const fetchProductData = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
@@ -158,6 +160,12 @@ const fetchProductData = async () => {
         }));
     };
 
+    // const handleFileChange = (e) => {
+    //     setProduct((prevState) => ({
+    //         ...prevState,
+    //         images: e.target.files,
+    //     }));
+    // };
     // const handleFileChange = (e) => {
     //     setProduct((prevState) => ({
     //         ...prevState,
@@ -263,7 +271,7 @@ formData.append('brand_id', parseInt(product.brand_id));
         <div>
             <Header />
             <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
-                <div className="page-breadcrumb">
+<div className="page-breadcrumb">
                     <div className="row align-items-center">
 <div className="col-md-6 col-8 align-self-center">
                             <div className="d-flex align-items-center">
@@ -421,12 +429,12 @@ id="stock"
                                                 className="form-control-line border-input"
                                             />
                                             {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
-                                        </div>
+</div>
                                     </div>
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Mô tả</label>
-                                        <div className="col-md-12">
+<div className="col-md-12">
                                             <textarea
                                                 name="description"
                                                 value={product.description}
@@ -467,10 +475,10 @@ placeholder="Nhập màu sắc"
                                             </div>
 
                                             <div className="variants-list mt-2">
-                                                {product.variants.map((variant, index) => (
+{product.variants.map((variant, index) => (
                                                     <div key={index} className="d-flex justify-content-between align-items-center p-2 border-bottom">
                                                         <span className='text-dark'>
-                                                            Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
+Màu: {variant.color} - Giá: {Number(variant.price).toLocaleString()} VNĐ
                                                         </span>
                                                         <button
                                                             type="button"
@@ -517,7 +525,7 @@ placeholder="Nhập màu sắc"
                                     </div>
 
                                     <div className="form-group mb-3">
-                                        <label className="col-md-12 mb-0">Thông số kỹ thuật</label>
+<label className="col-md-12 mb-0">Thông số kỹ thuật</label>
                                         <div className="col-md-12">
                                             <CKEditor
                                                 editor={ClassicEditor}

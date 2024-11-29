@@ -119,7 +119,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                         </div>
                     </div>
                 </div>
-
+    
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-10">
@@ -195,6 +195,8 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     <th className="border-top-0">Giá</th>
                                                     <th className="border-top-0">Hình ảnh</th>
                                                     <th className="border-top-0">Số lượng</th>
+                                                    <th className="border-top-0">Hình ảnh</th>
+                                                    <th className="border-top-0">Số lượng</th>
                                                     <th className="border-top-0">Trạng thái</th>
                                                     <th className="border-top-0">Thao tác</th>
                                                 </tr>
@@ -203,18 +205,24 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                 {loading ? (
                                                     <tr>
                                                         <td colSpan="8" className="text-center">Đang tải...</td>
+                                                        <td colSpan="8" className="text-center">Đang tải...</td>
                                                     </tr>
                                                 ) : error ? (
                                                     <tr>
                                                         <td colSpan="8" className="text-center text-danger">{error}</td>
+                                                        <td colSpan="8" className="text-center text-danger">{error}</td>
                                                     </tr>
+                                                ) : filteredProducts.length > 0 ? (
+                                                    filteredProducts.map((product, index) => (
                                                 ) : filteredProducts.length > 0 ? (
                                                     filteredProducts.map((product, index) => (
                                                         <tr key={product.id}>
                                                             <td>{index + 1}</td>
+                                                            <td>{index + 1}</td>
                                                             <td>{product.name}</td>
                                                             <td>{product.category?.name || "N/A"}</td>
                                                             <td>{product.brand?.name || "N/A"}</td>
+                                                            <td>{formatPrice(product.price)}</td>
                                                             <td>{formatPrice(product.price)}</td>
                                                             <td>
                                                                 {product.images.length > 0 ? (
@@ -242,6 +250,16 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                                 ></span>
                                                                 {product.status === "in_stock" ? "Kích hoạt" : "Không kích hoạt"}
                                                             </td>
+                                                            <td>{product.stock}</td>
+                                                            <td>
+                                                                <span
+                                                                    className={`status-dot ${product.status === "in_stock"
+                                                                        ? "dot-success"
+                                                                        : "dot-danger"
+                                                                        }`}
+                                                                ></span>
+                                                                {product.status === "in_stock" ? "Kích hoạt" : "Không kích hoạt"}
+                                                            </td>
                                                             <td>
                                                                 <div className="d-flex gap-2">
                                                                     <Link
@@ -257,7 +275,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
 <FaTrashAlt />
                                                                     </button>
                                                                 </div>
-                                                            </td>
+</td>
                                                         </tr>
                                                     ))
                                                 ) : (
@@ -300,23 +318,23 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                 </div>
 
                 <Footer />
-
+    
                 {/* Modal xác nhận xóa */}
 <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>Bạn có chắc chắn muốn xóa sản phẩm này không?</Modal.Body>
-                    <Modal.Footer>
+<Modal.Footer>
                         <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
                             Hủy
                         </Button>
                         <Button variant="danger" onClick={handleDelete}>
-                            Xóa
+Xóa
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
+    
                 {/* Modal thông báo thành công */}
                 <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                     <Modal.Header closeButton>

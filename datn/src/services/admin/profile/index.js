@@ -13,6 +13,7 @@ export const getUserProfile = async () => {
     const response = await axios.get(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -33,7 +34,8 @@ export const updateUserProfile = async (profileData) => {
     const response = await axios.put(apiUrl, profileData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json ,",
+      
       },
     });
 

@@ -5,23 +5,18 @@ import Header from "../home/header";
 import Footer from "../home/footer";
 import { getCategories } from "../../../services/client/Product";
 import { toast } from 'react-toastify';
-import { CartService } from "../../../services/client/Cart";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
 
-// Set default axios configs
-axios.defaults.headers.common['Accept'] = 'application/json';
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-axios.defaults.withCredentials = true;
-
 const Product = () => {
+  // States
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [priceRange, setPriceRange] = useState([0, 10000000]);
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentCategory, setCurrentCategory] = useState(null);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
@@ -35,18 +30,10 @@ const Product = () => {
     }).format(price);
   };
 
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategories();
-        setCategories(data);
-      } catch (err) {
-        setError("Không thể tải danh mục sản phẩm");
-      }
-    };
-    fetchCategories();
-  }, []);
+  // Toggle categories
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
 
   // Fetch products
   const fetchProducts = async () => {
@@ -77,12 +64,32 @@ const Product = () => {
     fetchProducts();
   }, []);
 
-  // Handle price filter
-  const handlePriceChange = () => {
-    const [minPrice, maxPrice] = priceRange;
-    const filtered = products.filter((product) => {
+  // Handle color selection
+  const handleColorSelect = (colorId) => {
+    setSelectedColor(colorId);
+    filterProducts(selectedCategory, colorId, priceRange, searchTerm);
+  };
+
+  // Combined filter function
+  const filterProducts = (categoryId, colorId, priceRange, search) => {
+    let filtered = [...products];
+
+    // Apply category filter
+    if (categoryId) {
+      filtered = filtered.filter(product => product.category_id === categoryId);
+    }
+
+    // Apply color filter
+    if (colorId) {
+      filtered = filtered.filter(product => 
+        product.variants?.some(variant => variant.color_id === colorId)
+      );
+    }
+
+    // Apply price filter
+    filtered = filtered.filter(product => {
       const price = parseFloat(product.price);
-      return price >= minPrice && price <= maxPrice;
+      return price >= priceRange[0] && price <= priceRange[1];
     });
 setFilteredProducts(filtered);
     setCurrentPage(1);
@@ -112,6 +119,7 @@ setFilteredProducts(filtered);
   // Clear filters
   const clearFilter = () => {
     setPriceRange([0, 1000000]);
+    setSearchTerm("");
     setFilteredProducts(products);
     setCurrentPage(1);
   };
@@ -182,10 +190,10 @@ setFilteredProducts(filtered);
           <div className="row">
             <div className="col-lg-12 text-center">
               <div className="breadcrumb__text">
-                <h2>SHOP</h2>
+                <h2>Cửa hàng xe đạp</h2>
                 <div className="breadcrumb__option">
-                  <Link to="/">HOME</Link>
-                  <span>SHOP</span>
+                  <Link to="/">Trang chủ</Link>
+                  <span>Sản phẩm</span>
                 </div>
               </div>
             </div>
@@ -194,9 +202,9 @@ setFilteredProducts(filtered);
       </section>
       <section className="product spad">
         <div className="container">
-          <div className="row pt-5">
+          <div className="row">
             {/* Sidebar */}
-            <div className="col-lg-3 col-md-5">
+            <div className="col-lg-3">
               <div className="sidebar">
                 {/* Categories */}
                 <div className="menu">
@@ -240,10 +248,10 @@ setFilteredProducts(filtered);
 
 
                 {/* Price Filter */}
-                <div className="sidebar__item sidebar__item__price--option">
-                  <div className="sidebar__item__price">
-                    <label htmlFor="priceRange">Chọn khoảng giá:</label>
-                    <div className="price-filter">
+                <div className="sidebar__item">
+                  <h4>Giá</h4>
+                  <div className="price-range-wrap">
+                    <div className="price-range">
                       <input
                         type="range"
                         min="0"
@@ -292,6 +300,14 @@ setFilteredProducts(filtered);
                     </div>
                   </div>
                 </div>
+
+                {/* Clear Filters Button */}
+                <button 
+                  className="btn btn-secondary w-100 mt-3"
+                  onClick={clearAllFilters}
+                >
+                  Xóa bộ lọc
+                </button>
               </div>
             </div>
 
@@ -311,7 +327,7 @@ setFilteredProducts(filtered);
               {/* Sort Section */}
               <div className="filter__item">
                 <div className="row">
-                  <div className="col-lg-4 col-md-5">
+                  <div className="col-lg-4">
                     <div className="filter__sort">
                       <span>Sắp xếp theo</span>
                       <select
@@ -324,25 +340,24 @@ setFilteredProducts(filtered);
                       </select>
                     </div>
                   </div>
-                  <div className="col-lg-8 col-md-7 text-end">
-                    <p>Hiển thị {filteredProducts.length} sản phẩm</p>
+                  <div className="col-lg-8 text-right">
+                    <div className="filter__found">
+                      <h6>Tìm thấy <span>{filteredProducts.length}</span> sản phẩm</h6>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Error Message */}
-              {error && (
-                <div className="alert alert-danger" role="alert">
-                  {error}
-                </div>
-              )}
-
-              {/* Loading Spinner */}
+              {/* Products */}
               {loading ? (
-                <div className="text-center">
+                <div className="text-center py-5">
                   <div className="spinner-border" role="status">
                     <span className="visually-hidden">Đang tải...</span>
                   </div>
+                </div>
+              ) : error ? (
+                <div className="alert alert-danger" role="alert">
+                  {error}
                 </div>
               ) : (
                 <>
@@ -400,6 +415,272 @@ setFilteredProducts(filtered);
         </div>
       </section>
       <Footer />
+
+      {/* Add custom CSS */}
+      <style jsx>{`
+        /* Category Styles */
+        .category-list {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease-out;
+        }
+
+        .category-list.show {
+          max-height: 500px;
+        }
+
+        .category-list li {
+          padding: 10px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+
+        .category-list li:hover,
+        .category-list li.active {
+          background-color: #f5f5f5;
+          color: #7fad39;
+        }
+
+        /* Color Filter Styles */
+        .color-filters {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          padding: 10px 0;
+        }
+
+        .color-option {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          padding: 5px;
+          border-radius: 4px;
+          transition: all 0.3s;
+        }
+
+        .color-option:hover {
+          background-color: #f5f5f5;
+        }
+
+        .color-option.active {
+          background-color: #e8f5e9;
+        }
+
+        .color-circle {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          border: 1px solid #ddd;
+        }
+
+        /* Price Range Styles */
+        .price-range-wrap {
+          padding: 15px 0;
+        }
+
+        .price-range-input {
+          width: 100%;
+          height: 4px;
+          background: #e6e6e6;
+          border: none;
+          border-radius: 2px;
+        }
+
+        .price-range-input::-webkit-slider-thumb {
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          background: #7fad39;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+
+        .price-input {
+          margin-top: 10px;
+          font-size: 14px;
+          color: #666;
+        }
+
+        /* Product Item Styles */
+        .product__item {
+          margin-bottom: 30px;
+          position: relative;
+          transition: all 0.3s;
+        }
+
+        .product__item:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .product__item__pic {
+          position: relative;
+          overflow: hidden;
+          padding-top: 100%;
+          background: #f5f5f5;
+        }
+
+        .product__item__pic img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .out-of-stock {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: rgba(255, 0, 0, 0.8);
+          color: white;
+          padding: 5px 10px;
+          border-radius: 3px;
+          font-size: 12px;
+        }
+
+        .product__item__pic__hover {
+          position: absolute;
+          left: 0;
+          bottom: -50px;
+          width: 100%;
+          text-align: center;
+          transition: all 0.5s;
+          opacity: 0;
+        }
+
+        .product__item:hover .product__item__pic__hover {
+          bottom: 20px;
+          opacity: 1;
+        }
+
+        .product__item__pic__hover li {
+          display: inline-block;
+          margin-right: 6px;
+        }
+
+        .product__item__pic__hover li:last-child {
+          margin-right: 0;
+        }
+
+        .product__item__pic__hover li a {
+          display: block;
+          width: 40px;
+          height: 40px;
+          background: #ffffff;
+          border-radius: 50%;
+          line-height: 40px;
+          text-align: center;
+          transition: all 0.3s;
+        }
+
+        .product__item__pic__hover li a:hover {
+          background: #7fad39;
+          color: #ffffff;
+        }
+
+        .product__item__text {
+          padding: 15px;
+          text-align: center;
+        }
+
+        .product__item__text h6 {
+          margin-bottom: 10px;
+        }
+
+        .product__item__text h6 a {
+          color: #252525;
+          transition: all 0.3s;
+        }
+
+        .product__item__text h6 a:hover {
+          color: #7fad39;
+        }
+
+        .product__price {
+          font-size: 18px;
+          color: #252525;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+        }
+
+        .product__discount {
+          font-size: 14px;
+          color: #dd2222;
+          font-weight: 600;
+        }
+
+        /* Pagination Styles */
+        .product__pagination {
+          text-align: center;
+          margin-top: 30px;
+        }
+
+        .pagination-btn {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          border: 1px solid #b2b2b2;
+          border-radius: 50%;
+          font-size: 14px;
+          color: #b2b2b2;
+          margin-right: 10px;
+          line-height: 28px;
+          text-align: center;
+          transition: all 0.3s;
+        }
+
+        .pagination-btn:hover,
+        .pagination-btn.active {
+          background: #7fad39;
+          border-color: #7fad39;
+          color: #ffffff;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 991px) {
+          .hero__search__phone {
+            display: none;
+          }
+          
+          .col-lg-3 {
+            margin-bottom: 30px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .product__item__pic {
+            padding-top: 75%;
+          }
+
+          .hero__categories {
+            margin-bottom: 20px;
+          }
+
+          .filter__sort {
+            text-align: center;
+            margin-bottom: 15px;
+          }
+        }
+
+        @media (max-width: 575px) {
+          .product__pagination {
+            margin-top: 15px;
+          }
+
+          .pagination-btn {
+            width: 25px;
+            height: 25px;
+            line-height: 23px;
+            margin-right: 5px;
+          }
+        }
+      `}</style>
     </>
   );
 }
