@@ -19,9 +19,11 @@ export const loginUser = async (email, password) => {
             Cookies.set("email", user.email, { expires: 1 });
             Cookies.set("full_name", user.full_name, { expires: 1 });
             Cookies.set("phone", user.phone, { expires: 1 });
-            Cookies.set("userId", user.id, { expires: 1 });  // Lưu userId vào cookie
+            Cookies.set("avatar", user.avatar, { expires: 1 });
 
+            Cookies.set("userId", user.id, { expires: 1 });  // Lưu userId vào cookie
             return data; // Trả về dữ liệu từ API nếu cần dùng ở các nơi khác
+
         } else {
             console.error("Login failed:", data.message);
             return null;
@@ -59,6 +61,7 @@ export const logoutUser = async () => {
         Cookies.remove("phone");
         Cookies.remove("userId"); // Xóa cookie userId khi đăng xuất
         Cookies.remove("userRole"); // Xóa cookie userRole nếu có
+        Cookies.remove("avatar");
 
         // Điều hướng về trang đăng nhập hoặc trang chủ sau khi đăng xuất thành công
         window.location.href = "/login"; // Redirect to login page
@@ -70,81 +73,37 @@ export const logoutUser = async () => {
 };
 
 
+// API URL của backend
+const API_URL = 'http://127.0.0.1:8000/api/v1/auth/auth/google';
 
-//google 
-export const googleAuth = async (credential) => {
-    try {
-      // Lấy token từ localStorage
-      const token = localStorage.getItem('accessToken');
-      
-      // Nếu không có token, yêu cầu người dùng đăng nhập
-      if (!token) {
-        throw new Error("Không tìm thấy token. Vui lòng đăng nhập lại.");
-      }
-  
-      console.log("Sending credential:", credential);
-  
-      // Gửi yêu cầu API đến backend
-      const response = await axios.get('http://127.0.0.1:8000/api/v1/auth/google/callback', {
-        params: {
-          credential: credential,
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`, // Gửi token trong header Authorization
-        },
-      });
-  
-      const { status, message, data } = response.data;
-  
-      if (!status) {
-        throw new Error(message || 'Đăng nhập thất bại');
-      }
-  
-      if (!data?.user || !data?.token) {
-        throw new Error('Invalid response data');
-      }
-  
-      // Lưu thông tin vào localStorage
-      localStorage.setItem('accessToken', data.token);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('tokenExpiry', new Date().getTime() + (24 * 60 * 60 * 1000)); // Token hết hạn sau 24 giờ
-  
-      return {
-        status: true,
-        data: {
-          token: data.token,
-          refreshToken: data.refreshToken,
-          user: data.user,
-        },
-      };
-    } catch (error) {
-      console.error('Google Auth Error:', error);
-  
-      // Xử lý lỗi: xóa các thông tin cũ
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      localStorage.removeItem('tokenExpiry');
-  
-      return {
-        status: false,
-        message: error.message || 'Lỗi trong quá trình đăng nhập Google',
-      };
+// Hàm đăng nhập Google bằng phương thức GET
+export const googleLogin = async () => {
+  try {
+    // Gửi yêu cầu GET đến backend để nhận URL xác thực Google
+    const response = await axios.get(API_URL, {
+      withCredentials: true,  // Đảm bảo gửi cookie/session nếu cần thiết
+    });
+
+    // Nếu server trả về URL đăng nhập, chuyển hướng người dùng đến đó
+    if (response.data && response.data.url) {
+      window.location.href = response.data.url; // Chuyển hướng người dùng đến URL Google
+    } else {
+      throw new Error('Không nhận được URL từ server.');
     }
-  };
-  
-  
+  } catch (error) {
+    // Xử lý lỗi nếu yêu cầu thất bại
+    throw new Error(error.response ? error.response.data.message : 'Lỗi kết nối đến API.');
+  }
+};
 
-
+// Hàm kiểm tra xem token đã hết hạn chưa
+export const checkTokenExpiry = () => {
+  const tokenExpiry = localStorage.getItem('tokenExpiry');
   
-  // Add function to check token expiry
-  export const checkTokenExpiry = () => {
-    const tokenExpiry = localStorage.getItem('tokenExpiry');
-    if (!tokenExpiry) return true;
+  if (!tokenExpiry) return true;  // Nếu không có token expiry, coi như hết hạn
   
-    const currentTime = new Date().getTime();
-    return currentTime >= parseInt(tokenExpiry);
-  };
+  const currentTime = new Date().getTime();
+  
+  // Kiểm tra xem token đã hết hạn chưa
+  return currentTime >= parseInt(tokenExpiry, 10);
+};

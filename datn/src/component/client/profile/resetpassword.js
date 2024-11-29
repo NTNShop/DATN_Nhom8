@@ -5,6 +5,8 @@ import { Spinner } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Header from '../home/header';
 import Footer from '../home/footer';
+import { Link } from "react-router-dom";
+import banner from "../../../assets/img/hero/banner2.jpg";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -65,6 +67,28 @@ const ResetPassword = () => {
   return (
     <>
       <Header />
+      <section
+        className="breadcrumb-section set-bg"
+        style={{
+          backgroundImage: `url(${banner})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12 text-center">
+              <div className="breadcrumb__text">
+                <h2>ĐẶT LẠI MẬT KHẨU</h2>
+                <div className="breadcrumb__option">
+                  <Link to="/">TRANG CHỦ</Link>
+                  <span>ĐẶT LẠI MẬT KHẨU</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <div className="container d-flex justify-content-center align-items-center flex-column py-5">
         <div className="card shadow-lg col-md-8 col-lg-6 animate__animated animate__fadeInUp">
           <div className="card-body p-5">
@@ -89,7 +113,7 @@ const ResetPassword = () => {
 
               <div className="mb-4 animate__animated animate__fadeInRight">
                 <label htmlFor="token" className="form-label fw-medium">
-                  Mã Token <span className="text-danger">*</span>
+                  Mã Xác Nhận <span className="text-danger">*</span>
                 </label>
                 <div className="input-group shadow-sm border-danger" >
                 <input
@@ -145,13 +169,7 @@ const ResetPassword = () => {
                     value={passwordConfirmation}
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={() =>  setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
+                
                 </div>
               </div>
 

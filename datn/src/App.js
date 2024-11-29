@@ -81,7 +81,7 @@ import Atm from "./component/client/paypal/atm";
 import Qratm from "./component/client/paypal/qratm";
 import Qrmomo from "./component/client/paypal/qrmomo";
 import ResetPassword from "./component/client/profile/resetpassword";
-
+import EditProfile from "./component/client/profile/editprofile";
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -110,6 +110,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProfileClient />} />
+        <Route path="/editprofile" element={<EditProfile />} />
 
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />

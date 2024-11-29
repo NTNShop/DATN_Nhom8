@@ -288,16 +288,20 @@ const ListUser = () => {
                                 <div>
                                   
                                 <img
-                                  src={
-                                    `http://127.0.0.1:8000${user.avatar}` ||
-                                    "default-avatar-url"
-                                  }
-                                  style={{
-                                    width: "50px",
-                                    height: "50px",
-                                    borderRadius: "50%",
-                                  }}
-                                />
+  src={
+    user.avatar 
+      ? `http://127.0.0.1:8000${user.avatar}` 
+      : "default-avatar-url"
+  }
+  alt="User Avatar"
+  style={{
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    objectFit: "cover"
+  }}
+/>
+
                                 </div>
                               </td>
                               <td>

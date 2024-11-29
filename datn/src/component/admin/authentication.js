@@ -61,18 +61,10 @@ const Authentication = () => {
                       <input className="form-check-input" type="checkbox" value="" id="form1Example3" />
                       <label className="form-check-label" htmlFor="form1Example3"> Ghi nhớ mật khẩu </label>
                     </div>
-
-                    <button className="btn btn-lg btn-block text-light" style={{ 'background': '#198754' }} type="submit">Đăng nhập</button>
+<button className="btn btn-lg btn-block text-light" style={{ 'background': '#198754' }} type="submit">Đăng nhập</button>
                   </form>
 
                   <hr className="my-4" />
-
-                  <button className="btn btn-lg col-12 text-light" style={{ 'background': '#ea4335' }} type="button">
-                    <i className="fab fa-google me-2 text-light"></i> Đăng nhập bằng Google
-                  </button>
-                  <button className="btn btn-lg mb-2 col-12 text-light mt-1" style={{ 'background': '#3b5998' }} type="button">
-                    <i className="fab fa-facebook-f me-2 text-light"></i> Đăng nhập bằng Facebook
-                  </button>
                 </div>
               </div>
             </div>
