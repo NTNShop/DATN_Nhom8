@@ -13,7 +13,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditProduct = () => {
     const navigate = useNavigate();
-    const navigate = useNavigate();
     const { id } = useParams();
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
@@ -85,7 +84,6 @@ const EditProduct = () => {
                 console.error("Error fetching categories and brands:", error);
             }
         };
-const fetchProductData = async () => {
 const fetchProductData = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);

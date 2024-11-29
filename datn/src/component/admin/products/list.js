@@ -214,8 +214,6 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     </tr>
                                                 ) : filteredProducts.length > 0 ? (
                                                     filteredProducts.map((product, index) => (
-                                                ) : filteredProducts.length > 0 ? (
-                                                    filteredProducts.map((product, index) => (
                                                         <tr key={product.id}>
                                                             <td>{index + 1}</td>
                                                             <td>{index + 1}</td>

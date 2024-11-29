@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
@@ -10,40 +9,91 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const ProfileS = () => {
-  const navigate = useNavigate();
+  const [editMode, setEditMode] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    full_name: "",
+    fullName: "",
     email: "",
-    phone: "",
-    avatar: "",
     address: "",
-    id: null,
+    phone: "",
+    userRole: "",
+    avatar: "",
   });
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-        const response = await getUserProfile();
-        const data = response.data;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      setLoading(true); // Hiển thị trạng thái loading
+      await updateUserProfile({
+        full_name: userInfo.fullName,
+        email: userInfo.email,
+        address: userInfo.address,
+        phone: userInfo.phone,
+      });
+      setEditMode(false); // Quay lại chế độ xem
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      alert("Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại!");
+    }
+  };
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      const preview = URL.createObjectURL(file); // Hiển thị ảnh xem trước
+      setUserInfo((prev) => ({
+        ...prev,
+        avatar: preview,
+      }));
+    }
+  };
+
+  const handleSaveAvatar = async () => {
+    if (!avatarFile) return;
+
+    try {
+      setLoading(true);
+      await updateUserAvatar(avatarFile); // Gửi ảnh avatar lên server
+
+      window.location.reload(); // Tự động tải lại trang sau khi cập nhật thành công
+    } catch (error) {
+      setLoading(false);
+      alert("Có lỗi khi cập nhật avatar. Vui lòng thử lại!");
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const data = await getUserProfile(); // Call the service to fetch user data
         setUserInfo({
-          full_name: data.full_name || "Chưa cập nhật",
-          email: data.email || "",
-          phone: data.phone || "Chưa cập nhật",
-          avatar: data.avatar
-            ? `http://127.0.0.1:8000${data.avatar}`
-            : avt,
-          address: data.address || "Chưa cập nhật",
-          id: data.id || null,
+          fullName: data.full_name,
+          email: data.email,
+          address: data.address || "",
+          phone: data.phone,
+          userRole: data.role || "",
+          avatar: data.avatar || avt,
         });
-      } catch (err) {
-        setError(err.message || "Không thể tải thông tin người dùng.");
-      } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false when data is fetched successfully
+      } catch (error) {
+        setError("Failed to load profile data.");
+        setLoading(false); // Set loading to false in case of error
       }
     };
 fetchUserProfile();
@@ -86,13 +136,7 @@ fetchUserProfile();
   }, []);
 
   if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
   if (error) {
@@ -102,46 +146,26 @@ fetchUserProfile();
   return (
     <>
       <Header />
-      <section
-        className="breadcrumb-section set-bg"
-        style={{
-          backgroundImage: `url(${banner})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12 text-center">
-              <div className="breadcrumb__text">
-                <h2>THÔNG TIN CÁ NHÂN</h2>
-                <div className="breadcrumb__option">
-                  <Link to="/">TRANG CHỦ</Link>
-                  <span>PROFILE</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div className="container mt-5">
+      <div className="container">
         <div className="row">
-          <div className="col-lg-12 text-center mb-4">
-            <h2
-              className="text-danger pb-2"
-              style={{ borderBottom: "2px solid #de0000" }}
-            >
-              Tài khoản của tôi
-            </h2>
+          <div className="col-lg-12 text-center">
+            <div className="breadcrumb__text">
+              <h2
+                className="text-danger pt-5"
+                style={{ borderBottom: "2px solid #de0000" }}
+              >
+                Tài khoản của tôi
+              </h2>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container mb-4">
+      <div className="container">
         <div>
           <p>Thông tin tài khoản</p>
-          <span>Xin chào, </span>
-          <span className="text-danger">{userInfo.full_name}</span>
+          <span>Xin chào, </span>{" "}
+          <span className="text-danger">{userInfo.fullName}</span>
         </div>
       </div>
 
@@ -205,8 +229,8 @@ className="d-none"
           </div>
         </center>
 
-        <div className="row justify-content-center">
-          <div className="col-md-8">
+        <div className="col-lg-9 col-xlg-9 col-md-9">
+          <div className="col-lg-12 col-xlg-12 col-md-12">
             <div className="card">
               <div className="pt-3 pb-3">
                 <form className="form-horizontal form-material col-lg-12 col-12 row">
@@ -389,7 +413,6 @@ className="d-none"
 
         </div>
       </div>
-
       <Footer />
     </>
   );
