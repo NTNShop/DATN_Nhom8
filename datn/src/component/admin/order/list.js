@@ -6,14 +6,16 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import Header from "../layouts/header";
 import { FaDownload, FaTrashAlt } from "react-icons/fa";
 import * as XLSX from "xlsx";
-import EditOrderPayment from './edit';
+import UpdateOrderStatusModal from './edit';
+
 const ListOrder = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [editingOrder, setEditingOrder] = useState(null);
+    const [updatingStatusOrder, setUpdatingStatusOrder] = useState(null);
+    const [activeTab, setActiveTab] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,8 +64,17 @@ const ListOrder = () => {
             setLoading(false);
         }
     };
+    const statusConfig = {
+        0: { text: 'Tất cả', value: null },
+        1: { text: 'Chờ xác nhận', value: 1 },
+        2: { text: 'Chờ đóng gói', value: 2 },
+        3: { text: 'Đang giao', value: 3 },
+        4: { text: 'Đã giao', value: 4 },
+        5: { text: 'Đã hủy', value: 5 }
+    };
     // Lọc danh sách orders dựa trên searchTerm
     const filteredOrders = orders.filter(order => 
+        (activeTab === 0 || order.status === statusConfig[activeTab].value) &&
         order.order_code.toLowerCase().includes(searchTerm.toLowerCase())
     );
     const formatPrice = (price) => {
@@ -75,10 +86,11 @@ const ListOrder = () => {
 
     const getStatusBadge = (status) => {
         const statusConfig = {
-            1: { class: 'bg-warning text-dark', text: 'Chờ xử lý' },
-            2: { class: 'bg-info text-white', text: 'Đang giao' },
-            3: { class: 'bg-success text-white', text: 'Đã giao' },
-            4: { class: 'bg-danger text-white', text: 'Đã hủy' }
+            1: { class: 'bg-secondary text-white', text: 'Chờ xác nhận' },
+            2: { class: 'bg-warning text-white', text: 'Chờ đóng gói' },
+            3: { class: 'bg-info text-white', text: 'Đang giao' },
+            4: { class: 'bg-success text-white', text: 'Đã giao' },
+            5: { class: 'bg-danger text-white', text: 'Đã hủy' },
         };
 
         const defaultStatus = { class: 'bg-secondary text-white', text: 'Không xác định' };
@@ -157,6 +169,9 @@ const ListOrder = () => {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Danh Sách Đơn Hàng");
         XLSX.writeFile(workbook, "DanhSachDonHang.xlsx");
       };
+      const handleStatusUpdate = (order) => {
+        setUpdatingStatusOrder(order);
+    };
     const OrderDetails = ({ order }) => {
         return (
             <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -253,6 +268,23 @@ const ListOrder = () => {
                             <div className="card">
                                 <div className="card-body">
                                     <h4 className="card-title">Danh sách đơn hàng</h4>
+                                    {/* Tab Navigation */}
+                                    <ul className="nav nav-tabs mb-3">
+                                        {Object.entries(statusConfig).map(([key, status]) => (
+                                            <li key={key} className="nav-item">
+                                                <a 
+                                                    className={`nav-link ${activeTab === parseInt(key) ? 'active' : ''}`}
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setActiveTab(parseInt(key));
+                                                    }}
+                                                >
+                                                    {status.text}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
                                     <div className="d-flex justify-content-between align-items-center mb-3">
                                     <button
                                         onClick={handleDownloadExcel}
@@ -301,23 +333,24 @@ const ListOrder = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody className="align-middle">
-                                                    {orders.map((order) => (
-                                                        <tr key={order}>
-                                                            <td>{order.id}</td>
+                                                {filteredOrders.map((order, index) => (
+                                                        <tr key={order.id}>
+                                                            <td>{index + 1}</td>
                                                             <td>{order.order_code}</td>
                                                             <td>{order.user?.full_name || 'N/A'}</td>
                                                             <td>{formatPrice(order.total)}</td>
                                                             <td>{order.phone}</td>
                                                             <td>{order.address}</td>
-                                                            <td>{getStatusBadge(order.status)}</td>
+                                                            <td>
+                                                                <span 
+                                                                    style={{ cursor: 'pointer' }}
+                                                                    onClick={() => handleStatusUpdate(order)}
+                                                                >
+                                                                    {getStatusBadge(order.status)}
+                                                                </span>
+                                                            </td>
                                                             <td>
                                                                 <div className="d-flex gap-2 justify-content-center">
-                                                                <button 
-                                                                    className="btn btn-info btn-sm"
-                                                                    onClick={() => setEditingOrder(order)}
-                                                                >
-                                                                    Chỉnh sửa
-                                                                </button>
                                                                     <button 
                                                                         className="btn btn-info btn-sm"
                                                                         onClick={() => setSelectedOrder(order)}
@@ -345,16 +378,15 @@ const ListOrder = () => {
                 </div>
             </div>
             {selectedOrder && <OrderDetails order={selectedOrder} />}
-            {editingOrder && (
-    <EditOrderPayment
-        order={editingOrder}
-        onClose={() => setEditingOrder(null)}
-        onSuccess={() => {
-            setEditingOrder(null);
-            fetchOrders(); // Refresh danh sách sau khi cập nhật
-        }}
-    />
-)}
+            {updatingStatusOrder && (
+                <UpdateOrderStatusModal
+                    order={updatingStatusOrder}
+                    onClose={() => setUpdatingStatusOrder(null)}
+                    onSuccess={() => {
+                        fetchOrders(); // Refresh the orders list after successful update
+                    }}
+                />
+            )}
         </div>
     );
 };

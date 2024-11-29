@@ -275,7 +275,7 @@ const ListUser = () => {
                         {currentUsers.length > 0 ? (
                           currentUsers.map((user, index) => (
                             <tr key={index}>
-                              <td>{user.id}</td>
+                              <td>{index + 1}</td>
                               <td>
                                 <div
                                   className="text-ellipsis"

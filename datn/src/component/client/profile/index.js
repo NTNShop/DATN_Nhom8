@@ -5,7 +5,7 @@ import avt from "../../../assets/images/users/avt.png";
 import { getUserProfile } from "../../../services/client/profile";
 import { updateUserProfile } from "../../../services/client/profile";
 import { updateUserAvatar } from "../../../services/client/profile";
-
+import axios from "axios";
 import Cookies from "js-cookie";
 
 const ProfileS = () => {
@@ -18,6 +18,7 @@ const ProfileS = () => {
     userRole: "",
     avatar: "",
   });
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -95,8 +96,43 @@ const ProfileS = () => {
         setLoading(false); // Set loading to false in case of error
       }
     };
+fetchUserProfile();
+  }, []);
+  useEffect(() => {
+    const fetchUserProfileAndOrders = async () => {
+      try {
+        const token = Cookies.get("authToken");
+        const userId = Cookies.get("userId");
 
-    fetchUserProfile();
+        if (!token || !userId) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const response = await axios.get(`http://127.0.0.1:8000/api/v1/orders?user_id=${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        // Correctly extract orders from the nested data structure
+        const ordersData = response.data.data.data || [];
+        setOrders(ordersData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching profile and orders:", error.response?.data || error.message);
+        setError("Failed to load profile and orders data.");
+        setLoading(false);
+
+        if (error.response && error.response.status === 401) {
+          Cookies.remove("authToken");
+          Cookies.remove("userId");
+          window.location.href = "/login";
+        }
+      }
+    };
+
+    fetchUserProfileAndOrders();
   }, []);
 
   if (loading) {
@@ -154,7 +190,7 @@ const ProfileS = () => {
                   transform: "translate(30%, -130%)",
                 }}
               >
-               <i className="bi bi-camera text-danger"></i>
+                <i className="bi bi-camera text-danger"></i>
               </label>
             )}
             <input
@@ -162,7 +198,7 @@ const ProfileS = () => {
               type="file"
               accept="image/*"
               onChange={handleAvatarChange}
-              className="d-none"
+className="d-none"
             />
             {avatarFile && (
               <div className=" text-center">
@@ -232,7 +268,7 @@ const ProfileS = () => {
                       <label className="col-md-12 mb-0">
                         Vai trò người dùng
                       </label>
-                      <div className="col-md-12">
+<div className="col-md-12">
                         <span>{userInfo.userRole}</span>
                       </div>
                     </div>
@@ -302,7 +338,7 @@ const ProfileS = () => {
                           </div>
                         </div>
                         <div className="col-lg-12">
-                          <button
+<button
                             type="button"
                             className="btn btn-danger text-light"
                             onClick={handleSaveChanges}
@@ -318,61 +354,63 @@ const ProfileS = () => {
             </div>
           </div>
           {/* order user */}
-          {/* <div className="col-lg-12 col-xlg-12 col-md-12 ">
-                <div className="card">
-                    <div className="card-body">
-                    <span className="text-dark fw-bold d-flex justify-content-center">Đơn hàng của bạn</span>
+          <div className="col-lg-12 col-xlg-12 col-md-12 ">
+            <div className="card">
+              <div className="card-body">
+                <span className="text-dark fw-bold d-flex justify-content-center">Đơn hàng của bạn</span>
 
-                        <table className=" mx-2 col-lg-12 col-12 mt-4">
-                            <thead className="table-light pt-4">
-                                <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Mã đơn hàng</th>
-                                <th scope="col">Giá</th>
-                                <th scope="col">Số lượng</th>
-                                <th scope="col">Địa chỉ - Thành phố</th>
-                                <th scope="col">Sz</th>
-                                <th scope="col">Trạng thái đơn hàng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Sh i</td>
-                                    <td>25,000,000 VND</td>
-                                    <td>
-                                        <img
-                                        src="https://via.placeholder.com/100"
-                                        alt="Sản phẩm"
-                                        style={{ width: "100px" }}
-                                        />
-                                    </td>
-                                    <td>mới nhất</td>
-                                    <td>Đen</td>
-                                    <td>Đang giao hàng</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>janus</td>
-                                    <td>45,000,000 VND</td>
-                                    <td>
-                                        <img
-                                        src="https://via.placeholder.com/100"
-                                        alt="Sản phẩm"
-                                        style={{ width: "100px" }}
-                                        />
-                                    </td>
-                                    <td>mới nhất</td>
-                                    <td>Bạc</td>
-                                    <td>Đang giao hàng</td>
+                <div>
+                  {loading ? (
+                    <p>Loading...</p>
+                  ) : error ? (
+                    <p>{error}</p>
+                  ) : orders.length > 0 ? (
+                    <table className="table table-striped mx-2 col-lg-12 col-12 mt-4">
+                      <thead className="table-light">
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Mã đơn hàng</th>
+                          <th scope="col">Ngày đặt</th>
+                          <th scope="col">Trạng thái</th>
+                          <th scope="col">Tổng tiền</th>
+                          <th scope="col">Sản phẩm</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orders.map((order, index) => (
+                          <tr key={order.id}>
+                            <td>{index + 1}</td>
+                            <td>{order.order_code}</td>
+                            <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                            <td>
+                              {order.status === 1 ? 'Chờ xác nhận' :
+                                order.status === 2 ? 'Đóng gói' :
+                                  order.status === 3 ? 'Đang giao' :
+                                    order.status === 4 ? 'Đã giao' :
+                                      order.status === 5 ? 'Đã hủy' :
+                                        'Trạng thái khác'}
+                            </td>
+                            <td>{order.total.toLocaleString()} VNĐ</td>
+                            <td>
+                              {order.items.map((item) => (
+                                <div key={item.id}>
+                                  {item.product.name} (SL: {item.quantity})
+                                </div>
+                              ))}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p className="text-center">Bạn chưa có đơn hàng nào.</p>
+                  )}
+</div>
+              </div>
+            </div>
+          </div>
 
-                                </tr>
-                            </tbody>
-                            
-                        </table>
-                    </div>
-                </div>
-            </div> */}
+
         </div>
       </div>
       <Footer />

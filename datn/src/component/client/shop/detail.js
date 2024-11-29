@@ -9,7 +9,6 @@
     import Cookies from "js-cookie";
     import { ToastContainer } from 'react-toastify';
     import 'react-toastify/dist/ReactToastify.css';
-
     const Detail = () => {
         const [mainImage, setMainImage] = useState(null);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -30,6 +29,7 @@
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [productType, setProductType] = useState('');
+    const [showSpecModal, setShowSpecModal] = useState(false);
     const getContrastColor = (hexColor) => {
         // Chuyển đổi hex sang RGB
         const r = parseInt(hexColor.slice(1, 3), 16);
@@ -42,28 +42,31 @@
     };
 
     useEffect(() => {
-    const fetchProductDetail = async () => {
-        try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
-            setProduct(response.data.data);
-            
-            // Set the initial main image
-            if (response.data.data.images.length > 0) {
-                setMainImage(`http://127.0.0.1:8000${response.data.data.images[0].image_url}`);
+        const fetchProductDetail = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
+                const productData = response.data.data;
+                
+                setProduct({
+                    ...productData, 
+                    base_price: productData.price  // Lưu giá gốc
+                });
+                
+                // Phần còn lại giữ nguyên
+                if (productData.images.length > 0) {
+                    setMainImage(`http://127.0.0.1:8000${productData.images[0].image_url}`);
+                }
+                
+                if (productData.category === 'bicycle' && productData.variants && productData.variants.length > 0) {
+                    setSelectedVariant(productData.variants[0]);
+                }
+                
+                setProductType(productData.category);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching product details:", error);
             }
-            
-            // Chỉ set selected variant nếu sản phẩm là xe đạp và có variants
-            if (response.data.data.category === 'bicycle' && response.data.data.variants && response.data.data.variants.length > 0) {
-                setSelectedVariant(response.data.data.variants[0]);
-            }
-            
-            // Set product type
-            setProductType(response.data.data.category);
-            setLoading(false);
-        } catch (error) {
-            console.error("Error fetching product details:", error);
-        }
-    };
+        };
 
     fetchProductDetail();
     }, [id]);
@@ -114,25 +117,25 @@
         const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
         // const handleQuantityChange = (e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1));
         const colorMap = {
-        'Đen': '#000000',
-        'Trắng': '#FFFFFF',
-        'Đỏ': '#FF0000',
-        'Xanh': '#0000FF',
-        'Xám': '#808080',
-        'Vàng': '#FFD700',
-        'Xanh lá': '#008000',
-        'Cam': '#FFA500',
-        'Nâu': '#8B4513',
-        'Hồng': '#FFC0CB',
-        'Bạc': '#C0C0C0',
-        'Tím': '#800080',
-        'Be': '#F5F5DC',
-        'Xanh dương': '#1E90FF',
-        'Xanh rêu': '#556B2F',
-        'Đỏ đô': '#8B0000',
-        'Xám đậm': '#696969',
-        'Xám nhạt': '#D3D3D3'
-    };
+            'Đen': '#000000',
+            'Trắng': '#FFFFFF',
+            'Đỏ': '#FF0000',
+            'Xanh': '#0000FF',
+            'Xám': '#808080',
+            'Vàng': '#FFD700',
+            'Xanh lá': '#008000',
+            'Cam': '#FFA500',
+            'Nâu': '#8B4513',
+            'Hồng': '#FFC0CB',
+            'Bạc': '#C0C0C0',
+            'Tím': '#800080',
+            'Be': '#F5F5DC',
+            'Xanh dương': '#1E90FF',
+            'Xanh rêu': '#556B2F',
+            'Đỏ đô': '#8B0000',
+            'Xám đậm': '#696969',
+            'Xám nhạt': '#D3D3D3'
+        };
     //   const handleColorSelect = (variant) => {
     //     setSelectedVariant(variant);
     // };
@@ -155,8 +158,8 @@
                 <span>(18 reviews)</span>
             </div>
             <div className="product__details__price fs-4 mb-3 text-danger">
-                {formatCurrency(parseFloat(product.price))}VND
-            </div>
+            {formatCurrency(parseFloat(product.price))} VND
+        </div>
             <p className="mb-4">
                 {product.description}
             </p>
@@ -298,8 +301,8 @@
                             margin: '4px',
                             border: `2px solid ${selectedVariant?.id === variant.id ? '#4CAF50' : '#ddd'}`,
                             borderRadius: '8px',
-                            backgroundColor: colorMap[variant.color] || '#fff',
-                            color: getContrastColor(colorMap[variant.color] || '#fff'),
+                            backgroundColor: colorMap[variant.color] || variant.color || '#fff',
+                            color: getContrastColor(colorMap[variant.color] || variant.color || '#fff'),
                             transition: 'all 0.3s ease',
                             boxShadow: selectedVariant?.id === variant.id 
                                 ? '0 2px 8px rgba(0,0,0,0.1)' 
@@ -320,7 +323,7 @@
                                     right: '8px',
                                     top: '50%',
                                     transform: 'translateY(-50%)',
-                                    color: getContrastColor(colorMap[variant.color] || '#fff')
+                                    color: getContrastColor(colorMap[variant.color] || variant.color || '#fff')
                                 }}
                             >
                                 ✓
@@ -349,9 +352,14 @@
     // Xử lý chọn variant
     const handleColorSelect = (variant) => {
         setSelectedVariant(variant);
-        console.log('Selected variant:', variant);
+        // Cập nhật giá sản phẩm theo variant được chọn
+        if (variant.price) {
+            setProduct(prevProduct => ({
+                ...prevProduct,
+                price: variant.price
+            }));
+        }
     };
-
     // Xử lý thay đổi số lượng
     const handleQuantityChange = (e) => {
         const value = parseInt(e.target.value) || 1;
@@ -364,6 +372,70 @@
         currency: 'VND'
     }).format(amount);
     };
+    //thong so ky thuat
+    const renderSpecificationsModal = () => (
+        <>
+            {showSpecModal && (
+                <div 
+                    className="modal-overlay"
+                    style={{ 
+                        position: 'fixed', 
+                        top: 0, 
+                        left: 0, 
+                        width: '100%', 
+                        height: '100%', 
+                        backgroundColor: 'rgba(0,0,0,0.5)', 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        zIndex: 1050 
+                    }}
+                    onClick={() => setShowSpecModal(false)}
+                >
+                    <div 
+                        className="modal-content"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ 
+                            backgroundColor: 'white', 
+                            maxWidth: '800px', 
+                            maxHeight: '80vh', 
+                            width: '90%', 
+                            borderRadius: '10px', 
+                            padding: '20px', 
+                            overflowY: 'auto' 
+                        }}
+                    >
+                        <div className="modal-header d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="modal-title">Thông Số Kỹ Thuật Chi Tiết</h5>
+                            <button 
+                                type="button" 
+                                className="btn-close" 
+                                onClick={() => setShowSpecModal(false)}
+                            ></button>
+                        </div>
+                        <div 
+                            className="modal-body specifications-content"
+                            style={{
+                                maxHeight: '60vh',
+                                overflowY: 'auto',
+                                paddingRight: '15px'
+                            }}
+                            dangerouslySetInnerHTML={{ __html: product.specifications }}
+                        />
+                        <div className="modal-footer mt-3">
+                            <button 
+                                type="button" 
+                                className="btn btn-secondary" 
+                                onClick={() => setShowSpecModal(false)}
+                            >
+                                Đóng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
         return (
             <>
                 <Header />
@@ -450,40 +522,42 @@
                             {/* Bảng thông số kỹ thuật */}
                             <div className="col-lg-12 mt-5">
                             <ul className="list-group list-group-flush mb-4">
-                                        <li className="list-group-item">
-                                            <strong>Thông số kĩ thuật</strong> 
-                                        </li>
-                                    
-                                    </ul>
-                                <div
-                                    className="specifications-content mt-3"
-                                    dangerouslySetInnerHTML={{ __html: product.specifications }}
-                                />
-
-                                {/* Hoặc nếu bạn muốn hiển thị dưới dạng bảng có style, bạn có thể thêm CSS */}
-                                <style>{`
-                                .specifications-content ul {
-                                    list-style: none;
-                                    padding: 0;
-                                }
-                                .specifications-content li {
-                                    padding: 10px 15px;
-                                    border-bottom: 1px solid #eee;
-                                    display: flex;
-                                    align-items: center;
-                                }
-                                .specifications-content li:nth-child(odd) {
-                                    background-color: #f8f9fa;
-                                }
-                                .specifications-content h4 {
-                                    margin-bottom: 20px;
-                                    color: #333;
-                                    font-weight: bold;
-                                }
-                            `}</style>
+                                <li className="list-group-item">
+                                    <strong>Thông số kĩ thuật</strong>
+                                    <button 
+                                        className="btn btn-outline-primary btn-sm ms-3"
+                                        onClick={() => setShowSpecModal(true)}
+                                    >
+                                        Xem chi tiết
+                                    </button>
+                                </li>
+                            </ul>
                             </div>
-                        </div>
+                            {/* Modal thông số kỹ thuật */}
+                            {renderSpecificationsModal()}
 
+                            {/* Giữ nguyên style từ trước */}
+                            <style>{`
+                .specifications-content {
+                    scrollbar-width: thin;
+                    scrollbar-color: #888 #f1f1f1;
+                }
+                .specifications-content::-webkit-scrollbar {
+                    width: 8px;
+                }
+                .specifications-content::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                }
+                .specifications-content::-webkit-scrollbar-thumb {
+                    background: #888;
+                    border-radius: 4px;
+                }
+                .specifications-content::-webkit-scrollbar-thumb:hover {
+                    background: #555;
+                }
+            `}</style>
+                        </div>
+                                
                     {/* Phần đánh giá */}
                     <div className="row mt-5">
                                 <div className="col-12">
@@ -528,7 +602,7 @@
                                                         
                                                     }}
                                                 >
-    Gửi bình luận
+                                                    Gửi bình luận
                                                 </button>
 
                                             </div>

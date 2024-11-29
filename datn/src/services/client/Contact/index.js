@@ -28,6 +28,15 @@ export const ContactService = {
             }
             throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi gửi liên hệ');
         }
+    },
+    getContactDetails: async (contactId) => {
+        try {
+            const response = await axios.get(`${API_URL}/${contactId}`);
+            return response.data.data;
+        } catch (error) {
+            console.error('Lỗi lấy chi tiết liên hệ:', error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy chi tiết liên hệ');
+        }
     }
 };
 

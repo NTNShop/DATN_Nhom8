@@ -14,19 +14,20 @@ const CheckoutSection = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [subtotal, setSubtotal] = useState(0);
-  const [shipping, setShipping] = useState(30000); // Phí ship mặc định 30,000đ
+  // const [shipping, setShipping] = useState(30000); // Phí ship mặc định 30,000đ
   const [total, setTotal] = useState(0);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [paymentDetails, setPaymentDetails] = useState(null);
   const navigate = useNavigate(); // Hook điều hướng
-  
+
   const [formData, setFormData] = useState({
-    fullName: '', 
+    fullName: '',
     city: '',
     address: '',
     phone: '',
     email: '',
-    note: ''
+    note: '',
+    // payment_status: '',
   });
   const [errors, setErrors] = useState({
     city: '',
@@ -35,7 +36,7 @@ const CheckoutSection = () => {
     email: '',
     paymentMethod: ''
   });
-  
+
 
   // Fetch cart items when component mounts
   useEffect(() => {
@@ -48,42 +49,46 @@ const CheckoutSection = () => {
     }
   }, [cartItems]);
   useEffect(() => {
+    
+
     const fetchSelectedItems = async () => {
       try {
         // Lấy danh sách ID sản phẩm đã chọn từ sessionStorage
         const selectedIds = JSON.parse(sessionStorage.getItem('selectedCartItems') || '[]');
-  
+
         if (selectedIds.length === 0) {
           toast.error('Vui lòng chọn sản phẩm từ giỏ hàng');
           navigate('/cart');
           return;
         }
-  
+
         // Lấy thông tin chi tiết của các sản phẩm đã chọn
         const selectedItems = await CartService.getSelectedCartItems(selectedIds);
         setCartItems(selectedItems);
-  
+
         // Tính toán tổng tiền
         const newSubtotal = selectedItems.reduce((sum, item) =>
           sum + (parseFloat(item.unit_price) * item.quantity), 0
         );
         setSubtotal(newSubtotal);
-        setTotal(newSubtotal + shipping);
+        // setTotal(newSubtotal + shipping);
       } catch (error) {
         console.error('Lỗi khi lấy sản phẩm đã chọn:', error);
         toast.error('Không thể tải thông tin sản phẩm đã chọn');
         navigate('/cart');
       }
     };
-  
+
     fetchSelectedItems();
   }, [navigate]);
+  
+  
   const fetchCartItems = async () => {
     try {
       const response = await CartService.getCartItems();
       setCartItems(response.data);
     } catch (error) {
-      console.error('Error fetching cart items:', error);
+console.error('Error fetching cart items:', error);
       toast.error('Không thể tải thông tin giỏ hàng');
     }
   };
@@ -102,7 +107,7 @@ const CheckoutSection = () => {
       return sum + (parseFloat(item.unit_price) * item.quantity);
     }, 0);
     setSubtotal(newSubtotal);
-    setTotal(newSubtotal + shipping);
+    // setTotal(newSubtotal + shipping);
   };
   // Format currency
   const formatCurrency = (amount) => {
@@ -111,12 +116,12 @@ const CheckoutSection = () => {
       currency: 'VND'
     }).format(amount);
   };
-  
+
   // Cập nhật hàm validateForm
   const validateForm = () => {
     let isValid = true;
     const newErrors = {};
-    
+
     // Validate required fields
     const requiredFields = {
       fullName: 'Họ tên',
@@ -152,13 +157,14 @@ const CheckoutSection = () => {
     }
 
     setErrors(newErrors);
-    
+
     if (!isValid) {
       toast.error('Vui lòng kiểm tra lại thông tin đơn hàng');
     }
-    
+
     return isValid;
   };
+
   const PAYMENT_METHODS = {
     BANK_TRANSFER: 'bank_transfer',
     VNPAY: 'vnpay',
@@ -172,17 +178,20 @@ const CheckoutSection = () => {
       details: {
         bank: 'VietinBank - Cà Mau',
         account: '0942785922',
-        holder: 'Nhóm 8'
+        holder: 'Nhóm 8',
+
       }
     },
     [PAYMENT_METHODS.VNPAY]: {
       title: 'Thanh toán VNPAY',
       icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/other.svg?v=6',
-      paymentUrl: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+     
+
     },
     [PAYMENT_METHODS.COD]: {
       title: 'Thanh toán khi nhận hàng',
-      icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6'
+      icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6',
+
     }
   };
 
@@ -191,7 +200,7 @@ const CheckoutSection = () => {
     setPaymentDetails(PAYMENT_INFO[method]);
     setErrors(prev => ({ ...prev, paymentMethod: '' }));
   };
-  const PaymentMethodRadio = ({ method }) => (
+const PaymentMethodRadio = ({ method }) => (
     <div className="checkout__input__radio" style={{ marginBottom: '20px' }}>
       <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
         <input
@@ -227,225 +236,270 @@ const CheckoutSection = () => {
   );
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
-    setLoading(true);
-    try {
-        const orderItems = cartItems.map(item => ({
-            product_id: parseInt(item.product.id),
-            variant_id: item.variant_id || null,
-            quantity: parseInt(item.quantity),
-            price: parseFloat(item.unit_price)
-        }));
 
-        const orderData = {
-            items: orderItems,
-            shipping_address: {
-                full_name: formData.fullName.trim(),
-                email: formData.email.trim(),
-                phone: formData.phone.trim(),
-                address: formData.address.trim(),
-                city: formData.city.trim(),
-                note: formData.note?.trim() || ''
-            },
-            payment_method: selectedPaymentMethod,
-            shipping_fee: shipping,
-            subtotal: subtotal,
-            total_amount: total
-        };
-
-        const response = await OrderService.createOrder(orderData);
-        
-        if (response.success) {
-            // Xóa dữ liệu đã lưu trong sessionStorage
-            sessionStorage.removeItem('selectedCartItems');
-            sessionStorage.removeItem('selectedProducts');
-            
-            toast.success('Đặt hàng thành công!');
-            
-            if (selectedPaymentMethod === PAYMENT_METHODS.VNPAY) {
-                window.location.href = PAYMENT_INFO[PAYMENT_METHODS.VNPAY].paymentUrl;
-            } else {
-                navigate('/success', { 
-                    state: { 
-                        orderId: response.data.id,
-                        orderCode: response.data.order_code,
-                        orderDetails: {
-                            ...response.data,
-                            total: response.data.total,
-                            payment_status: selectedPaymentMethod,
-                            address: response.data.address,
-                            city: response.data.city,
-                        }
-                    }
-                });
-            }
-        }
-    } catch (error) {
-        console.error('Chi tiết lỗi:', error);
-        toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
-    } finally {
-        setLoading(false);
+    if (!selectedPaymentMethod) {
+      toast.error('Vui lòng chọn phương thức thanh toán');
+      return;
     }
-};
 
+    setLoading(true);
+
+    try {
+      // Tính toán subtotal từ giỏ hàng
+      const subtotal = cartItems.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
+      const roundedTotal = Math.round(subtotal); // Làm tròn tổng tiền
+
+      const orderItems = cartItems.map(item => ({
+        product_id: parseInt(item.product.id),
+        variant_id: item.variant_id || null,
+        quantity: parseInt(item.quantity),
+        price: parseFloat(item.unit_price)
+      }));
+
+      const normalizedPaymentMethod = PAYMENT_METHODS[selectedPaymentMethod] || selectedPaymentMethod;
+
+      let paymentStatus;
+      switch (selectedPaymentMethod) {
+        case PAYMENT_METHODS.VNPAY:
+          paymentStatus = 2; // VNPAY
+          break;
+        case PAYMENT_METHODS.COD:
+          paymentStatus = 1; // COD
+          break;
+        case PAYMENT_METHODS.BANK_TRANSFER:
+        default:
+          paymentStatus = 3; // Bank Transfer
+          break;
+      }
+
+      // Dữ liệu đơn hàng
+      const orderData = {
+        items: orderItems,
+        shipping_address: {
+          full_name: formData.fullName.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          address: formData.address.trim(),
+          city: formData.city.trim(),
+          note: formData.note?.trim() || ''
+        },
+payment_method: normalizedPaymentMethod,
+        subtotal: subtotal,
+        total_amount: roundedTotal,
+        payment_status: paymentStatus,
+        
+        vnpay_data: {
+          amount: roundedTotal, // Gửi tổng tiền chính xác
+          order_type: 'other',
+          order_description: `Thanh toán đơn hàng - ${formData.fullName}`
+          
+        }
+      };
+
+      console.log('Dữ liệu đơn hàng gửi lên backend:', orderData);
+
+      // Gửi dữ liệu lên backend để tạo đơn hàng
+      const response = await OrderService.createOrder(orderData);
+
+      if (response.success) {
+        sessionStorage.removeItem('selectedCartItems');
+        sessionStorage.removeItem('selectedProducts');
+
+        // Nếu phương thức thanh toán là VNPAY và có URL trả về
+        console.log('VNPAY URL:', response.data.vnpay_payment_url);
+        if (response.data.vnpay_payment_url) {
+          window.open(response.data.vnpay_payment_url, '_blank');
+          // hoặc
+          // window.location.replace(response.data.vnpay_payment_url);
+        }else {
+          toast.error('Không tìm thấy URL thanh toán VNPAY');
+        }
+
+        // Nếu đơn hàng đã được tạo thành công và không phải thanh toán VNPAY, điều hướng đến trang thành công
+        navigate('/success', {
+          state: {
+            orderId: response.data.id,
+            orderCode: response.data.order_code,
+            orderDetails: {
+              ...response.data,
+              total: response.data.total,
+              payment_status: paymentStatus,
+              payment_url: response.data.payment_url,
+             
+            }
+          }
+        });
+
+        // Thông báo đặt hàng thành công
+        toast.success('Đặt hàng thành công!');
+      }
+    } catch (error) {
+      console.error('Chi tiết lỗi:', error);
+      toast.error(error.message || 'Có lỗi xảy ra khi xử lý đơn hàng');
+    } finally {
+      setLoading(false);
+    }
+  };
   
+  
+
   return (
     <>
       <Header />
       <section className="checkout spad">
-  <div className="container">
-    <div className="row">
-      <div className="col-lg-12">
-        <h6>
-          <span className="icon_tag_alt"></span> Có mã giảm giá? <a href="">Nhấp vào đây</a> để nhập mã của bạn
-        </h6>
-      </div>
-    </div>
-    <div className="checkout__form">
-      <form onSubmit={handlePlaceOrder}>
-        <div className="row">
-          {/* Adjusting both columns to be equally sized */}
-          <div className="col-lg-6 col-md-6">
-            {/* Form thông tin người dùng */}
-            <div className="checkout__input">
-              <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Họ và Tên<span>*</span></p>
-              <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange}  className={errors.fullName ? 'error' : ''}
-              placeholder="Nhập họ và tên của bạn (bắt buộc)" />
-              {errors.fullName && <span className="error-message">{errors.fullName}</span>}
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <h6>
+                <span className="icon_tag_alt"></span> Có mã giảm giá? <a href="">Nhấp vào đây</a> để nhập mã của bạn
+              </h6>
             </div>
-
-            <div className="checkout__input" style={{ marginBottom: '20px', fontFamily: 'Arial, sans-serif' }}>
-              <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>
-                Thành Phố/Tỉnh <span style={{ color: 'red' }}>*</span>
-              </p>
-              <input
-                list="cities"  name="city" className={errors.city ? 'error' : ''}
-                placeholder="Nhập thành phố, căn hộ, dãy nhà, số phòng (bắt buộc)" onChange={handleInputChange}  value={formData.city}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  fontSize: '16px',
-                  outline: 'none',
-                }}
-              />
-              
-              <datalist id="cities">
-                {/* List of cities (same as before) */}
-              </datalist>
-              {errors.city && <span className="error-message">{errors.city}</span>}
-            </div>
-
-            <div className="checkout__input">
-              <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Địa chỉ<span>*</span></p>
-              <input type="text" value={formData.address}  name="address"  onChange={handleInputChange} className={errors.address ? 'error' : ''}
-              placeholder="Nhập vị trí hiện tại của bạn " />  {errors.address && <span className="error-message">{errors.address}</span>}
-            </div>
-
-            <div className="row">
-              <div className="col-lg-6">
-                <div className="checkout__input">
-                  <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Số điện thoại<span>*</span></p>
-                  <input type="text"  name="phone" value={formData.phone} onChange={handleInputChange} className={errors.phone ? 'error' : ''}
-                   placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message">{errors.phone}</span>}
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="checkout__input">
-                  <p style={{ marginBottom: '5px', fontWeight: 'bold' }}  >Email<span>*</span></p>
-                  <input type="text" value={formData.email}   onChange={handleInputChange}  name="email" className={errors.email ? 'error' : ''}
-                   placeholder="(bắt buộc)" /> {errors.email && <span className="error-message">{errors.email}</span>}
-                </div>
-              </div>
-            </div>
-
-            <div className="checkout__input">
-              <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Ghi chú đơn hàng<span></span></p>
-              <textarea
-                type="text" name="note"
-                placeholder="Ghi chú về đơn hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng."  value={formData.note}  onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  fontSize: '16px',
-                  outline: 'none',
-                  resize: 'none',  // Tắt khả năng thay đổi kích thước thủ công
-                }}
-                rows="5"  // Điều chỉnh số dòng hiển thị ban đầu cho phù hợp
-              />
-        </div>
           </div>
+          <div className="checkout__form">
+            <form onSubmit={handlePlaceOrder}>
+              <div className="row">
+                {/* Adjusting both columns to be equally sized */}
+                <div className="col-lg-6 col-md-6">
+                  {/* Form thông tin người dùng */}
+                  <div className="checkout__input">
+                    <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Họ và Tên<span>*</span></p>
+                    <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className={errors.fullName ? 'error' : ''}
+placeholder="Nhập họ và tên của bạn (bắt buộc)" />
+                    {errors.fullName && <span className="error-message">{errors.fullName}</span>}
+                  </div>
 
-          <div className="col-lg-6 col-md-6">
-            {/* Hiển thị thông tin đơn hàng */}
-            <div className="checkout__order">
-              <h4>Đơn hàng của bạn</h4>
-              <div className="checkout__order__products">Sản phẩm <span>Tổng cộng</span></div>
-              <ul>
-              {cartItems.map((item) => (
-                <li key={item.id} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '10px 0',
-                  borderBottom: '1px solid #e1e1e1'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                    <img 
-                      src={`http://127.0.0.1:8000${item.product.image.url}`} 
-                      alt={item.product.name}
-                      style={{ width: '50px', height: '50px', marginRight: '10px' }}
+                  <div className="checkout__input" style={{ marginBottom: '20px', fontFamily: 'Arial, sans-serif' }}>
+                    <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>
+                      Thành Phố/Tỉnh <span style={{ color: 'red' }}>*</span>
+                    </p>
+                    <input
+                      list="cities" name="city" className={errors.city ? 'error' : ''}
+                      placeholder="Nhập thành phố, căn hộ, dãy nhà, số phòng (bắt buộc)" onChange={handleInputChange} value={formData.city}
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        fontSize: '16px',
+                        outline: 'none',
+                      }}
                     />
-                    <div>
-                      <div>{item.product.name}</div>
-                      <div style={{ fontSize: '0.9em', color: '#666' }}>
-                        Giá: {formatCurrency(item.unit_price)} - Số lượng: {item.quantity}
+
+                    <datalist id="cities">
+                      {/* List of cities (same as before) */}
+                    </datalist>
+                    {errors.city && <span className="error-message">{errors.city}</span>}
+                  </div>
+
+                  <div className="checkout__input">
+                    <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Địa chỉ<span>*</span></p>
+                    <input type="text" value={formData.address} name="address" onChange={handleInputChange} className={errors.address ? 'error' : ''}
+                      placeholder="Nhập vị trí hiện tại của bạn " />  {errors.address && <span className="error-message">{errors.address}</span>}
+                  </div>
+
+                  <div className="row">
+                    <div className="col-lg-6">
+                      <div className="checkout__input">
+                        <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Số điện thoại<span>*</span></p>
+                        <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className={errors.phone ? 'error' : ''}
+                          placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message">{errors.phone}</span>}
                       </div>
                     </div>
+                    <div className="col-lg-6">
+                      <div className="checkout__input">
+                        <p style={{ marginBottom: '5px', fontWeight: 'bold' }}  >Email<span>*</span></p>
+                        <input type="text" value={formData.email} onChange={handleInputChange} name="email" className={errors.email ? 'error' : ''}
+                          placeholder="(bắt buộc)" /> {errors.email && <span className="error-message">{errors.email}</span>}
+                      </div>
+                    </div>
+</div>
+
+                  <div className="checkout__input">
+                    <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Ghi chú đơn hàng<span></span></p>
+                    <textarea
+                      type="text" name="note"
+                      placeholder="Ghi chú về đơn hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng." value={formData.note} onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        fontSize: '16px',
+                        outline: 'none',
+                        resize: 'none',  // Tắt khả năng thay đổi kích thước thủ công
+                      }}
+                      rows="5"  // Điều chỉnh số dòng hiển thị ban đầu cho phù hợp
+                    />
                   </div>
-                  <span style={{ fontWeight: 'bold' }}>
-                    {formatCurrency(item.unit_price * item.quantity)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                </div>
+
+                <div className="col-lg-6 col-md-6">
+                  {/* Hiển thị thông tin đơn hàng */}
+                  <div className="checkout__order">
+                    <h4>Đơn hàng của bạn</h4>
+                    <div className="checkout__order__products">Sản phẩm <span>Tổng cộng</span></div>
+                    <ul>
+                      {cartItems.map((item) => (
+                        <li key={item.id} style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '10px 0',
+                          borderBottom: '1px solid #e1e1e1'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                            <img
+                              src={`http://127.0.0.1:8000${item.product.image.url}`}
+                              alt={item.product.name}
+                              style={{ width: '50px', height: '50px', marginRight: '10px' }}
+                            />
+                            <div>
+                              <div>{item.product.name}</div>
+                              <div style={{ fontSize: '0.9em', color: '#666' }}>
+                                Giá: {formatCurrency(item.unit_price)} - Số lượng: {item.quantity}
+                              </div>
+                            </div>
+                          </div>
+                          <span style={{ fontWeight: 'bold' }}>
+                            {formatCurrency(item.unit_price * item.quantity)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
 
 
-            <div className="checkout__order__subtotal">
-              Tạm tính <span>{formatCurrency(subtotal)}</span>
-            </div>
-            <div className="checkout__order__subtotal">
-              Phí vận chuyển <span>{formatCurrency(shipping)}</span>
-            </div>
-            <div className="checkout__order__total">
-              Tổng cộng <span>{formatCurrency(total)}</span>
-            </div>
-              <div className="checkout__order__payment">
-      <h4>Phương thức thanh toán</h4>
-      <PaymentMethodRadio method={PAYMENT_METHODS.BANK_TRANSFER} />
-      <PaymentMethodRadio method={PAYMENT_METHODS.VNPAY} />
-      <PaymentMethodRadio method={PAYMENT_METHODS.COD} />
-      {errors.paymentMethod && (
-        <span className="error-message">{errors.paymentMethod}</span>
-      )}
+                    <div className="checkout__order__subtotal">
+                      Tạm tính <span>{formatCurrency(subtotal)}</span>
+                    </div>
+{/* <div className="checkout__order__subtotal">
+                      Phí vận chuyển <span>{formatCurrency(shipping)}</span>
+                    </div> */}
+                    <div className="checkout__order__total">
+                      Tổng cộng <span>{formatCurrency(subtotal)}</span>
+                    </div>
+                    <div className="checkout__order__payment">
+                      <h4>Phương thức thanh toán</h4>
+                      <PaymentMethodRadio method={PAYMENT_METHODS.BANK_TRANSFER} />
+                      <PaymentMethodRadio method={PAYMENT_METHODS.VNPAY} />
+                      <PaymentMethodRadio method={PAYMENT_METHODS.COD} />
+                      {errors.paymentMethod && (
+                        <span className="error-message">{errors.paymentMethod}</span>
+                      )}
+                    </div>
+                    <button type="submit" className="site-btn" disabled={loading}>
+                      {loading ? 'ĐANG XỬ LÝ...' : 'ĐẶT HÀNG'}
+                    </button>
+                  </div>
+
+
+                </div>
               </div>
-              <button type="submit" className="site-btn" disabled={loading}>
-              {loading ? 'ĐANG XỬ LÝ...' : 'ĐẶT HÀNG'}
-              </button>
-            </div>
-            
-
+            </form>
           </div>
         </div>
-      </form>
-    </div>
-  </div>
-</section>
+      </section>
       <Footer />
     </>
   );

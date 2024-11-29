@@ -34,7 +34,7 @@ const PaymentSuccessPage = () => {
               <img src={successTick} alt="Success Tick" className="payment-success__icon" />
               <h4 className="payment-success__title">Chúc mừng! Thanh toán của bạn đã thành công.</h4>
               
-              {orderDetails && (
+              {/* {orderDetails && (
                   <div className="order-details p-4 mt-4" style={{ border: '1px solid #ddd', borderRadius: '8px' }}>
                     <h4 className="mb-4">Chi tiết đơn hàng</h4>
                     <div className="order-info">
@@ -60,7 +60,7 @@ const PaymentSuccessPage = () => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
               <p className="payment-success__description">
                 Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn và gửi thông tin chi tiết qua email.
@@ -69,7 +69,7 @@ const PaymentSuccessPage = () => {
                 <Link to="/" className="site-btn site-btn--primary me-2">
                   Trở về trang chủ
                 </Link>
-                <Link to="/orders" className="site-btn site-btn--secondary">
+                <Link to="/profile" className="site-btn site-btn--secondary">
                   Xem đơn hàng
                 </Link>
               </div>

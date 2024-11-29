@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie"; 
-import { useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import logo from "../../../assets/img/logo.png";
 import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
@@ -93,12 +93,12 @@ const Header = () => {
                 </b>
                 <span className="logo-text"></span>
               </a>
-              <a
+              <Link
                 className="nav-toggler waves-effect waves-light text-white d-block d-md-none"
-                href="javascript:void(0)"
+                href=""
               >
                 <i className="ti-menu ti-close"></i>
-              </a>
+              </Link>
             </div>
             <div
               className="navbar-collapse collapse ml-2"
@@ -107,24 +107,24 @@ const Header = () => {
             >
               <ul className="navbar-nav d-lg-none d-md-block">
                 <li className="nav-item">
-                  <a
+                  <Link
                     className="nav-toggler nav-link waves-effect waves-light text-white"
-                    href="javascript:void(0)"
+                    href="void(0)"
                   >
                     <i className="ti-menu ti-close"></i>
-                  </a>
+                  </Link>
                 </li>
               </ul>
               <ul className="navbar-nav me-auto mt-md-0">
                 <li className="nav-item search-box">
-                  <a className="nav-link text-muted" href="#" onClick={toggleSearch}>
+                  <Link className="nav-link text-muted" href="#" onClick={toggleSearch}>
                     <i className="ti-search"></i>
-                  </a>
+                  </Link>
                   <form className="app-search" style={{ display: showSearch ? "block" : "none" }}>
                     <input type="text" className="form-control" placeholder="Nhập từ khóa cần tìm" />
-                    <a className="srh-btn" onClick={toggleSearch}>
+                    <Link className="srh-btn" onClick={toggleSearch}>
                       <i className="ti-close"></i>
-                    </a>
+                    </Link>
                   </form>
                 </li>
               </ul>
@@ -147,9 +147,9 @@ const Header = () => {
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
-                      <a className="dropdown-item" href="#" onClick={confirmLogout}>
+                      <Link className="dropdown-item" href="#" onClick={confirmLogout}>
                         Đăng Xuất
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <a className="dropdown-item" href="/" onClick={() => navigate("/")}>
@@ -248,9 +248,9 @@ const Header = () => {
           <div className="sidebar-footer">
             <div className="row">
               <div className="col-4 link-wrap">
-                <a href="#" className="link" onClick={handleLogout} title="Đăng Xuất">
+                <Link href="#" className="link" onClick={handleLogout} title="Đăng Xuất">
                   <i className="mdi mdi-logout"></i>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
