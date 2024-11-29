@@ -4,6 +4,8 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddCategory = () => {
     const navigate = useNavigate();
@@ -86,10 +88,13 @@ const AddCategory = () => {
             const response = await axios.post('http://127.0.0.1:8000/api/v1/categories', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setSuccessMessage("Danh mục đã được thêm thành công!");
-            setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
-            setShowModal(true); // Show the success modal
-            navigate("/admin/category");
+            // setSuccessMessage("Danh mục đã được thêm thành công!");
+setCategoryData({ name: "", image_url: null, status: "1", parent_id: "" });
+toast.success('Danh mục đã được thêm');
+setTimeout(() => {
+    navigate('/admin/category'); // Điều hướng sau 2 giây
+}, 2000);
+            // setShowModal(true); // Show the success modal
         } catch (error) {
             setErrorMessage("Có lỗi xảy ra khi thêm danh mục.");
             console.error("Error response:", error.response);
@@ -144,7 +149,7 @@ const AddCategory = () => {
                                         <span className="text-danger">{errors.name}</span>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="image_url" className="form-label">Hình ảnh</label>
+<label htmlFor="image_url" className="form-label">Hình ảnh</label>
                                         <input
                                             type="file"
                                             id="image_url"
@@ -189,9 +194,10 @@ const AddCategory = () => {
                                             onClick={handleGoBack}
                                         >
                                             Trở về
-                                        </button>
+</button>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
@@ -199,7 +205,7 @@ const AddCategory = () => {
             </div>
 
             {/* Success Modal */}
-            <Modal show={showModal} onHide={handleCloseModal}>
+            {/* <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Thông báo</Modal.Title>
                 </Modal.Header>
@@ -209,7 +215,7 @@ const AddCategory = () => {
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };

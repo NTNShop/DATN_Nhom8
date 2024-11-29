@@ -1,10 +1,11 @@
 
 import React from "react"
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements,  Outlet,  Navigate  } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements  } from "react-router-dom";
 import Home from "./component/client/home";
 import Blog from './component/client/blog';
 import Cart from "./component/client/cart";
 import CheckoutSection from "./component/client/check-out";
+import VNPayReturnHandler from "./component/client/check-out/VNPayReturnHandler";
 import ProfileClient from "./component/client/profile/index";
 import Login from "./component/client/profile/login";
 import Register from "./component/client/profile/register";
@@ -22,7 +23,6 @@ import './assets/css/font-awesome.min.css'
 import './assets/css/nice-select.css'
 import './assets/css/slicknav.min.css'
 import './assets/css/style2.css'
-
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -34,6 +34,9 @@ import './assets/css/style2.css'
 import Dashboard from "./component/admin/dashboard/index";
 import Profile from "./component/admin/profile/index";
 import Categories from "./component/admin/categories/list";
+import Contacts from "./component/admin/contact/list";
+import EditContact from "./component/admin/contact/edit";
+
 import EditCategories from "./component/admin/categories/edit";
 import AddCategories from "./component/admin/categories/add";
 import ListBrand from "./component/admin/brand/list";
@@ -44,6 +47,7 @@ import EditProduct from "./component/admin/products/edit";
 import AddProduct from "./component/admin/products/add";
 import User from "./component/admin/users/list";
 import EditUser from "./component/admin/users/edit";
+import UserDetails from "./component/admin/users/detail"
 import Layout from './component/admin/index';
 import Authentication from "./component/admin/authentication";
 import ListOrder from "./component/admin/order/list";
@@ -63,7 +67,6 @@ import "./assets/css/style.min.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
@@ -87,7 +90,6 @@ import Qrmomo from "./component/client/paypal/qrmomo";
 // import './assets/css/owl.carousel.css'
 // import './assets/css/meanmenu.min.css'
 // import './assets/css/responsive.css'
-
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -95,9 +97,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog-details/:id" element={<BlogDetails />} />
-
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
+        <Route path="/vnpay-return" element={<VNPayReturnHandler />} />
         <Route path="/product" element={<Product/>}/>
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
@@ -126,6 +128,8 @@ function App() {
       <Route path="/admin/dashboard" element={<Dashboard />} />
       <Route path="/admin/profile" element={<Profile />} />
       <Route path="/admin/category" element={<Categories />} />
+      <Route path="/admin/contact" element={<Contacts />} />
+      <Route path="/admin/contact/edit/:id" element={<EditContact />} />
       <Route path="/admin/category/edit/:id" element={<EditCategories />} />
       <Route path="/admin/category/add" element={<AddCategories />} />
       <Route path="/admin/brand" element={<ListBrand />} />
@@ -135,16 +139,22 @@ function App() {
       <Route path="/admin/product/add" element={<AddProduct />} />
       <Route path="/admin/product/edit/:id" element={<EditProduct />} />
       <Route path="/admin/user" element={<User />} />
+      <Route path="/users/:userId" element={<UserDetails />} />
       <Route path="/admin/login" element={<Authentication />} />
       <Route path="/admin/editUser/:id" element={<EditUser />} />
       <Route path="/admin/order" element={<ListOrder />} />
+      {/* <Route path="/admin/order" element={<EditOrderPayment />} /> */}
       <Route path="/admin/comment" element={<Comment />} />
       <Route path="/admin/blog" element={<BlogAdmin />} />
       <Route path="/admin/blog/:id" element={<EditBlog />} />
+      <Route path="/blogdetail/:id" element={<BlogDetails />} />
+
 
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
       <Route path="/admin/warring" element={<LoginWarning />} />
+
+      
 
     
         
@@ -154,8 +164,9 @@ function App() {
   );
  
   return (
+    <>
     <RouterProvider router={router} />
-   
+    </>
   );
 }
 

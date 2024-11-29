@@ -39,6 +39,23 @@ export const getUserById = async (userId) => {
   }
 };
 
+// Lấy chi tiết người dùng
+export const getUserDetails = async (userId) => {
+  try {
+    const token = Cookies.get('authToken');
+    const response = await axios.get(`${apiUrl}/${userId}`, {
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : undefined,
+      },
+    });
+
+    return response.data.data;
+  } catch (error) {
+    console.error(`Error fetching user details for ID: ${userId}`, error);
+    throw error;
+  }
+};
+
 
 // Xóa người dùng 
 export const deleteUser = async (userId) => {
@@ -56,18 +73,36 @@ export const deleteUser = async (userId) => {
   }
 };
 //Sửa thông tin người dùng
-export const updateUser = async (userId, updatedData) => {
+const updateUser = async (id, userData) => {
   try {
     const token = Cookies.get('authToken');
-    const response = await axios.put(`${apiUrl}/${userId}`, updatedData, {
+    const response = await axios.put(`${apiUrl}/${id}`, userData , {
       headers: {
         'Authorization': token ? `Bearer ${token}` : undefined,
-        'Content-Type': 'application/json',
       },
     });
     return response.data;
   } catch (error) {
-    console.error('Error updating user:', error);
-    throw error;
+    throw new Error('Không thể cập nhật người dùng.');
   }
+};
+
+const updateUserStatus = async (id, status) => {
+  try {
+    const token = Cookies.get('authToken');
+    const response = await axios.put(`${apiUrl}/${id}/status`, status ,{
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : undefined,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Không thể cập nhật trạng thái người dùng.');
+  }
+};
+
+export default {
+  getUserById,
+  updateUser,
+  updateUserStatus,
 };

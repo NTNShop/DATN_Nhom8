@@ -76,7 +76,7 @@ const Login = () => {
         {`
           .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
+background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
           @keyframes shimmer {
@@ -128,7 +128,7 @@ const Login = () => {
                           required: "Email không được để trống.",
                           pattern: {
                             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: "Email không hợp lệ.",
+message: "Email không hợp lệ.",
                           },
                         })}
                       />

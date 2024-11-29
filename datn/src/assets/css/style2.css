@@ -311,7 +311,6 @@ ul#main-menu>li:hover>.menu-con {
 .menu-con li a {
     display: block;
     text-decoration: none;
-    border-bottom: 1px dotted gainsboro;
 }
 
 .name-menucon {
@@ -711,10 +710,12 @@ ol {
 	color: #ffffff;
 	text-transform: uppercase;
 	font-weight: 700;
-	background: #ff9911;
+	background: #000000;
 	letter-spacing: 2px;
 }
-
+.primary-btn:hover {
+	color: white;
+}
 .site-btn {
 	font-size: 14px;
 	color: #ffffff;
@@ -834,6 +835,27 @@ ol {
 	display: inline-block;
 	margin-right: 5px; /* Khoảng cách giữa dấu chấm và text */
   }
+  .role-badge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  display: inline-block; /* Đảm bảo span hiển thị đúng */
+}
+
+.badge-admin {
+  background-color: #007bff; /* Màu nền cho admin */
+}
+
+.badge-user {
+  background-color: #28a745; /* Màu nền cho user */
+}
+
+.badge-guest {
+  background-color: #ffc107; /* Màu nền cho guest */
+}
+
+
   
   .dot-success {
 	background-color: #0fab33; /* Màu xanh */
@@ -847,6 +869,83 @@ ol {
 .header__top__left ul li:last-child {
 	margin-right: 0;
 }
+.status-badge {
+	padding: 5px 15px;
+	border-radius: 25px;
+	color: white;
+	font-weight: bold;
+	display: inline-block; /* Đảm bảo span hiển thị đúng */
+	text-transform: capitalize;
+  }
+  
+  .badge-success {
+	background-color: #28a745; /* Màu nền cho trạng thái "Hoạt động" */
+  }
+  .text-ellipsis {
+	max-width: 200px; /* Độ rộng tối đa, thay đổi theo nhu cầu */
+	white-space: nowrap; /* Không xuống dòng */
+	overflow: hidden; /* Ẩn phần vượt quá */
+	text-overflow: ellipsis; /* Hiển thị dấu ba chấm */
+  }
+  
+  /* User Details Page Styling */
+.user-details-card {
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-avatar {
+	max-width: 150px;
+	max-height: 150px;
+	border-radius: 50%;
+  }
+  
+  .no-avatar {
+	background-color: #f0f0f0;
+	border: 2px dashed #ccc;
+	color: #aaa;
+  }
+  
+  .card-header {
+	font-size: 1.5rem;
+	padding: 20px;
+	text-align: center;
+  }
+  
+  .card-body {
+	padding: 30px;
+  }
+  
+  .card-body p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+  }
+  
+  .card-body strong {
+	color: #007bff;
+  }
+  
+  .text-muted {
+	color: #6c757d !important;
+  }
+  
+  .text-right button {
+	font-size: 20px;
+	color: #007bff;
+  }
+  
+  .text-right button:hover {
+	color: #0056b3;
+  }
+  
+  .container {
+	max-width: 1200px;
+  }
+  
+  .badge-danger {
+	background-color: #dc3545; /* Màu nền cho trạng thái "Không hoạt động" */
+  }
+  
 
 .header__top__left ul li:last-child:after {
 	display: none;

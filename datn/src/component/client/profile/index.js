@@ -1,63 +1,222 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
-import avt from '../../../assets/images/users/avt.png';
-import Cookies from "js-cookie";  // Import js-cookie to access cookies
+import avt from "../../../assets/images/users/avt.png";
+import { getUserProfile } from "../../../services/client/profile";
+import { updateUserProfile } from "../../../services/client/profile";
+import { updateUserAvatar } from "../../../services/client/profile";
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import axios from "axios";
+import Cookies from "js-cookie";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const ProfileS = () => {
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [userInfo, setUserInfo] = useState({
     fullName: "",
     email: "",
     address: "",
     phone: "",
-    userRole: "", // Role of the user
-    avatar: "", // Avatar of the user
+    userRole: "",
+    avatar: "",
   });
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Handle input change when editing information
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prevState) => ({
       ...prevState,
-      [name]: value, // Update user information in state
+      [name]: value,
     }));
   };
 
-  // Toggle between edit and view mode
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
 
-  useEffect(() => {
-    // Get user information from cookies when component is rendered
-    const email = Cookies.get("email");
-    const fullName = Cookies.get("full_name");
-    const phone = Cookies.get("phone");
-    const userInfo = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")) : {};
-    
-    if (userInfo && email && fullName && phone) {
-      // If userInfo cookie exists, set all available user data
-      setUserInfo({
-        fullName: userInfo.full_name || fullName,
-        email: userInfo.email || email,
-        address: userInfo.address || "", // Set default as empty if not available
-        phone: userInfo.phone || phone,
-        userRole: userInfo.role || "", // Role from userInfo
-        avatar: userInfo.avatar || avt, // Avatar URL or default avatar
+  const handleSaveChanges = async () => {
+    try {
+      setLoading(true); // Hiển thị trạng thái loading
+      await updateUserProfile({
+        full_name: userInfo.fullName,
+        email: userInfo.email,
+        address: userInfo.address,
+        phone: userInfo.phone,
       });
+      setEditMode(false); // Quay lại chế độ xem
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      alert("Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại!");
     }
+  };
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      const preview = URL.createObjectURL(file); // Hiển thị ảnh xem trước
+      setUserInfo((prev) => ({
+        ...prev,
+        avatar: preview,
+      }));
+    }
+  };
+
+  const handleSaveAvatar = async () => {
+    if (!avatarFile) return;
+
+    try {
+      setLoading(true);
+      await updateUserAvatar(avatarFile); // Gửi ảnh avatar lên server
+
+      window.location.reload(); // Tự động tải lại trang sau khi cập nhật thành công
+    } catch (error) {
+      setLoading(false);
+      alert("Có lỗi khi cập nhật avatar. Vui lòng thử lại!");
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const data = await getUserProfile(); // Call the service to fetch user data
+        setUserInfo({
+          fullName: data.full_name,
+          email: data.email,
+          address: data.address || "",
+          phone: data.phone,
+          userRole: data.role || "",
+          avatar: data.avatar || avt,
+        });
+        setLoading(false); // Set loading to false when data is fetched successfully
+      } catch (error) {
+        setError("Failed to load profile data.");
+        setLoading(false); // Set loading to false in case of error
+      }
+    };
+    fetchUserProfile();
   }, []);
+  useEffect(() => {
+    const fetchUserProfileAndOrders = async () => {
+      try {
+        const token = Cookies.get("authToken");
+        const userId = Cookies.get("userId");
+
+        if (!token || !userId) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const response = await axios.get(`http://127.0.0.1:8000/api/v1/orders?user_id=${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        // Correctly extract orders from the nested data structure
+        const ordersData = response.data.data.data || [];
+        setOrders(ordersData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching profile and orders:", error.response?.data || error.message);
+        setError("Failed to load profile and orders data.");
+        setLoading(false);
+
+        if (error.response && error.response.status === 401) {
+          Cookies.remove("authToken");
+          Cookies.remove("userId");
+          window.location.href = "/login";
+        }
+      }
+    };
+
+    fetchUserProfileAndOrders();
+  }, []);
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (error) {
+  //   return <div>{error}</div>;
+
+  // }
+  const handleCancelOrder = async (orderId, orderStatus, paymentStatus) => {
+    if ((orderStatus === 1 || orderStatus === 2) && paymentStatus !== 2) {
+      try {
+        setLoading(true);
+        const token = Cookies.get('authToken');
+
+        if (!token) {
+          alert('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
+          return;
+        }
+
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/v1/orders/${orderId}`,
+          {
+            status: 5,
+            _method: 'PUT',
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+          }
+        );
+
+        if (response.data.success) {
+          toast.success('Hủy đơn hàng thành công!');
+
+          // Update the order status in the state
+          setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+              order.id === orderId ? { ...order, status: 5 } : order
+            )
+          );
+
+        } else {
+          toast.error(response.data.message || 'Không thể hủy đơn hàng. Vui lòng thử lại.');
+        }
+      } catch (error) {
+        console.error('Lỗi khi hủy đơn hàng:', error);
+        toast.error('Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert('Đơn hàng không thể hủy do trạng thái hoặc tình trạng thanh toán không hợp lệ.');
+    }
+  };
+
+
+
+
+
 
   return (
     <>
       <Header />
-      
       <div className="container">
         <div className="row">
           <div className="col-lg-12 text-center">
             <div className="breadcrumb__text">
-              <h2 className="text-danger pt-5" style={{ borderBottom: '2px solid #de0000'}}>Tài khoản của tôi</h2>
+              <h2
+                className="text-danger pt-5"
+                style={{ borderBottom: "2px solid #de0000" }}
+              >
+                Tài khoản của tôi
+              </h2>
             </div>
           </div>
         </div>
@@ -66,35 +225,70 @@ const ProfileS = () => {
       <div className="container">
         <div>
           <p>Thông tin tài khoản</p>
-          <span>Xin chào, </span> <span className="text-danger">{userInfo.fullName}</span>
+          <span>Xin chào, </span>{" "}
+          <span className="text-danger">{userInfo.fullName}</span>
         </div>
       </div>
 
       <div className="container d-flex justify-content-center pt-4">
-        <div className="col-lg-3 col-xlg-3 col-md-3">
-          <div className="card">
-            <div className="card-body profile-card">
-              <center className="mt-4">
-                <img src={userInfo.avatar} className="rounded-circle" width="50" alt="User Avatar" />
-                <h4 className="card-title mt-2">{userInfo.fullName}</h4>
-                <div className="row text-center justify-content-center">
-                  <div className="col-8">
-                    <a href="#home" className="link">
-                      <i className="icon-people" aria-hidden="true"></i>
-                      <span className="value-digit"> Đang hoạt động</span>
-                    </a>
-                  </div>
-                  <div className="col-3">
-                    <a href="#home" className="link">
-                      <i className="bi bi-bag-check"></i>
-                      <span className="value-digit"> 10</span>
-                    </a>
-                  </div>
-                </div>
-              </center>
+        <center className="mt-4">
+          <img
+            src={
+              `http://127.0.0.1:8000${userInfo.avatar}` || "default-avatar-url"
+            }
+            alt={userInfo.fullName}
+            className="rounded-circle"
+            width="100"
+            height="100"
+          />
+          <div className="position-relative d-inline-block">
+            {editMode && (
+              <label
+                htmlFor="avatarUpload"
+                className="position-absolute top-0 end-0 btn btn-light p-1 border rounded-circle shadow"
+                style={{
+                  cursor: "pointer",
+                  transform: "translate(30%, -130%)",
+                }}
+              >
+                <i className="bi bi-camera text-danger"></i>
+              </label>
+            )}
+            <input
+              id="avatarUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="d-none"
+            />
+            {avatarFile && (
+              <div className=" text-center">
+                <button
+                  className="btn btn-danger text-light"
+                  onClick={handleSaveAvatar}
+                >
+                  <i className="bi bi-cloud-upload me-2"></i>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <h4 className="card-title mt-2">{userInfo.fullName}</h4>
+          <div className="row text-center justify-content-center">
+            <div className="col-8">
+              <a href="#home" className="link">
+                <i className="icon-people" aria-hidden="true"></i>
+                <span className="value-digit"> Đang hoạt động</span>
+              </a>
+            </div>
+            <div className="col-3">
+              <a href="#home" className="link">
+                <i className="bi bi-bag-check"></i>
+                <span className="value-digit"> 10</span>
+              </a>
             </div>
           </div>
-        </div>
+        </center>
 
         <div className="col-lg-9 col-xlg-9 col-md-9">
           <div className="col-lg-12 col-xlg-12 col-md-12">
@@ -110,7 +304,9 @@ const ProfileS = () => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="example-email" className="col-md-12">Email</label>
+                      <label htmlFor="example-email" className="col-md-12">
+                        Email
+                      </label>
                       <div className="col-md-12">
                         <span>{userInfo.email}</span>
                       </div>
@@ -130,7 +326,9 @@ const ProfileS = () => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label className="col-md-12 mb-0">Vai trò người dùng</label>
+                      <label className="col-md-12 mb-0">
+                        Vai trò người dùng
+                      </label>
                       <div className="col-md-12">
                         <span>{userInfo.userRole}</span>
                       </div>
@@ -138,7 +336,11 @@ const ProfileS = () => {
                   </div>
 
                   <div>
-                    <button type="button" className="btn btn-danger text-light" onClick={toggleEditMode}>
+                    <button
+                      type="button"
+                      className="btn btn-danger text-light"
+                      onClick={toggleEditMode}
+                    >
                       {editMode ? "Hủy chỉnh sửa" : "Chỉnh sửa thông tin"}
                     </button>
                   </div>
@@ -151,74 +353,168 @@ const ProfileS = () => {
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Họ và tên</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
+                            <input
+                              type="text"
+                              className="form-control"
                               name="fullName"
-                              value={userInfo.fullName} 
-                              onChange={handleInputChange} 
+                              value={userInfo.fullName}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Email</label>
-                            <input 
-                              type="email" 
-                              className="form-control" 
+                            <input
+                              type="email"
+                              className="form-control"
                               name="email"
-                              value={userInfo.email} 
-                              onChange={handleInputChange} 
+                              value={userInfo.email}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Địa chỉ</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
+                            <input
+                              type="text"
+                              className="form-control"
                               name="address"
-                              value={userInfo.address} 
-                              onChange={handleInputChange} 
+                              value={userInfo.address}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Số điện thoại</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
+                            <input
+                              type="text"
+                              className="form-control"
                               name="phone"
-                              value={userInfo.phone} 
-                              onChange={handleInputChange} 
+                              value={userInfo.phone}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>
-                        <div className="col-lg-6">
-                          <div className="form-group">
-                            <label>Vai trò người dùng</label>
-                            <input 
-                              type="text" 
-                              className="form-control" 
-                              name="userRole"
-                              value={userInfo.userRole} 
-                              onChange={handleInputChange} 
-                            />
-                          </div>
+                        <div className="col-lg-12">
+                          <button
+                            type="button"
+                            className="btn btn-danger text-light"
+                            onClick={handleSaveChanges}
+                          >
+                            Lưu thay đổi
+                          </button>
                         </div>
                       </div>
-                      <button type="submit" className="btn btn-primary">Lưu thông tin</button>
                     </form>
                   </div>
                 )}
               </div>
             </div>
           </div>
+          {/* order user */}
+          <div className="col-lg-12 col-xlg-12 col-md-12 ">
+            <div className="card">
+              <div className="card-body">
+                <span className="text-dark fw-bold d-flex justify-content-center">Đơn hàng của bạn</span>
+
+                <div>
+                  {loading ? (
+                    <p>Loading...</p>
+                  ) : error ? (
+                    <p>{error}</p>
+                  ) : orders.length > 0 ? (
+                    <table className="table table-striped mx-2 col-lg-12 col-12 mt-4">
+                      <thead className="table-light">
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col">Mã đơn hàng</th>
+                          <th scope="col">Ngày đặt</th>
+                          <th scope="col">Trạng thái</th>
+                          <th scope="col">Tổng tiền</th>
+                          <th scope="col">Hình ảnh</th>
+                          <th scope="col">Sản phẩm</th>
+                          <th scope="col">Hành động</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orders.map((order) => (
+                          <tr key={order.id}>
+                            <td>{order.id}</td>
+                            <td>{order.order_code}</td>
+                            <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                            <td>
+                              {order.status === 1 ? 'Chờ xác nhận' :
+                                order.status === 2 ? 'Đóng gói' :
+                                  order.status === 3 ? 'Đang giao' :
+                                    order.status === 4 ? 'Đã giao' :
+                                      order.status === 5 ? 'Đã hủy' :
+                                        'Trạng thái khác'}
+                            </td>
+                            <td>{order.total.toLocaleString()} VNĐ</td>
+                            <td>
+                              {order.items.map((item) => {
+                                const primaryImage = item.product.images.find(img => img.is_primary === 1) || item.product.images[0];
+                                return (
+                                  <div key={item.id} className="mb-2">
+                                    {primaryImage ? (
+                                      <img
+                                        src={`http://127.0.0.1:8000${primaryImage.image_url}`}
+                                        alt={item.product.name}
+                                        style={{ width: '190px', height: '50px', objectFit: 'cover' }}
+                                      />
+                                    ) : (
+                                      <span>No image available</span>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </td>
+                            <td>
+                              {order.items.map((item) => (
+                                <div key={item.id}>
+                                  {item.product.name} (SL: {item.quantity})
+                                </div>
+                              ))}
+                            </td>
+                            <td>
+  {order.status === 5 ? (
+    <span className="text-muted">Đã hủy</span>
+  ) : (order.status === 1 || order.status === 2) && order.payment_status !== 2 ? (
+    <button
+      className="btn btn-danger"
+      onClick={() => handleCancelOrder(order.id, order.status, order.payment_status)}
+    >
+      Hủy đơn hàng
+    </button>
+  ) : (
+    <span className="text-warning">
+      {order.payment_status === 2 ? 'Không thể hủy do đã thanh toán' : 'Không được hủy'}
+    </span>
+  )}
+</td>
+
+
+
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+
+                  ) : (
+                    <p className="text-center">Bạn chưa có đơn hàng nào.</p>
+                  )}
+                  <ToastContainer />
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
       <Footer />
     </>
   );

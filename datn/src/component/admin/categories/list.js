@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
+import { FaDownload, FaTrashAlt } from "react-icons/fa";
 
 const ListCategory = () => {
 
@@ -79,7 +80,7 @@ const fetchCategories = async () => {
             setError("Không thể xóa danh mục. Vui lòng thử lại sau.");
         } finally {
             setCategoryToDelete(null);
-        }
+}
     };
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
@@ -133,7 +134,7 @@ const fetchCategories = async () => {
                                                 <span className="input-group-text bg-primary text-white">
                                                     <i className="fa-solid fa-magnifying-glass"></i>
                                                 </span>
-                                            </div>
+</div>
                                         </div>
                                     </div>
 
@@ -173,7 +174,7 @@ const fetchCategories = async () => {
                                                                         src={`http://127.0.0.1:8000${category.imageUrl}`}
                                                                         alt={category.name}
                                                                         style={{
-                                                                            width: "50px",
+width: "50px",
                                                                             height: "50px",
                                                                             borderRadius: "5px",
                                                                             objectFit: "cover",
@@ -193,22 +194,22 @@ const fetchCategories = async () => {
                                                                     <div className="d-flex gap-2">
                                                                         <Link
                                                                             to={`/admin/category/edit/${category.id}`}
-                                                                            className="btn btn-primary"
-                                                                        >
-                                                                            Chỉnh sửa
+                                                                            className="btn btn-outline-dark "
+                                                                            >
+                                                                            <i className="fa-solid fa-pen-to-square"></i>
                                                                         </Link>
                                                                         <button
                                                                             onClick={() => confirmDelete(category.id)}
-                                                                            className="btn btn-danger"
+                                                                            className="btn btn-outline-dark mx-1"
                                                                         >
-                                                                            Xóa
+                                                                            <FaTrashAlt />
                                                                         </button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
                                                             {/* Hiển thị danh mục con */}
                                                             {category.children && category.children.length > 0 && (
-                                                                category.children.map((child, childIndex) => (
+category.children.map((child, childIndex) => (
                                                                     <tr key={child.id}>
                                                                         <td>{`${index + 1}.${childIndex + 1}`}</td>
                                                                         <td>Danh mục con của {category.name}</td>
@@ -238,15 +239,15 @@ const fetchCategories = async () => {
                                                                             <div className="d-flex gap-2">
                                                                                 <Link
                                                                                     to={`/admin/category/edit/${child.id}`}
-                                                                                    className="btn btn-primary"
+                                                                                    className="btn btn-outline-dark "
                                                                                 >
-                                                                                    Chỉnh sửa
+                                                                                <i className="fa-solid fa-pen-to-square"></i>
                                                                                 </Link>
                                                                                 <button
                                                                                     onClick={() => confirmDelete(child.id)}
-                                                                                    className="btn btn-danger"
+                                                                                    className="btn btn-outline-dark mx-1"
                                                                                 >
-                                                                                    Xóa
+                                                                                    <FaTrashAlt />
                                                                                 </button>
                                                                             </div>
                                                                         </td>
@@ -283,7 +284,7 @@ const fetchCategories = async () => {
                                                     </button>
                                                 </li>
                                             ))}
-                                        </ul> */}
+</ul> */}
                                     </div>
                                 </div>
                             </div>

@@ -1,154 +1,162 @@
-// src/Contact.js
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import Footer from "../home/footer";
 import Header from "../home/header";
 import Cart from "../../../assets/img/cart/cart.png";
 import Cart1 from "../../../assets/img/cart/cart1.png";
+import blog1 from "../../../assets/img/hero/blog1.jpg";
+import { getPostById } from "../../../services/admin/posts";
 
 const BlogDetails = () => {
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await getPostById(id);
+        setPost(response.data);
+      } catch (error) {
+        setError("Không thể tải bài viết");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
+
+  if (loading)
+    return (
+      <div className="loading-spinner">
+        <div className="spinner"></div>
+        <p>Đang tải bài viết...</p>
+      </div>
+    );
+
+  if (error) return <p className="error-message">{error}</p>;
+
   return (
     <>
       <Header />
-
-      <section className="blog-details spad">
+      <section className="hero hero-normal" style={{ paddingTop: "100px" }}>
         <div className="container">
           <div className="row">
-          <div className="col-lg-4 col-md-5 order-md-1 order-2">
-  <div className="blog__sidebar">
-    {/* Search Section */}
-    <div className="card mb-4">
-      <div className="card-body">
-        <h4 className="card-title">Tìm kiếm</h4>
-        <div className="blog__sidebar__search">
-          <form action="#">
-            <div className="input-group">
-              <input type="text" className="form-control" placeholder="Tìm kiếm xe đạp..." />
-              <div className="input-group-append">
-                <button className="btn btn-outline-secondary" type="submit">
-                  <span className="icon_search"></span>
-                </button>
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
               </div>
             </div>
-          </form>
-        </div>
-      </div>
-    </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#">
+                    <input type="text" placeholder="What do you need?" />
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div></div>
+      </section>
 
-    {/* Category Section */}
-    <div className="card mb-4">
-      <div className="card-body">
-        <h4 className="card-title">Danh mục</h4>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">
-            <a href="#">Tất cả</a>
-          </li>
-          <li className="list-group-item">
-            <a href="#">Xe Đạp Địa Hình (20)</a>
-          </li>
-          <li className="list-group-item">
-            <a href="#">Xe Đạp Đua (5)</a>
-          </li>
-          <li className="list-group-item">
-            <a href="#">Xe Đạp Touring (9)</a>
-          </li>
-          <li className="list-group-item">
-            <a href="#">Xe Đạp Cũ (10)</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    {/* Recent News Section */}
-    <div className="card mb-4">
-      <div className="card-body">
-        <h4 className="card-title">Tin tức gần đây</h4>
-        <div className="blog__sidebar__recent">
-          <a href="#" className="blog__sidebar__recent__item d-flex mb-3">
-            <div className="blog__sidebar__recent__item__pic">
-              <img src={Cart1} width={100} height={65} alt="" className="img-fluid" />
-            </div>
-            <div className="blog__sidebar__recent__item__text pl-3">
-              <h6>Những mẫu xe đạp địa hình<br />Được ưa chuộng năm 2024</h6>
-              <span>05 THÁNG 09, 2024</span>
-            </div>
-          </a>
-          <a href="#" className="blog__sidebar__recent__item d-flex mb-3">
-            <div className="blog__sidebar__recent__item__pic">
-              <img src={Cart1} width={100} height={65} alt="" className="img-fluid" />
-            </div>
-            <div className="blog__sidebar__recent__item__text pl-3">
-              <h6>Top 5 xe đạp thể thao<br />Đáng mua nhất năm</h6>
-              <span>03 THÁNG 09, 2024</span>
-            </div>
-          </a>
-          <a href="#" className="blog__sidebar__recent__item d-flex mb-3">
-            <div className="blog__sidebar__recent__item__pic">
-              <img src={Cart1} width={100} height={65} alt="" className="img-fluid" />
-            </div>
-            <div className="blog__sidebar__recent__item__text pl-3">
-              <h6>Hướng dẫn bảo trì xe đạp<br />Đúng cách</h6>
-              <span>01 THÁNG 09, 2024</span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    {/* Tags Section */}
-    <div className="card mb-4">
-      <div className="card-body">
-        <h4 className="card-title">Tìm kiếm theo</h4>
-        <div className="blog__sidebar__item__tags">
-          <a href="#" className="badge badge-dark mr-2">Xe Đạp Địa Hình</a>
-          <a href="#" className="badge badge-dark mr-2">Xe Đạp Đua</a>
-          <a href="#" className="badge badge-dark mr-2">Xe Đạp Touring</a>
-          <a href="#" className="badge badge-dark mr-2">Xe Đạp Điện</a>
-          <a href="#" className="badge badge-dark mr-2">Xe Đạp Gấp</a>
-          <a href="#" className="badge badge-dark mr-2">Xe Đạp Cũ</a>
-        </div>
-      </div>
+      <section className="blog-details">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4 col-md-5 order-md-1 order-2">
+              <div className="blog__sidebar">
+              <div className="card mb-4 search-card">
+  <div className="card-body">
+    <h4 className="card-title search-title">Tìm kiếm</h4>
+    <div className="search-box2">
+      <input type="text" placeholder="Tìm kiếm ở đây..." />
+      <button><i className="fa fa-search"></i></button>
     </div>
   </div>
 </div>
 
+
+                <div className="card mb-4">
+                  <div className="card-body">
+                    <h4 className="card-title">Tìm kiếm theo</h4>
+                    <div className="blog__sidebar__item__tags">
+                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Địa Hình</a>
+                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Đua</a>
+                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Touring</a>
+                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Điện</a>
+                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Gấp</a>
+                      <a href="#" className="badge badge-dark mr-2">Xe Đạp Cũ</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card mb-4">
+                  <div className="card-body">
+                    <h4 className="card-title">Tin tức gần đây</h4>
+                    <div className="blog__sidebar__recent">
+                      {/* Recent news items */}
+                      <a href="#" className="blog__sidebar__recent__item d-flex mb-3">
+                        <div className="blog__sidebar__recent__item__pic">
+                          <img src={Cart1} width={100} height={65} alt="" className="img-fluid" />
+                        </div>
+                        <div className="blog__sidebar__recent__item__text pl-3">
+                          <h6>Những mẫu xe đạp địa hình<br />Được ưa chuộng năm 2024</h6>
+                          <span>05 THÁNG 09, 2024</span>
+                        </div>
+                      </a>
+                      {/* Add more recent news items as needed */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="col-lg-8 col-md-7 order-md-1 order-1">
-              <div className="blog__details__text">
-                <img src={Cart} alt="" />
-                <div className="col-lg-6">
+              {post && (
+                <div className="blog__details__text">
+                  <img
+                    src={`http://127.0.0.1:8000${post.featured_image}`}
+                    alt={post.title}
+                    className="featured-image"
+                  />
                   <div className="blog__details__widget">
-                    <ul>
-                      <li>
-                        <span>Danh mục:</span> Xe Đạp
-                      </li>
-                    </ul>
+                    <ul className="pl-0">
+                      <li><span>Danh mục:</span> {post.category || "Xe Đạp"}</li>
+                    </ul> </div>
+                  <h3>{post.title}</h3>
+                  <div className="blog-meta">
+                    <span><strong>Ngày đăng:</strong> {new Date(post.created_at).toLocaleDateString()}</span>
+                    <span><strong>Tác giả:</strong> {post.user?.name || "N/A"}</span>
                   </div>
+                  <p>{post.content}</p>
                 </div>
-                <h3>
-                  Khung cửa sổ góc tạo ra một không gian nghỉ ngơi trong không gian lớn.
-                </h3>
-                <p>
-                  Xe đạp địa hình phiên bản 2025 được nâng cấp với thiết kế hiện đại hơn, 
-                  phù hợp cho các chuyến đi đường dài. Mẫu xe này nổi bật với các tính năng tối ưu, 
-                  giúp người dùng dễ dàng chinh phục mọi địa hình khó khăn.
-                </p>
-                <p>
-                  Tích hợp công nghệ mới, mẫu xe này đảm bảo sự thoải mái và an toàn cho người sử dụng. 
-                  Khung xe chắc chắn, nhẹ, mang lại trải nghiệm lái êm ái trên các cung đường.
-                </p>
-                <h4>Hà Nội, ngày 7 tháng 9 năm 2024</h4>
-                <p>
-                  <b>
-                    Công ty Xe Đạp Việt Nam ra mắt phiên bản mới của mẫu xe địa hình năm 2025.
-                  </b>
-                </p>
-              </div>
-              <div className="blog__details__content">
-                <div className="row">
-                  <div className="col-lg-6">
-                    <div className="blog__details__author"></div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -164,82 +172,167 @@ const BlogDetails = () => {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-4 col-md-4 col-sm-6">
-              <div className="blog__item">
-                <div className="blog__item__pic">
-                  <img src={Cart} alt="" />
-                </div>
-                <div className="blog__item__text">
-                  <ul>
-                    <li>
-                      <i className="fa fa-calendar-o"></i> 04 THÁNG 05, 2024
-                    </li>
-                    <li>
-                      <i className="fa fa-comment-o"></i> 5
-                    </li>
-                  </ul>
-                  <h5>
-                    <a href="#">Mẹo chọn xe đạp tốt nhất cho bạn</a>
-                  </h5>
-                  <p>
-                    Khám phá các mẹo chọn xe đạp giúp bạn tìm được chiếc xe phù hợp với nhu cầu của mình.
-                  </p>
-                </div>
-              </div>
+            {/* Related blog items */}
+            <div className="col-lg-4 col-md-4 col-sm-4">
+            <div className="col-lg-12 pb-4 row" key={post.id}>
+                    <div className="col-lg-4 p-0">
+                      <img
+                        src={`http://127.0.0.1:8000${post.featured_image}`}
+                        alt={post.title}
+                        style={{
+                          width: "auto",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </div>
+                    <div className="col-lg-8 p-0 pl-3 text-dark">
+                      <h6 className="title-color-blog">
+                        <Link to={`/blogdetail/${post.id}`}>{post.title}</Link>
+                      </h6>
+                      <ul className="ps-0 mb-0 list-unstyled">
+                        <span>
+                          {new Date(post.created_at).toLocaleDateString("vi-VN")}
+                        </span>
+                      </ul>
+                    </div>
+                  </div>
             </div>
-            <div className="col-lg-4 col-md-4 col-sm-6">
-              <div className="blog__item">
-                <div className="blog__item__pic">
-                  <img src={Cart} alt="" />
-                </div>
-                <div className="blog__item__text">
-                  <ul>
-                    <li>
-                      <i className="fa fa-calendar-o"></i> 02 THÁNG 05, 2024
-                    </li>
-                    <li>
-                      <i className="fa fa-comment-o"></i> 8
-                    </li>
-                  </ul>
-                  <h5>
-                    <a href="#">Top 10 xe đạp nổi bật nhất năm</a>
-                  </h5>
-                  <p>
-                    Xem qua danh sách những chiếc xe đạp nổi bật và được yêu thích nhất trong năm nay.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6">
-              <div className="blog__item">
-                <div className="blog__item__pic">
-                  <img src={Cart} alt="" />
-                </div>
-                <div className="blog__item__text">
-                  <ul>
-                    <li>
-                      <i className="fa fa-calendar-o"></i> 01 THÁNG 05, 2024
-                    </li>
-                    <li>
-                      <i className="fa fa-comment-o"></i> 7
-                    </li>
-                  </ul>
-                  <h5>
-                    <a href="#">Các loại xe đạp điện đáng mua nhất năm</a>
-                  </h5>
-                  <p>
-                    Xem qua các loại xe đạp điện tốt nhất và tiết kiệm nhất hiện nay.
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* Add more related blog items as needed */}
           </div>
         </div>
-        </section>
+      </section>
 
-<Footer />
-</>
-);
+      <Footer />
+
+      <style>
+        {`
+          .blog-details {
+            padding: 30px 0;
+          }
+
+          .featured-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+          }
+
+          .featured-image:hover {
+            transform: scale(1.02);
+          }
+
+          .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px 0;
+          }
+
+          .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin { 0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          .error-message {
+            text-align: center;
+            color: #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+          }
+
+          .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #777;
+            margin: 15px 0;
+            flex-wrap: wrap;
+          }
+
+          .blog-meta span {
+            background: #f9f9f9;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 5px;
+          }
+ /* Phần thẻ card */
+    .search-card {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Tiêu đề */
+    .search-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* Hộp tìm kiếm */
+    .search-box2 {
+      display: flex;
+      position: relative;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+    }
+
+    .search-box2 input {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .search-box2 input::placeholder {
+      color: #aaa;
+    }
+
+    .search-box2 button {
+      padding: 10px 15px;
+      background-color: #7fad39;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-box2 button:hover {
+      background-color: #68a332;
+    }
+
+    .search-box2 button i {
+      font-size: 16px;
+    }
+
+        `}
+      </style>
+    </>
+  );
 };
 
 export default BlogDetails;

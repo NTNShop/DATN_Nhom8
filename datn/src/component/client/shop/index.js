@@ -23,9 +23,9 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [cart, setCart] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(null);
-  const itemsPerPage = 9;
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
 
   // Format price to VND currency
   const formatPrice = (price) => {
@@ -52,25 +52,25 @@ const Product = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-        const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
-        if (response.data?.data?.data) {
-            const allProducts = response.data.data.data;
+      const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
+      if (response.data?.data?.data) {
+        const allProducts = response.data.data.data;
 
-            // Lọc sản phẩm có trạng thái khác "out_of_stock"
-            const availableProducts = allProducts.filter(product => product.status !== 'out_of_stock');
+        // Lọc sản phẩm có trạng thái khác "out_of_stock"
+        const availableProducts = allProducts.filter(product => product.status !== 'out_of_stock');
 
-            setProducts(availableProducts); // Lưu trữ sản phẩm hợp lệ
-            setFilteredProducts(availableProducts); // Cập nhật danh sách hiển thị
-        } else {
-            throw new Error("Định dạng dữ liệu không hợp lệ");
-        }
+        setProducts(availableProducts); // Lưu trữ sản phẩm hợp lệ
+        setFilteredProducts(availableProducts); // Cập nhật danh sách hiển thị
+      } else {
+        throw new Error("Định dạng dữ liệu không hợp lệ");
+      }
     } catch (error) {
-        console.error("Lỗi khi tải sản phẩm:", error);
-        setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+      console.error("Lỗi khi tải sản phẩm:", error);
+      setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
 
   useEffect(() => {
@@ -106,20 +106,15 @@ const Product = () => {
 
     setFilteredProducts(sorted);
   };
-
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
   // Clear filters
   const clearFilter = () => {
     setPriceRange([0, 1000000]);
     setFilteredProducts(products);
     setCurrentPage(1);
   };
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   // Hàm xử lý khi chọn danh mục
   const handleCategorySelect = (categoryId, categoryName) => {
     const filtered = products.filter((product) => product.category_id === categoryId);
@@ -130,10 +125,55 @@ const Product = () => {
     setFilteredProducts(products); // Hiển thị toàn bộ sản phẩm
     setCurrentCategory(null); // Xóa danh mục hiện tại
   };
-
+  // Format tiền tệ
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
   return (
     <>
       <Header />
+      <section className="hero hero-normal" style={{ paddingTop: "100px" }}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#">
+                    <input type="text" placeholder="Bạn cần gì?" />
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section
         className="breadcrumb-section set-bg"
         style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
@@ -152,7 +192,6 @@ const Product = () => {
           </div>
         </div>
       </section>
-
       <section className="product spad">
         <div className="container">
           <div className="row pt-5">
@@ -343,7 +382,7 @@ const Product = () => {
                               <h5>
                                 <Link to={`/product-details/${product.id}`}>{product.name}</Link>
                               </h5>
-                              <h5>{product.price.toLocaleString()}đ</h5>
+                              <h5>{formatCurrency(parseFloat(product.price))}VND</h5>
                             </div>
                           </div>
                         </div>

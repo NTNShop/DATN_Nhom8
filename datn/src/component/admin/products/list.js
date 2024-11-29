@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
+import { FaDownload, FaTrashAlt } from "react-icons/fa";
 
 const ListProduct = () => {
     const formatPrice = (price) => {
@@ -79,7 +80,7 @@ const ListProduct = () => {
             setShowDeleteModal(false);
             setShowSuccessModal(true);
         } catch (error) {
-            console.error("Lỗi khi xóa sản phẩm:", error);
+console.error("Lỗi khi xóa sản phẩm:", error);
             setError("Không thể xóa sản phẩm. Vui lòng thử lại.");
         }
     };
@@ -176,7 +177,7 @@ const ListProduct = () => {
                                                                 {status}
                                                             </li>
                                                         ))}
-                                                    </ul>
+</ul>
                                                 )}
                                             </div>
 
@@ -217,7 +218,7 @@ const ListProduct = () => {
                                                             <td>{formatPrice(product.price)}</td>
                                                             <td>
                                                                 {product.images.length > 0 ? (
-                                                                    <img
+<img
                                                                         src={`http://127.0.0.1:8000${product.images[0].image_url}`}
                                                                         alt={product.name}
                                                                         style={{
@@ -245,15 +246,15 @@ const ListProduct = () => {
                                                                 <div className="d-flex gap-2">
                                                                     <Link
                                                                         to={`/admin/product/edit/${product.id}`}
-                                                                        className="btn btn-primary"
-                                                                    >
-                                                                        Chỉnh sửa
+                                                                        className="btn btn-outline-dark "
+                                >
+                                  <i className="fa-solid fa-pen-to-square"></i>
                                                                     </Link>
                                                                     <button
                                                                         onClick={() => confirmDelete(product.id)}
-                                                                        className="btn btn-danger"
-                                                                    >
-                                                                        Xóa
+                                                                        className="btn btn-outline-dark mx-1"
+>
+<FaTrashAlt />
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -301,7 +302,7 @@ const ListProduct = () => {
                 <Footer />
 
                 {/* Modal xác nhận xóa */}
-                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+<Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Xác nhận xóa</Modal.Title>
                     </Modal.Header>

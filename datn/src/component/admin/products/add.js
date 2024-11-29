@@ -5,6 +5,8 @@ import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useNavigate, } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -87,7 +89,7 @@ const AddProduct = () => {
             } catch (error) {
                 console.error("Error fetching categories and brands:", error);
             }
-        };
+};
 
         fetchCategoriesAndBrands();
     }, []);
@@ -151,18 +153,20 @@ const AddProduct = () => {
             const response = await axios.post('http://127.0.0.1:8000/api/v1/products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                }
+                },
             });
 
             if (response.data.status === 'success') {
-                alert('Thêm sản phẩm thành công');
-                // Reset form or redirect
-                navigate("/admin/product");
+                toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+                setTimeout(() => {
+                    navigate('/admin/product'); // Điều hướng sau 2 giây
+                }, 2000);
             }
         } catch (error) {
             console.error("Error response:", error.response?.data);
-            alert(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
+            toast.error(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
         }
+
     };
 
 
@@ -178,7 +182,7 @@ const AddProduct = () => {
         if (!product.images || product.images.length === 0) errors.images = "Ảnh là bắt buộc";
         if (!product.stock) {
             errors.stock = "Số lượng là bắt buộc";
-        } else if (isNaN(product.stock) || product.stock < 0) {
+} else if (isNaN(product.stock) || product.stock < 0) {
             errors.stock = "Số lượng phải là số không âm";
         }
 
@@ -232,7 +236,7 @@ const AddProduct = () => {
                                                 name="category_id"
                                                 value={product.category_id}
                                                 onChange={handleInputChange}
-                                                className="form-control-line border-input"
+className="form-control-line border-input"
                                             >
                                                 <option value="">Chọn danh mục</option>
                                                 {categories.map((category) => (
@@ -273,7 +277,7 @@ const AddProduct = () => {
                                                     </option>
                                                 ))}
                                             </select>
-                                            {errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
+{errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
                                         </div>
                                     </div>
 
@@ -318,14 +322,14 @@ const AddProduct = () => {
                                             className="form-control-line border-input"
 
                                         />
-                                        {errors.stock && <span className="error">{errors.stock}</span>}
+                                        {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                     </div>
 
 
                                     {/* Phần thêm variant màu sắc */}
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
-                                        <div className="col-md-12">
+<div className="col-md-12">
                                             <div className="d-flex gap-2 mb-2">
                                                 <input
                                                     type="text"
@@ -367,7 +371,7 @@ const AddProduct = () => {
                                                             Xóa
                                                         </button>
                                                     </div>
-                                                ))}
+))}
                                             </div>
                                         </div>
                                     </div>
@@ -413,7 +417,7 @@ const AddProduct = () => {
                                                 className="form-control"
                                             >
                                                 <option value="6">6 tháng</option>
-                                                <option value="12">12 tháng</option>
+<option value="12">12 tháng</option>
                                             </select>
                                         </div>
                                     </div>
@@ -459,12 +463,15 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            
+
+</div>
     );
 };
 

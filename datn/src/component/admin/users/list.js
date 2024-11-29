@@ -4,7 +4,7 @@ import { getUsers, deleteUser } from "../../../services/admin/users";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaDownload, FaTrashAlt } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +24,10 @@ const ListUser = () => {
     const fetchUsers = async () => {
       try {
         const data = await getUsers();
-        setUsers(data);
-        setFilteredUsers(data); // Thiết lập người dùng cho bộ lọc ban đầu
+        // Sắp xếp danh sách theo thứ tự giảm dần của ID
+        const sortedData = data.sort((a, b) => b.id - a.id);
+        setUsers(sortedData);
+        setFilteredUsers(sortedData); // Thiết lập danh sách ban đầu
       } catch (error) {
         setError("Không thể tải danh sách người dùng.");
         console.error("Failed to load users:", error);
@@ -34,12 +36,30 @@ const ListUser = () => {
     fetchUsers();
   }, []);
 
-  // Handle Search Functionality (Chỉ tìm kiếm theo full_name)
+  const [sortField, setSortField] = useState("id");
+  const [sortOrder, setSortOrder] = useState("desc"); // 'asc' hoặc 'desc'
+
+  // Hàm sắp xếp
+  const handleSort = (field) => {
+    const newSortOrder =
+      sortField === field && sortOrder === "asc" ? "desc" : "asc";
+    setSortField(field);
+    setSortOrder(newSortOrder);
+
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+      if (newSortOrder === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    setFilteredUsers(sortedUsers);
+  };
   useEffect(() => {
     const filtered = users.filter(
       (user) =>
-        user.full_name &&
-        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+        user.phone &&
+        user.phone.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
@@ -137,12 +157,12 @@ const ListUser = () => {
                     <div />
                     {/* Tìm kiếm */}
                     <div className="de-search text-start">
-                      <p className="sl-box-title">Từ khóa</p>
+                      <p className="sl-box-title">Số điện thoại</p>
                       <div className="input-group mb-3">
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Nhập tên người dùng"
+                          placeholder="Nhập số điện thoại"
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <span className="input-group-text bg-primary text-white">
@@ -151,17 +171,13 @@ const ListUser = () => {
                       </div>
                     </div>
 
-                    {/* Chọn trạng thái */}
                     <div className="d-flex justify-content-start gap-4 mb-3">
                       <div className="position-relative w-100">
-                        {/* Trạng thái hoạt động label and filter icon */}
                         <div className="d-flex align-items-center mb-2">
                           <span className="me-2 text-secondary">
                             Trạng thái hoạt động
                           </span>
                         </div>
-
-                        {/* Input field with chevron icon */}
                         <div className="input-group">
                           <input
                             type="text"
@@ -181,11 +197,10 @@ const ListUser = () => {
                           ></span>
                         </div>
 
-                        {/* Dropdown list */}
                         {showStatus && (
                           <ul
                             className="dropdown-menu show mt-2 position-absolute w-100"
-                            style={{ zIndex: 1050 }} // Ensures it appears on top
+                            style={{ zIndex: 1050 }}
                           >
                             {["Tất cả", "Hoạt động", "Không hoạt động"].map(
                               (status) => (
@@ -208,42 +223,102 @@ const ListUser = () => {
                   </div>
 
                   {error && <div className="alert alert-danger">{error}</div>}
-
                   <div className="table-responsive">
                     <table className="table table-bordered mt-2">
                       <thead>
                         <tr className="table-light">
-                          <th className="border-top-0">ID</th>
-                          <th className="border-top-0">Họ và tên</th>
-                          <th className="border-top-0">Avatar</th> 
-                          <th className="border-top-0">Email</th>
-                          <th className="border-top-0">Số điện thoại</th>
-                          <th className="border-top-0">Địa chỉ</th>
-                          <th className="border-top-0">Vai Trò</th>
-                          <th className="border-top-0">Trạng thái</th>
-                          <th className="border-top-0">Thao tác</th>
+                          <th
+                            className="border-top-0 font-weight-bold"
+                            onClick={() => handleSort("id")}
+                            style={{ cursor: "pointer" }}
+                          >
+                            #
+                            {sortField === "id" && (
+                              <i
+                                className={`ms-2 bi ${
+                                  sortOrder === "asc"
+                                    ? "bi-sort-up"
+                                    : "bi-sort-down"
+                                }`}
+                              ></i>
+                            )}
+                          </th>
+
+                          <th className="border-top-0 font-weight-bold">
+                            Họ và tên
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Avatar
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Email
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Số điện thoại
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Địa chỉ
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Vai Trò
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Trạng thái
+                          </th>
+                          <th className="border-top-0 font-weight-bold">
+                            Thao tác
+                          </th>
                         </tr>
                       </thead>
+
                       <tbody>
                         {currentUsers.length > 0 ? (
                           currentUsers.map((user, index) => (
                             <tr key={index}>
                               <td>{user.id}</td>
-                              <td>{user.full_name}</td>
                               <td>
+                                <div
+                                  className="text-ellipsis"
+                                  title={user.full_name}
+                                >
+                                  {user.full_name}
+                                </div>
+                              </td>
+                              <td>
+                                <div>
+                                  
                                 <img
-                                  src={user.avatar || "default-avatar-url"} 
-                                  alt={user.full_name}
+                                  src={
+                                    `http://127.0.0.1:8000${user.avatar}` ||
+                                    "default-avatar-url"
+                                  }
                                   style={{
                                     width: "50px",
                                     height: "50px",
                                     borderRadius: "50%",
                                   }}
                                 />
+                                </div>
                               </td>
-                              <td>{user.email}</td>
+                              <td>
+                                <div
+                                  className="text-ellipsis"
+                                  title={user.email}
+                                >
+                                  {user.email}
+                                </div>
+                              </td>
+
                               <td>{user.phone}</td>
-                              <td>{user.address}</td>
+                              <td>
+                                <div
+                                  className="text-ellipsis"
+                                  title={user.address}
+                                >
+                                  {user.address}
+                                </div>
+                              </td>
+
                               <td>{user.role}</td>
                               <td
                                 className={`text-center ${
@@ -262,13 +337,21 @@ const ListUser = () => {
                                   : "Không hoạt động"}
                               </td>
 
-                              {/* Avatar Image */}
-                             
-
-                              {/* Action Button */}
                               <td>
+                                <Link
+                                  to={`/users/${user.id}`}
+                                  className="btn btn-outline-dark mx-1"
+                                >
+                                  <i className="fa-solid fa-eye"></i>
+                                </Link>
+                                <Link
+                                  to={`/admin/editUser/${user.id}`}
+                                  className="btn btn-outline-dark "
+                                >
+                                  <i className="fa-solid fa-pen-to-square"></i>
+                                </Link>
                                 <button
-                                  className="btn btn-danger"
+                                  className="btn btn-outline-dark mx-1"
                                   onClick={() => handleDelete(user.id)}
                                 >
                                   <FaTrashAlt />

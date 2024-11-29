@@ -1,16 +1,132 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link } from "react-router-dom"; 
 import Header from '../home/header';
 import Footer from '../home/footer';
-import { Link } from 'react-router-dom';
 import banner from "../../../assets/img/hero/banner2.jpg";
-
+import { ContactService, contactValidation } from '../../../services/client/Contact';
 const Contact = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        message: ''
+    });
 
+    const [errors, setErrors] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        message: ''
+    });
+
+    const [successMessage, setSuccessMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        // Clear error when user starts typing
+        setErrors(prev => ({
+            ...prev,
+            [name]: ''
+        }));
+    };
+
+    const validateForm = () => {
+        const newErrors = {
+            name: contactValidation.validateName(formData.name),
+            phone: contactValidation.validatePhone(formData.phone),
+            email: contactValidation.validateEmail(formData.email),
+            message: contactValidation.validateMessage(formData.message)
+        };
+
+        setErrors(newErrors);
+        return !Object.values(newErrors).some(error => error !== "");
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!validateForm() || isSubmitting) return;
+
+        setIsSubmitting(true);
+        try {
+            await ContactService.createContact(formData);
+            setSuccessMessage("Đã gửi phản hồi, cảm ơn bạn đã đóng góp ý kiến");
+            
+            // Reset form
+            setFormData({
+                name: '',
+                phone: '',
+                email: '',
+                message: ''
+            });
+
+            // Clear success message after 5 seconds
+            setTimeout(() => setSuccessMessage(''), 5000);
+        } catch (error) {
+            setErrors(prev => ({
+                ...prev,
+                submit: error.message
+            }));
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+    const toggleCategories = () => {
+      setIsCategoriesOpen(!isCategoriesOpen);
+    };
     return (
         <>
-          <Header />
+            <Header />
+            <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#">
+                    <input type="text" placeholder="Bạn cần gì?" />
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
             {/* Breadcrumb Section Begin */}
-            <section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+<section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12 text-center">
@@ -25,37 +141,71 @@ const Contact = () => {
                     </div>
                 </div>
             </section>
-
             {/* Breadcrumb Section End */}
-{/* Contact Form Begin */}
-<div className="contact-form spad">
+
+            {/* Contact Form Begin */}
+            <div className="contact-form spad">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12">
-                            <div className="contact__form__title">
-                                <h2>Để lại tin nhắn</h2>
-                            </div>
+                            <h2>Để lại tin nhắn</h2>
+                            {successMessage && (
+                                <div className="alert alert-success text-center">{successMessage}</div>
+                            )}
+                            {errors.submit && (
+                                <div className="alert alert-danger text-center">{errors.submit}</div>
+                            )}
                         </div>
                     </div>
-                    <form action="#">
+                    <form onSubmit={handleSubmit} noValidate>
                         <div className="row">
-                            <div className="col-lg-6 col-md-6">
-                                <input type="text" placeholder="Họ và tên" />
+                            <div className="col-lg-12 col-md-12">
+                                <input type="text" name='name' placeholder="Họ và tên" value={formData.name} onChange={handleChange} className={errors.name ? 'is-invalid' : ''} required />
+                                {errors.name && <p className="text-danger">{errors.name}</p>}
                             </div>
                             <div className="col-lg-6 col-md-6">
-                                <input type="text" placeholder="Email" />
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    placeholder="Số điện thoại"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    className={errors.phone ? 'is-invalid' : ''}
+                                    pattern="[0-9]{10}" 
+                                    title="Số điện thoại phải là 10 chữ số."
+                                    required
+                                />
+                                {errors.phone && <p className="text-danger">{errors.phone}</p>}
+                            </div>
+                            <div className="col-lg-6 col-md-6">
+                                <input type="text" placeholder="Email" name="email" 
+                                value={formData.email}
+                                onChange={handleChange}
+                                className={errors.email ? 'is-invalid' : ''}
+                                 required />
+                                {errors.email && <p className="text-danger">{errors.email}</p>}
                             </div>
                             <div className="col-lg-12 text-center">
-                                <textarea placeholder="Lời nhắn"></textarea>
-                                <button type="submit" className="site-btn">Gửi</button>
+                                <textarea placeholder="Lời nhắn" name="message" 
+                                value={formData.message}
+                                onChange={handleChange}
+                                className={errors.message ? 'is-invalid' : ''}
+                                 required></textarea>
+                                {errors.message && <p className="text-danger">{errors.message}</p>}
+                                <button 
+                                type="submit" className="site-btn"
+                                disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? 'Đang gửi...' : 'Gửi'}
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
             {/* Contact Form End */}
-            {/* Contact Section Begin */}
-            <section className="contact spad">
+{/* Contact Section Begin */}
+<section className="contact spad">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-3 col-md-3 col-sm-6 text-center">
@@ -94,7 +244,7 @@ const Contact = () => {
             {/* Map Begin */}
             <div className="map">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.732825072662!2d105.74000587484636!3d10.03889199006856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08866bfd1b2b9%3A0xdf03e748a7072048!2zNTAgxJAuIE5ndXnhu4VuIFbEg24gTGluaCwgTG9uZyBIb8OgLCBOaW5oIEtp4buBdSwgQ-G6p24gVGjGoSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1726290869193!5m2!1svi!2s"
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.732825072662!2d105.74000587484636!3d10.03889199006856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08866bfd1b2b9%3A0xdf03e748a7072048!2zNTAgxJAuIE5ndXnhu4VuIFbEg24gTGluaCwgTG9uZyBIb8OgLCBOaW5oIEtp4buBdSwgQ-G6p24gVGjGoSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1726290869193!5m2!1svi!2s"
                     height="500"
                     style={{ border: 0 }}
                     allowFullScreen=""
@@ -108,19 +258,16 @@ const Contact = () => {
                         <h4>Cần thơ</h4>
                         <ul>
                             <li>SĐT: 0975.643.777</li>
-                            <li>50, Nguyễn Văn Linh, phường An Khánh, quận Ninh Kiều, TP. Cần Thơ</li>
+<li>50, Nguyễn Văn Linh, phường An Khánh, quận Ninh Kiều, TP. Cần Thơ</li>
                         </ul>
                     </div>
                 </div>
             </div>
             {/* Map End */}
 
-            
             <Footer />
         </>
     );
 };
-
-
 
 export default Contact;

@@ -79,7 +79,7 @@ const Home = () => {
 
   return (
     <div>
-     <Header/>
+<Header/>
      
         {/* <section className="header sticky">
           <div className="khungmenu">
@@ -139,7 +139,7 @@ const Home = () => {
             <b>TRANG CHỦ BIKESCHOOL</b>
           </div>
           <div className="tieudecona1">
-            Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn bắt đầu! <br />
+Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn bắt đầu! <br />
             Là những người đam mê đạp xe, chúng tôi hiểu được niềm vui và sự tự do khi đạp xe trên hai bánh xe
           </div>
         </section>
@@ -212,7 +212,7 @@ const Home = () => {
         <div className="container h-100">
           <div className="row h-100 d-flex justify-content-center align-items-center">
             <div className="col-4 d-flex justify-content-start align-items-center">
-              <div className="image-moto-color d-flex align-items-center">
+<div className="image-moto-color d-flex align-items-center">
                 <img className="moto-color" src={motorcycle} alt="motorcycle" style={{ width: "100px", height: 'auto', maxHeight: '100px' }} />
               </div>
               <div className="d-flex flex-column justify-content-center ms-3 text-start">
@@ -272,7 +272,7 @@ const Home = () => {
             <div className="slider-main pl-5">
               <div className="anh-slider"><img src={slide3} alt="Client 6" /></div>
             </div>
-          </Slider>
+</Slider>
         </div>
       </section>
 
@@ -338,7 +338,7 @@ const Home = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-12 d-flex justify-content-center pb-5">
-              <div className="div-title text-center ">
+<div className="div-title text-center ">
                 <h1 className='text-dark'>SẢN PHẨM NỔI BẬT</h1>
                 <p>Chào mừng đến với <span className='text-dark'> BIKESCHOOL</span> , nơi hành trình đạp xe của bạn bắt đầu! <br />
                   Là những người đam mê đạp xe, chúng tôi hiểu được niềm vui và sự tự do khi đạp xe trên hai bánh xe</p>
@@ -409,7 +409,7 @@ const Home = () => {
                     <img src={sp} />
                   </div>
                   <ul className="featured__item__pic__hover">
-                    <li>
+<li>
                       <a href="#">
                         <i className="fa fa-heart"></i>
                       </a>
@@ -490,7 +490,7 @@ const Home = () => {
             <div className="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
               <div className="featured__item">
                 <h4>
-                  <a className="text-dark " href="#">Xe đạp đua carbon Nesto Rhino</a>
+<a className="text-dark " href="#">Xe đạp đua carbon Nesto Rhino</a>
                 </h4>
                 <div className="featured__item__pic set-bg">
                   <div className="image-zoom">
@@ -558,7 +558,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-3  d-flex justify-content-center align-items-center pt-2 pb-2 p-0">
+<div className="col-3  d-flex justify-content-center align-items-center pt-2 pb-2 p-0">
                 <div className='col-10 p-2  frame-category'>
                   <div style={{ height: "160px" }} className="d-flex justify-content-center">
                     <img
@@ -606,7 +606,7 @@ const Home = () => {
               </div>
               <div className="col-3  d-flex justify-content-center align-items-center pt-2 pb-2 p-0">
                 <div className='col-10 p-2  frame-category'>
-                  <div style={{ height: "160px" }} className="d-flex justify-content-center">
+<div style={{ height: "160px" }} className="d-flex justify-content-center">
                     <img
                       style={{
                         width: "auto", height: "100%", objectFit: "contain" // Giữ nguyên tỉ lệ hình ảnh ko bị kéo dài
@@ -666,7 +666,7 @@ const Home = () => {
 
                 <div className="col-7 d-flex justify-content-start align-items-center row">
                   <p style={{ fontSize: "32px", lineHeight: "50px", fontWeight: "bold" }}><span className='text-dark'>Thiết kế sạch sẽ và vượt thời gian khiến mọi chuyến đi trở nên thú vị. Dù bạn đi đâu, xe đạp</span> của chúng tôi đều được thiết kế để giúp việc đi lại hàng ngày của bạn trở nên thú vị.</p>
-                  <p className=''>Đây không phải là xe đạp. Đây là một tác phẩm nghệ thuật khí động học, khuấy động tâm hồn, mang lại nụ cười trên khuôn mặt bạn. Được thiết kế để đưa bạn đi khắp thế giới mà không cần sức nặng của nó. Nơi hành trình đạp xe của bạn bắt đầu! Là những người đam mê đạp xe chứ không phải chúng tôi, chúng tôi hiểu niềm vui và sự tự do đến từ việc đạp xe</p>
+<p className=''>Đây không phải là xe đạp. Đây là một tác phẩm nghệ thuật khí động học, khuấy động tâm hồn, mang lại nụ cười trên khuôn mặt bạn. Được thiết kế để đưa bạn đi khắp thế giới mà không cần sức nặng của nó. Nơi hành trình đạp xe của bạn bắt đầu! Là những người đam mê đạp xe chứ không phải chúng tôi, chúng tôi hiểu niềm vui và sự tự do đến từ việc đạp xe</p>
 
                 </div>
                 <div className='wheel-3604'>
@@ -734,7 +734,7 @@ const Home = () => {
             </div>
             <div className="col-lg-4 col-md-4 col-sm-4">
               <div className="blog__item">
-                <div className="blog__item__pic" style={{ height: "250px" }}>
+<div className="blog__item__pic" style={{ height: "250px" }}>
                   <img src={blog1} alt="" style={{
                     width: "auto",  // Đặt width auto để không kéo dài theo chiều ngang
                     height: "100%", // Hình ảnh sẽ có chiều cao bằng khung chứa

@@ -6,7 +6,10 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Modal, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// import { Modal, Button } from 'react-bootstrap';
 
 const EditProduct = () => {
     const navigate = useNavigate();
@@ -81,8 +84,7 @@ const EditProduct = () => {
                 console.error("Error fetching categories and brands:", error);
             }
         };
-
-        const fetchProductData = async () => {
+const fetchProductData = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/v1/products/${id}`);
                 setProduct(response.data.data);
@@ -187,7 +189,7 @@ const EditProduct = () => {
         // Append các trường cơ bản
         formData.append('price', parseFloat(product.price));
         formData.append('category_id', parseInt(product.category_id));
-        formData.append('brand_id', parseInt(product.brand_id));
+formData.append('brand_id', parseInt(product.brand_id));
         formData.append('warranty', parseInt(product.warranty));
         formData.append('status', product.status);
         formData.append('name', product.name);
@@ -225,7 +227,11 @@ const EditProduct = () => {
             );
 
             if (response.data.status === 'success') {
-                setShowModal(true);
+                // setShowModal(true);
+                toast.success('Sản phẩm đã được cập nhật thành công!');
+                setTimeout(() => {
+                    navigate('/admin/product'); // Điều hướng sau 2 giây
+                }, 2000);
             }
             // navigate("/admin/product");
         } catch (error) {
@@ -259,7 +265,7 @@ const EditProduct = () => {
             <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
                 <div className="page-breadcrumb">
                     <div className="row align-items-center">
-                        <div className="col-md-6 col-8 align-self-center">
+<div className="col-md-6 col-8 align-self-center">
                             <div className="d-flex align-items-center">
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
@@ -304,7 +310,7 @@ const EditProduct = () => {
                                                 {categories.map((category) => (
                                                     <React.Fragment key={category.id}>
                                                         {/* Danh mục chính */}
-                                                        <option value={category.id}>
+<option value={category.id}>
                                                             {category.name}
                                                         </option>
                                                         {/* Danh mục con */}
@@ -349,7 +355,7 @@ const EditProduct = () => {
                                         <div className="col-md-12">
                                             <input
                                                 type="file"
-                                                name="images"
+name="images"
                                                 onChange={handleFileChange}
                                                 multiple
                                                 accept="image/*"
@@ -394,7 +400,7 @@ const EditProduct = () => {
                                         <label className="col-md-12 mb-0">số lượng</label>
                                         <input
                                             type="number"
-                                            id="stock"
+id="stock"
                                             name="stock"
                                             value={product.stock}
                                             onChange={handleInputChange}
@@ -440,7 +446,7 @@ const EditProduct = () => {
                                                     name="color"
                                                     value={currentVariant.color}
                                                     onChange={handleVariantChange}
-                                                    placeholder="Nhập màu sắc"
+placeholder="Nhập màu sắc"
                                                     className="form-control"
                                                 />
                                                 <input
@@ -483,7 +489,7 @@ const EditProduct = () => {
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thời gian bảo hành</label>
                                         <div className="col-md-12">
-                                            <select
+<select
                                                 name="warranty"
                                                 value={product.warranty}
                                                 onChange={handleInputChange}
@@ -529,6 +535,7 @@ const EditProduct = () => {
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
@@ -536,8 +543,8 @@ const EditProduct = () => {
 
             </div>
             <Footer />
-            {/* Modal */}
-            <Modal show={showModal} onHide={handleClose} centered>
+{/* Modal */}
+            {/* <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Thành công</Modal.Title>
                 </Modal.Header>
@@ -547,7 +554,7 @@ const EditProduct = () => {
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };

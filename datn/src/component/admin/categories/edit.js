@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 import "../../../assets/css/styleEdit.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditCategory = () => {
     const { id } = useParams();
@@ -79,7 +81,7 @@ const EditCategory = () => {
     };
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
+const file = e.target.files[0];
         setSelectedImage(file);
     };
 
@@ -99,20 +101,26 @@ const EditCategory = () => {
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/v1/categories/${id}`, {
-                method: 'POST', // Change to POST
+                method: 'POST', // Kiểm tra xem API yêu cầu method 'POST' hay 'PUT'
                 body: formData,
             });
-
+        
             if (!response.ok) {
                 const errorResponse = await response.json();
-                throw new Error(errorResponse.message || "Failed to update category.");
+                throw new Error(errorResponse.message || "Có lỗi xảy ra khi cập nhật danh mục.");
             }
-
-            navigate("/admin/category");
+        
+            toast.success('Cập nhật danh mục thành công!');
+            setTimeout(() => {
+                navigate('/admin/category'); // Điều hướng sau 2 giây
+            }, 2000);
         } catch (error) {
             console.error("Error updating category:", error);
-            setError("Could not update category. Please check your input and try again.");
+        
+            // Hiển thị lỗi bằng toast
+            toast.error(error.message || "Không thể cập nhật danh mục. Vui lòng thử lại.");
         }
+        
     };
 
     return (
@@ -147,7 +155,7 @@ const EditCategory = () => {
                                 ) : (
                                     <form onSubmit={handleSubmit} className="form-horizontal form-material mx-2">
                                         <div className="form-group mb-3">
-                                            <label className="col-md-12 mb-0">Tên danh mục</label>
+<label className="col-md-12 mb-0">Tên danh mục</label>
                                             <div className="col-md-12">
                                                 <input
                                                     type="text"
@@ -188,7 +196,7 @@ const EditCategory = () => {
                                                     {categories.map((cat) => (
                                                         <option key={cat.id} value={cat.id}>
                                                             {cat.name}
-                                                        </option>
+</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -219,7 +227,9 @@ const EditCategory = () => {
                                             </div>
                                         </div>
                                     </form>
+                                    
                                 )}
+                                 <ToastContainer />
                             </div>
                         </div>
                     </div>
