@@ -133,31 +133,29 @@ const Login = () => {
                       {errors.email && <p className="error-message">{errors.email.message}</p>}
                     </div>
                     <div className="form-group">
-                      <label>Mật khẩu</label>
-                      <div className="input-group">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          className="border-inputs"
-                          {...register("password", {
-                            required: "Mật khẩu không được để trống.",
-                            pattern: {
-                              value: /^[a-zA-Z0-9]{3,}$/,
-                              message: "Mật khẩu chỉ được chứa chữ và số, tối thiểu 3 ký tự.",
-                            },
-                          })}
-                        />
-                        <div>
-                        <button
-                          type="button"
-                          className="btn btn-light"
-                          onClick={togglePasswordVisibility}
-                        >
-                          {showPassword ? <FaEyeSlash /> : <FaEye />}
-                        </button>
-                        </div>
-                      </div>
-                      {errors.password && <p className="error-message">{errors.password.message}</p>}
-                    </div>
+  <label>Mật khẩu</label>
+  <div className="input-group">
+    <input
+      type={showPassword ? "text" : "password"}
+      className="border-inputs"
+      {...register("password", {
+        required: "Mật khẩu không được để trống.",
+        pattern: {
+          value: /^[a-zA-Z0-9]{3,}$/,
+          message: "Mật khẩu chỉ được chứa chữ và số, tối thiểu 3 ký tự.",
+        },
+      })}
+    />
+    <button
+      type="button"
+      className="btn-show-password"
+      onClick={togglePasswordVisibility}
+    >
+      {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </button>
+  </div>
+  {errors.password && <p className="error-message">{errors.password.message}</p>}
+</div>
                     <div className="form-group">
                       <button type="submit" className="btn btn-danger text-light">Đăng Nhập</button>
                     </div>
@@ -177,6 +175,36 @@ const Login = () => {
         </div>
       </div>
       <Footer />
+      <style>{`
+         .input-group {
+  position: relative; /* Cần thiết để đặt nút con mắt vào vị trí tuyệt đối trong input */
+}
+
+.border-inputs {
+  width: 100%;
+  padding-right: 40px; /* Đảm bảo có không gian ở phía phải cho nút mắt */
+  padding-left: 12px; /* Tạo khoảng cách giữa đầu nhập và nút mắt nếu cần */
+}
+
+.btn-show-password {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Khoảng cách từ cạnh phải của input */
+  transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+  background: transparent;
+  border: none; /* Loại bỏ border khi nhấn vào nút */
+  outline: none; /* Loại bỏ đường viền focus khi nhấn */
+  cursor: pointer;
+  color: #aaa; /* Màu sắc của biểu tượng mắt */
+  padding: 0;
+}
+
+.btn-show-password:focus {
+  outline: none; /* Đảm bảo rằng không có outline khi nút được focus */
+}
+
+
+        `}</style>
     </>
   );
 };

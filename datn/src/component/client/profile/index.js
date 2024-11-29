@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
-import { getUserProfile } from "../../../services/client/profile";
-import { updateUserProfile } from "../../../services/client/profile";
-import { updateUserAvatar } from "../../../services/client/profile";
+import { getUserProfile, updateUserProfile, updateUserAvatar } from "../../../services/admin/profile";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -264,14 +262,7 @@ className="d-none"
                         <span>{userInfo.phone}</span>
                       </div>
                     </div>
-                    <div className="form-group">
-                      <label className="col-md-12 mb-0">
-                        Vai trò người dùng
-                      </label>
-<div className="col-md-12">
-                        <span>{userInfo.userRole}</span>
-                      </div>
-                    </div>
+
                   </div>
 
                   <div>

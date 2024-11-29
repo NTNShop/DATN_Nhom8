@@ -68,7 +68,7 @@ const Header = () => {
         {fullName ? ( // Hiển thị full_name nếu có
           <p>Xin chào, {fullName}</p>
         ) : (
-          <p>hiii</p> // Hiển thị "hiii" nếu chưa có tên
+          <p></p> // Hiển thị "hiii" nếu chưa có tên
         )}
       </Link>
       <ul className="menu-con">
@@ -82,7 +82,7 @@ const Header = () => {
             <li><Link className="name-menucon" to="/profile">THÔNG TIN CÁ NHÂN</Link></li>
             <li><button className="name-menucon" onClick={handleLogout}>ĐĂNG XUẤT</button></li>
           </>
-        )}
+)}
       </ul>
     </li>
   );
@@ -99,20 +99,15 @@ const Header = () => {
                 <li>
                   <Link className="ten-menu" to="/product">SẢN PHẨM</Link>
                   <ul className="menu-con">
-                    <li><Link className="name-menucon" to="/">XE ĐẠP TRẺ EM</Link></li>
-                    <li><Link className="name-menucon" to="/">XE ĐẠP THỂ THAO</Link></li>
-                    <li><Link className="name-menucon" to="/">XE ĐẠP FIXED GEAR</Link></li>
-                    <li><Link className="name-menucon" to="/">XE ĐẠP ĐỊA HÌNH</Link></li>
+                    <li><Link className="name-menucon" to="/">CÀ PHÊ VIỆT</Link></li>
+                    <li><Link className="name-menucon" to="/">CÀ PHÊ THẾ GIỚI</Link></li>
+                    <li><Link className="name-menucon" to="/">CÀ PHÊ CẢM HỨNG</Link></li>
+                    <li><Link className="name-menucon" to="/">SẢN PHẨM KHÁC</Link></li>
                   </ul>
                 </li>
                 <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
                 <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
                 <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
-                <li>
-                      <a href="/cart">
-                        <i className="fa fa-shopping-cart"></i>
-                      </a>
-                    </li>
                 <ProfileMenu />
               </ul>
             </nav>

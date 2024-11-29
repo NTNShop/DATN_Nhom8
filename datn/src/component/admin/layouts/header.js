@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie"; 
-import { Link, useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom"; 
 import logo from "../../../assets/img/logo.png";
 import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
@@ -96,7 +96,7 @@ const Header = () => {
     <div className="header-wrapper">
       <div
         id="main-wrapper"
-        data-layout="vertical"
+data-layout="vertical"
         data-navbarbg="skin6"
         data-sidebartype="full"
         data-sidebar-position="absolute"
@@ -112,12 +112,12 @@ const Header = () => {
                 </b>
                 <span className="logo-text"></span>
               </a>
-              <Link
+              <a
                 className="nav-toggler waves-effect waves-light text-white d-block d-md-none"
-                href=""
+                href="javascript:void(0)"
               >
                 <i className="ti-menu ti-close"></i>
-              </Link>
+              </a>
             </div>
             <div
               className="navbar-collapse collapse ml-2"
@@ -126,24 +126,24 @@ const Header = () => {
             >
               <ul className="navbar-nav d-lg-none d-md-block">
                 <li className="nav-item">
-                  <Link
+                  <a
                     className="nav-toggler nav-link waves-effect waves-light text-white"
-                    href="void(0)"
+                    href="javascript:void(0)"
                   >
                     <i className="ti-menu ti-close"></i>
-                  </Link>
+                  </a>
                 </li>
               </ul>
               <ul className="navbar-nav me-auto mt-md-0">
                 <li className="nav-item search-box">
-                  <Link className="nav-link text-muted" href="#" onClick={toggleSearch}>
+                  <a className="nav-link text-muted" href="#" onClick={toggleSearch}>
                     <i className="ti-search"></i>
-                  </Link>
+                  </a>
                   <form className="app-search" style={{ display: showSearch ? "block" : "none" }}>
                     <input type="text" className="form-control" placeholder="Nhập từ khóa cần tìm" />
-                    <Link className="srh-btn" onClick={toggleSearch}>
+                    <a className="srh-btn" onClick={toggleSearch}>
                       <i className="ti-close"></i>
-                    </Link>
+                    </a>
                   </form>
                 </li>
               </ul>
@@ -165,16 +165,16 @@ const Header = () => {
                         height: "50px",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        marginRight: "10px",
+marginRight: "10px",
                       }}
                     />
                     {userInfo.full_name || "Người dùng"}
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
-                      <Link className="dropdown-item" href="#" onClick={confirmLogout}>
+                      <a className="dropdown-item" href="#" onClick={confirmLogout}>
                         Đăng Xuất
-                      </Link>
+                      </a>
                     </li>
                     <li>
                       <a className="dropdown-item" href="/" onClick={() => navigate("/")}>
@@ -230,7 +230,7 @@ const Header = () => {
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
+<a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
                     <i className="mdi me-2 mdi-package"></i>
                     <span className="hide-menu">Đơn hàng</span>
                   </a>
@@ -247,35 +247,15 @@ const Header = () => {
                     <span className="hide-menu">Bài viết</span>
                   </a>
                 </li>
-                <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/contact"
-                    aria-expanded="false"
-                  >
-                    <i className="mdi me-2 mdi-comment"></i>
-                    <span className="hide-menu">Phản hồi</span>
-                  </a>
-                </li>
-                <li className="sidebar-item">
-                  <a
-                    className="sidebar-link waves-effect waves-dark sidebar-link"
-                    href="/admin/contact"
-                    aria-expanded="false"
-                  >
-                    
-                  </a>
-                </li>
-
               </ul>
             </nav>
           </div>
           <div className="sidebar-footer">
             <div className="row">
               <div className="col-4 link-wrap">
-                <Link href="#" className="link" onClick={handleLogout} title="Đăng Xuất">
+                <a href="#" className="link" onClick={handleLogout} title="Đăng Xuất">
                   <i className="mdi mdi-logout"></i>
-                </Link>
+                </a>
               </div>
             </div>
           </div>
