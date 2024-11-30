@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { logoutUser } from "../../../services/client/Login";
 import logo from "../../../assets/img/logo.png";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 const Header = () => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
@@ -17,7 +18,6 @@ const Header = () => {
       const userFullName = Cookies.get("full_name");
       const authToken = Cookies.get("authToken");
 
-
       if (userFullName && authToken) {
         setFullName(userFullName);
         setIsAuthenticated(true);
@@ -28,7 +28,7 @@ const Header = () => {
     };
 
     checkAuth();
-    window.addEventListener("storage", checkAuth);  // Listen for changes in localStorage/cookies
+    window.addEventListener("storage", checkAuth); // Listen for changes in localStorage/cookies
 
     return () => {
       window.removeEventListener("storage", checkAuth);
@@ -38,12 +38,12 @@ const Header = () => {
   // Xử lý đăng xuất
   const handleLogout = async () => {
     try {
-      await logoutUser();  // Call API to logout user
+      await logoutUser(); // Call API to logout user
       Cookies.remove("authToken", { path: "/" });
       Cookies.remove("fullname", { path: "/" });
       setIsAuthenticated(false);
       setFullName("");
-      navigate("/");  // Redirect to homepage after logout
+      navigate("/"); // Redirect to homepage after logout
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       alert("Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại!");
@@ -57,19 +57,35 @@ const Header = () => {
         {fullName ? (
           <p>Xin chào, {fullName}</p>
         ) : (
-          <p>hiii</p>  // Show homepage link if not logged in
+          <p>hiii</p> // Show homepage link if not logged in
         )}
       </Link>
       <ul className="menu-con">
         {!isAuthenticated ? (
           <>
-            <li><Link className="name-menucon" to="/login">ĐĂNG NHẬP</Link></li>
-            <li><Link className="name-menucon" to="/register">ĐĂNG KÝ</Link></li>
+            <li>
+              <Link className="name-menucon" to="/login">
+                ĐĂNG NHẬP
+              </Link>
+            </li>
+            <li>
+              <Link className="name-menucon" to="/register">
+                ĐĂNG KÝ
+              </Link>
+            </li>
           </>
         ) : (
           <>
-            <li><Link className="name-menucon" to="/profile">THÔNG TIN CÁ NHÂN</Link></li>
-            <li><button className="name-menucon" onClick={handleLogout}>ĐĂNG XUẤT</button></li>
+            <li>
+              <Link className="name-menucon" to="/profile">
+                THÔNG TIN CÁ NHÂN
+              </Link>
+            </li>
+            <li>
+              <button className="name-menucon" onClick={handleLogout}>
+                ĐĂNG XUẤT
+              </button>
+            </li>
           </>
         )}
       </ul>
@@ -81,22 +97,58 @@ const Header = () => {
       <header>
         <section className="header sticky">
           <div className="khungmenu">
-            <Link to="/" className="logo">BIKESCHOOL</Link>
+            <Link to="/" className="logo">
+              BIKESCHOOL
+            </Link>
             <nav className="dmcc">
               <ul id="main-menu">
-                <li><Link className="ten-menu" to="/">TRANG CHỦ</Link></li>
                 <li>
-                  <Link className="ten-menu" to="/product">SẢN PHẨM</Link>
+                  <Link className="ten-menu" to="/">
+                    TRANG CHỦ
+                  </Link>
+                </li>
+                <li>
+                  <Link className="ten-menu" to="/product">
+                    SẢN PHẨM
+                  </Link>
                   <ul className="menu-con">
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ VIỆT</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ THẾ GIỚI</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ CẢM HỨNG</Link></li>
-                    <li><Link className="name-menucon" to="/">SẢN PHẨM KHÁC</Link></li>
+                    <li>
+                      <Link className="name-menucon" to="/">
+                        CÀ PHÊ VIỆT
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="name-menucon" to="/">
+                        CÀ PHÊ THẾ GIỚI
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="name-menucon" to="/">
+                        CÀ PHÊ CẢM HỨNG
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="name-menucon" to="/">
+                        SẢN PHẨM KHÁC
+                      </Link>
+                    </li>
                   </ul>
                 </li>
-                <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
-                <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
-                <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
+                <li>
+                  <Link className="ten-menu" to="/introduce">
+                    GIỚI THIỆU
+                  </Link>
+                </li>
+                <li>
+                  <Link className="ten-menu" to="/blog">
+                    BÀI VIẾT
+                  </Link>
+                </li>
+                <li>
+                  <Link className="ten-menu" to="/contact">
+                    LIÊN HỆ
+                  </Link>
+                </li>
                 <ProfileMenu />
               </ul>
             </nav>
@@ -106,5 +158,6 @@ const Header = () => {
     </div>
   );
 };
+
 
 export default Header;
