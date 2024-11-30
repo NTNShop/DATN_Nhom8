@@ -5,8 +5,7 @@ import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
 import { loginUser } from "../../../services/client/Login";
 import { useForm } from "react-hook-form";
-import { GoogleLogin } from "@react-oauth/google";
-import { googleAuth } from "../../../services/client/Login";
+
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
@@ -64,37 +63,7 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      setError("");
-      setSuccessMessage("");
 
-      if (!credentialResponse.credential) {
-        throw new Error("Không nhận được thông tin xác thực từ Google");
-      }
-
-      const result = await googleAuth(credentialResponse.credential); // Call googleAuth service
-
-      if (result.status && result.data?.user) {
-        setSuccessMessage("Đăng nhập bằng Google thành công!");
-
-        // Store auth info in localStorage
-        localStorage.setItem("accessToken", result.data.token);
-        localStorage.setItem("refreshToken", result.data.refreshToken);
-        localStorage.setItem("user", JSON.stringify(result.data.user));
-        localStorage.setItem("tokenExpiry", result.data.expiresAt);
-
-        setTimeout(() => {
-          window.location.href = result.data.user.role === "admin" ? "/admin" : "/";
-        }, 2000);
-      } else {
-        throw new Error(result.message || "Đăng nhập thất bại");
-      }
-    } catch (error) {
-      console.error("Google Login Error:", error);
-      setError(error.message || "Đăng nhập Google thất bại. Vui lòng thử lại!");
-    }
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -202,11 +171,7 @@ const Login = () => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={() => setError("Đăng nhập Google thất bại. Vui lòng thử lại!")}
-                        useOneTap
-                      />
+                 
                     </div>
                   </form>
                 </div>

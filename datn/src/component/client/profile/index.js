@@ -10,11 +10,11 @@ import banner from "../../../assets/img/hero/banner2.jpg";
 const ProfileS = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
-    full_name: "",
-    email: "",
-    phone: "",
-    avatar: "",
-    address: "",
+    full_name: "Chưa cập nhật",
+    email: "Chưa cập nhật",
+    phone: "Chưa cập nhật",
+    avatar: avt,
+    address: "Chưa cập nhật",
     id: null,
   });
   const [loading, setLoading] = useState(false);
@@ -25,20 +25,23 @@ const ProfileS = () => {
       try {
         setLoading(true);
         const response = await getUserProfile();
-        const data = response.data;
-
-        setUserInfo({
-          full_name: data.full_name || "Chưa cập nhật",
-          email: data.email || "",
-          phone: data.phone || "Chưa cập nhật",
-          avatar: data.avatar
-            ? `http://127.0.0.1:8000${data.avatar}`
-            : avt,
-          address: data.address || "Chưa cập nhật",
-          id: data.id || null,
-        });
+        
+        if (response?.data) {
+          const data = response.data;
+          setUserInfo({
+            full_name: data.full_name || "Chưa cập nhật",
+            email: data.email || "Chưa cập nhật",
+            phone: data.phone || "Chưa cập nhật",
+            avatar: data.avatar ? `http://127.0.0.1:8000${data.avatar}` : avt,
+            address: data.address || "Chưa cập nhật",
+            id: data.id || null,
+          });
+        } else {
+          throw new Error("Không tìm thấy dữ liệu người dùng.");
+        }
       } catch (err) {
-        setError(err.message || "Không thể tải thông tin người dùng.");
+        console.error("Lỗi khi tải thông tin người dùng:", err);
+        setError("Không thể tải thông tin người dùng. Vui lòng thử lại.");
       } finally {
         setLoading(false);
       }
@@ -66,7 +69,13 @@ const ProfileS = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="container text-center mt-5">
+        <h2 className="text-danger">Lỗi</h2>
+        <p>{error}</p>
+        <button onClick={handleHomeNavigation} className="btn btn-primary">Về Trang Chủ</button>
+      </div>
+    );
   }
 
   return (

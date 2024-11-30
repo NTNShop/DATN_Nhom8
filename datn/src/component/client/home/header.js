@@ -8,7 +8,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Header = () => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-  const [fullName, setFullName] = useState(""); // Lưu full_name
+  const [full_name, setFullName] = useState(""); // Lưu full_name
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
@@ -16,14 +16,21 @@ const Header = () => {
   const fetchUserProfile = async () => {
     try {
       const authToken = Cookies.get("authToken");
+
       if (authToken) {
         const response = await getUserProfile(authToken); // Gọi API với token
-        if (response && response.data) {
+        console.log("Response Data:", response);
+
+        if (response && response.data && response.data.full_name) {
           setFullName(response.data.full_name); // Lưu full_name vào state
+        } else {
+          console.warn("Full Name Not Found in Response");
+          setFullName("Người dùng");
         }
       }
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng:", error);
+      setFullName("Người dùng");
     }
   };
 
@@ -36,6 +43,7 @@ const Header = () => {
         fetchUserProfile(); // Lấy thông tin user khi có token
       } else {
         setIsAuthenticated(false);
+        setFullName("");
       }
     };
 
@@ -65,10 +73,10 @@ const Header = () => {
   const ProfileMenu = () => (
     <li>
       <Link className="ten-menu" to="/profile">
-        {fullName ? ( // Hiển thị full_name nếu có
-          <p>Xin chào, {fullName}</p>
+        {full_name ? ( // Hiển thị full_name nếu có
+          <p>Xin chào, {full_name}</p>
         ) : (
-          <p>hiii</p> // Hiển thị "hiii" nếu chưa có tên
+          <p>Hiii</p> // Hiển thị "Hiii" nếu chưa có tên
         )}
       </Link>
       <ul className="menu-con">
