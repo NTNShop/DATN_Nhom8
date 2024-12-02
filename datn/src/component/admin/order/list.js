@@ -357,12 +357,12 @@ title: 'Lỗi',
                                                                     >
                                                                         Chi tiết
                                                                     </button>
-                                                                    <button 
+                                                                    {/* <button 
                                                                         className="btn btn-danger btn-sm"
                                                                         onClick={() => handleDelete(order.id)}
                                                                     >
                                                                         Xóa
-                                                                    </button>
+                                                                    </button> */}
                                                                 </div>
                                                             </td>
                                                         </tr>

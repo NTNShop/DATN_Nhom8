@@ -350,17 +350,12 @@ const CheckoutSection = () => {
         if (selectedPaymentMethod !== PAYMENT_METHODS.VNPAY) {
           navigate('/success', {
             state: {
-              orderId: response.data.id,
-              orderCode: response.data.order_code,
-              orderDetails: {
-                ...response.data,
-                total: response.data.total,
-                payment_status: paymentStatus,
-                payment_url: response.data.payment_url,
-              }
-            }
+              orderId: response.data.id,  // Chắc chắn truyền ID
+              orderDetails: response.data
+            },
+            // Thêm query params để backup
+            search: `?orderId=${response.data.id}`
           });
-  
           toast.success('Đặt hàng thành công!');
         }
       } else {
@@ -516,8 +511,10 @@ const CheckoutSection = () => {
                       Phí vận chuyển <span>{formatCurrency(shipping)}</span>
                     </div> */}
                     <div className="checkout__order__total">
+                      
                       Tổng cộng <span>{formatCurrency(subtotal)}</span>
                     </div>
+                    
                     <div className="checkout__order__payment">
                       <h4>Phương thức thanh toán</h4>
                       <PaymentMethodRadio method={PAYMENT_METHODS.BANK_TRANSFER} />
