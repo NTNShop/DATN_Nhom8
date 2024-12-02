@@ -5,11 +5,10 @@ import logo from "../../../assets/img/logo.png";
 import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
 import { logoutUser } from "../../../services/client/Login";  // Import the logoutUser function
-import { getUserProfile } from "../../../services/client/profile";
+
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [userInfo, setUserInfo] = useState(null); 
-  const [fullName, setFullName] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // State for logout confirmation
   const navigate = useNavigate(); 
 
@@ -20,30 +19,12 @@ const Header = () => {
   const removeAuthToken = () => {
     Cookies.remove("AuthToken");
   };
-
-  // Lấy thông tin người dùng
-  const fetchUserProfile = async () => {
-    try {
-      const authToken = Cookies.get("authToken");
-      if (authToken) {
-        const response = await getUserProfile(authToken);
-        setUserInfo({
-          full_name: response?.data?.full_name || "Người dùng",
-          avatar: response?.data?.avatar || avt,
-        });
-      }
-    } catch (error) {
-      console.error("Lỗi khi lấy thông tin người dùng:", error);
-    }
-  };
-
   // Get user info from cookies
   useEffect(() => {
     const storedUserInfo = Cookies.get("userInfo");
     if (storedUserInfo) {
       const user = JSON.parse(storedUserInfo);
       setUserInfo(user);
-      fetchUserProfile();
       if (user.role !== "admin") {
      
         Cookies.remove("userInfo");
@@ -96,7 +77,7 @@ const Header = () => {
     <div className="header-wrapper">
       <div
         id="main-wrapper"
-data-layout="vertical"
+        data-layout="vertical"
         data-navbarbg="skin6"
         data-sidebartype="full"
         data-sidebar-position="absolute"
@@ -151,24 +132,18 @@ data-layout="vertical"
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle text-muted waves-effect waves-dark"
-                    href="#"
+                    href="/admin/profile"
                     id="navbarDropdown"
                     role="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
                     <img
-                      src={userInfo.avatar}
-                      alt="User Avatar"
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-marginRight: "10px",
-                      }}
+                      src={userInfo?.avatar || avt}
+                      alt="người dùng"
+                      className="profile-pic me-2"
                     />
-                    {userInfo.full_name || "Người dùng"}
+                    {userInfo?.full_name || "Người dùng"} 
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
@@ -230,7 +205,7 @@ marginRight: "10px",
                   </a>
                 </li>
                 <li className="sidebar-item">
-<a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
+                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
                     <i className="mdi me-2 mdi-package"></i>
                     <span className="hide-menu">Đơn hàng</span>
                   </a>
@@ -247,6 +222,26 @@ marginRight: "10px",
                     <span className="hide-menu">Bài viết</span>
                   </a>
                 </li>
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/contact"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi me-2 mdi-comment"></i>
+                    <span className="hide-menu">Phản hồi</span>
+                  </a>
+                </li>
+                <li className="sidebar-item">
+                  <a
+                    className="sidebar-link waves-effect waves-dark sidebar-link"
+                    href="/admin/contact"
+                    aria-expanded="false"
+                  >
+                    
+                  </a>
+                </li>
+
               </ul>
             </nav>
           </div>

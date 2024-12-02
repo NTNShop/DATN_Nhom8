@@ -2,45 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { logoutUser } from "../../../services/client/Login";
-import { getUserProfile } from "../../../services/client/profile"; // Hàm gọi API lấy thông tin user
 import logo from "../../../assets/img/logo.png";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Header = () => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-  const [fullName, setFullName] = useState(""); // Lưu full_name
+  const [fullName, setFullName] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  // Lấy thông tin người dùng từ API
-  const fetchUserProfile = async () => {
-    try {
-      const authToken = Cookies.get("authToken");
-      if (authToken) {
-        const response = await getUserProfile(authToken); // Gọi API với token
-        if (response && response.data) {
-          setFullName(response.data.full_name); // Lưu full_name vào state
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi lấy thông tin người dùng:", error);
-    }
-  };
-
-  // Kiểm tra trạng thái đăng nhập khi component mount
+  // Kiểm tra trạng thái đăng nhập khi component mount và khi cookies thay đổi
   useEffect(() => {
     const checkAuth = () => {
+      const userFullName = Cookies.get("full_name");
       const authToken = Cookies.get("authToken");
-      if (authToken) {
+
+
+      if (userFullName && authToken) {
+        setFullName(userFullName);
         setIsAuthenticated(true);
-        fetchUserProfile(); // Lấy thông tin user khi có token
       } else {
+        setFullName("");
         setIsAuthenticated(false);
       }
     };
 
     checkAuth();
-    window.addEventListener("storage", checkAuth); // Listen for changes in localStorage/cookies
+    window.addEventListener("storage", checkAuth);  // Listen for changes in localStorage/cookies
 
     return () => {
       window.removeEventListener("storage", checkAuth);
@@ -50,11 +38,12 @@ const Header = () => {
   // Xử lý đăng xuất
   const handleLogout = async () => {
     try {
-      await logoutUser(); // Call API to logout user
+      await logoutUser();  // Call API to logout user
       Cookies.remove("authToken", { path: "/" });
+      Cookies.remove("fullname", { path: "/" });
       setIsAuthenticated(false);
       setFullName("");
-      navigate("/"); // Redirect to homepage after logout
+      navigate("/");  // Redirect to homepage after logout
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       alert("Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại!");
@@ -65,10 +54,10 @@ const Header = () => {
   const ProfileMenu = () => (
     <li>
       <Link className="ten-menu" to="/profile">
-        {fullName ? ( // Hiển thị full_name nếu có
+        {fullName ? (
           <p>Xin chào, {fullName}</p>
         ) : (
-          <p>hiii</p> // Hiển thị "hiii" nếu chưa có tên
+          <p>hiii</p>  // Show homepage link if not logged in
         )}
       </Link>
       <ul className="menu-con">
