@@ -294,13 +294,22 @@ const PaymentMethodRadio = ({ method }) => (
       }
   
       const orderData = {
-        items: orderItems,
+        items: cartItems.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: item.unit_price,
+          product: {
+            id: item.product.id,
+            name: item.product.name,
+            image: item.product.image
+          }
+        })),
         shipping_address: {
           full_name: formData.fullName.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
           address: formData.address.trim(),
-city: formData.city.trim(),
+          city: formData.city.trim(),
           notes: formData.notes?.trim() || ''
         },
         payment_method: normalizedPaymentMethod,
@@ -335,11 +344,6 @@ city: formData.city.trim(),
             // Thông tin đơn hàng
             
           }));
-        
-        
-          // Thực thi hàm bổ sung (nếu cần)
-          // handlePaymentRedirect(); // Ví dụ: ghi nhận sự kiện hoặc thao tác khác trước khi chuyển hướng
-  
           // Chuyển hướng người dùng đến VNPay
           window.location.replace(response.data.vnpay_payment_url);
         
@@ -347,22 +351,26 @@ city: formData.city.trim(),
         }
         
         // Đối với các phương thức thanh toán khác VNPAY
-        if (selectedPaymentMethod !== PAYMENT_METHODS.VNPAY) {
-          navigate('/success', {
-            state: {
-              orderId: response.data.id,
-              orderCode: response.data.order_code,
-              orderDetails: {
-                ...response.data,
-                total: response.data.total,
-                payment_status: paymentStatus,
-                payment_url: response.data.payment_url,
-              }
+  if (selectedPaymentMethod !== PAYMENT_METHODS.VNPAY) {
+    navigate('/success', {
+      state: {
+        orderDetails: {
+          ...response.data,
+          items: cartItems.map(item => ({
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            product: {
+              id: item.product.id,
+              name: item.product.name,
+              image: item.product.image
             }
-          });
-  
-          toast.success('Đặt hàng thành công!');
+          }))
         }
+      }
+    });
+    toast.success('Đặt hàng thành công!');
+  }
       } else {
         toast.error(response.message || 'Không thể tạo đơn hàng');
       }
