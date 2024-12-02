@@ -22,10 +22,10 @@
 /*----------------------------------------*/
 /* css tự thêm */
 .link-color{
-	color: #de0000;
+	color: #E9A625;
 }
 .link-color:hover{
-	color: #de0000;
+	color: #ca8d1d;
 }
 .image-zoom{
 	background-color: #f0f0f0;
@@ -173,6 +173,12 @@
 	padding-bottom: 50px;
 	background: url(../../../src/assets/img/hero/backgr-dn.png);
 }
+.section-intro3{
+	border-top: 1px solid rgb(132, 132, 132);
+	padding-top: 100px;
+	padding-bottom: 50px;
+	background-color: #d8f4ff;
+}
 .tieude{
 	color: #de0000;
 	text-align: center;
@@ -182,7 +188,7 @@
 
 .title-intro{
 	font-size: 30px;
-	border-bottom: 3px solid #de0000;
+	border-bottom: 3px solid rgb(13, 144, 200);
 	width: 62%;
 }
 .tich{
@@ -246,12 +252,12 @@
 .wheel-360{
 	position:absolute;
 	top:280px;
-	left: 20px;
+	left: -120px;
 }
 .wheel-3602{
 	position:absolute;
 	top:380px;
-	right: 20px;
+	right: -120px;
 }
 .wheel-3603{
 	position:absolute;
@@ -311,7 +317,6 @@ ul#main-menu>li:hover>.menu-con {
 .menu-con li a {
     display: block;
     text-decoration: none;
-    border-bottom: 1px dotted gainsboro;
 }
 
 .name-menucon {
@@ -532,6 +537,151 @@ ul#main-menu a:hover {
 .name-product-bike a:hover{
 	color: #ff9911;
 }
+/* phần css của chọn màu xe, trang chi tiết sản phẩm */
+.color-picker {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-picker input[type="radio"] {
+    display: none;
+}
+
+.color-circle {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+	
+}
+
+.color-picker input[type="radio"]:checked + .color-circle {
+    outline: 2px solid rgb(0, 0, 0);
+}
+
+/* nút tăng giảm sản phẩm trong phần chi tiết sản phẩm */
+.quantity-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 40px;
+    overflow: hidden;
+    width: fit-content;
+}
+
+.quantity-btn {
+    padding: 14px 18px;
+    background: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.2s;
+}
+
+.quantity-btn:hover:not(:disabled) {
+    color: #E9A625;
+}
+
+.quantity-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.quantity-input input {
+    width: 50px;
+    height: 36px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.quantity-input input::-webkit-outer-spin-button,
+.quantity-input input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-input input[type=number] {
+    -moz-appearance: textfield;
+}
+/* phần này là phần css của bình luận, thông số kĩ thuật, mô tả dài */
+.product-details-tab {
+	margin: 20px 0;
+  }
+  
+  .nav-tabs {
+	list-style: none;
+	display: flex;
+	border-bottom: 1px solid #ddd;
+	padding: 0;
+	margin: 0;
+	justify-content: center;
+  }
+  
+  .nav-tabs li {
+	padding: 10px 20px;
+	cursor: pointer;
+	font-weight: bold;
+	color: #888;
+  }
+  
+  .nav-tabs li.active {
+	color: #000;
+	border-bottom: 2px solid #000;
+  }
+  
+  .tab-content {
+	margin-top: 20px;
+  }
+  
+  .tab-content h6 {
+	font-weight: bold;
+  }
+  
+  .tab-content p {
+	line-height: 1.6;
+	color: #555;
+  }
+  /* thông số kĩ thuật */
+  .specifications-content ul {
+	list-style: none;
+	padding: 0;
+}
+.specifications-content li {
+	padding: 10px 15px;
+	border-bottom: 1px solid #eee;
+	display: flex;
+	align-items: center;
+}
+.specifications-content li:nth-child(odd) {
+	background-color: #f8f9fa;
+}
+.specifications-content h4 {
+	margin-bottom: 20px;
+	color: #333;
+	font-weight: bold;
+}
+.title-color-blog a:hover {
+	transition: calc(0.6s);
+	color: #E9A625;
+}
+.main-footer{
+	background-color: #249BC8;
+	border-radius: 100px;
+}
+.contact-title{
+	background-color: #E4F4F3;
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+.icon-contact:hover{
+	transition: calc(0.5s);
+	color: #E9A625;
+}
 html,
 body {
 	height: 100%;
@@ -541,7 +691,6 @@ body {
 }
 .breadcrumb-img {
     display: block;
-    /* margin: 0 auto; */
 	margin-left: 200px;
 
 }
@@ -575,6 +724,42 @@ body {
 .product__details__pic__slider img.active {
     border-color: #000; /* Nổi bật ảnh đang được chọn */
 }
+/* trang blog phàn sidebar */
+.sidebar-blog{
+border: 1px solid rgba(29, 29, 29, 0.15);
+padding: 25px;
+border-radius: 5px;
+}
+.search-box2 {
+    display: flex;
+    align-items: center;
+    background-color: #F0F0F0;
+    border-radius: 25px; 
+    padding: 5px 15px; 
+    width: 100% 
+}
+
+.search-box2 input {
+    border: none;
+    outline: none; 
+    background: transparent;
+    flex: 1; 
+    padding: 8px 10px; 
+    font-size: 16px; 
+    color: #555;
+}
+
+.search-box2 button {
+    background: none; /* Nền trong suốt */
+    border: none; /* Bỏ viền */
+    outline: none; /* Bỏ focus viền */
+    cursor: pointer; /* Con trỏ chuột */
+    font-size: 18px; /* Kích thước icon */
+    color: #888; /* Màu icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 
 h1,
@@ -584,7 +769,7 @@ h4,
 h5,
 h6 {
 	margin: 0;
-	color: #111111;
+	color: #000000;
 	font-weight: 400;
 	font-family: "Cairo", sans-serif;
 }
@@ -656,7 +841,7 @@ ol {
 }
 
 .section-title h2 {
-	color: #1c1c1c;
+	color: #000000;
 	font-weight: 700;
 	position: relative;
 }
@@ -685,7 +870,8 @@ ol {
 }
 
 .edit-footer{
-	background-color: #ffffff;
+	background-color:#E4F4F3;
+	border-radius: 100px;
 	padding-top: 30px;
 }
 
@@ -711,10 +897,12 @@ ol {
 	color: #ffffff;
 	text-transform: uppercase;
 	font-weight: 700;
-	background: #ff9911;
+	background: #000000;
 	letter-spacing: 2px;
 }
-
+.primary-btn:hover {
+	color: white;
+}
 .site-btn {
 	font-size: 14px;
 	color: #ffffff;
@@ -725,7 +913,25 @@ ol {
 	background: #000000;
 	border: none;
 }
-
+.site-btn:hover{
+	transition: calc(0.6s);
+	color: #EDBB0E;
+}
+.site-btn2 {
+	font-size: 14px;
+	color: #ffffff;
+	font-weight: 800;
+	text-transform: uppercase;
+	display: inline-block;
+	padding: 13px 30px 12px;
+	background: #000000;
+	border: none;
+	border-radius: 50px;
+}
+.site-btn2:hover{
+	transition: calc(0.6s);
+	color: #EDBB0E;
+}
 /* Preloder */
 
 #preloder {
@@ -2125,7 +2331,7 @@ ol {
 	overflow: hidden;
 }
 
-.product__discount__item__pic .product__discount__percent {
+.product__discount__percent {
 	height: 45px;
 	width: 45px;
 	background:#ff9911;
@@ -2541,7 +2747,7 @@ ol {
 
 .product__details__text .product__details__price {
 	font-size: 30px;
-	color: #dd2222;
+	color: #FF9911;
 	font-weight: 600;
 	margin-bottom: 15px;
 }
@@ -2551,9 +2757,9 @@ ol {
 }
 
 .product__details__text .primary-btn {
-	padding: 16px 28px 14px;
-	margin-right: 6px;
-	margin-bottom: 5px;
+	padding: 18px 16px ;
+	
+	border-radius: 40px;
 }
 
 .product__details__text .heart-icon {
@@ -3584,7 +3790,14 @@ ol {
 /*---------------------
   Contact
 -----------------------*/
-
+.bg_contact{
+	background-color: #f1f1f1;
+	padding: 40px;
+	border-radius: 50px;
+}
+.bg-input-contact{
+	background-color: #f1f1f1;
+}
 .contact {
 	padding-top: 80px;
 	padding-bottom: 50px;

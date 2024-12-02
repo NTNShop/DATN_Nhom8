@@ -39,7 +39,7 @@ const Register = () => {
   return (
     <>
       <Header />
-      <div className="container pb-5">
+      <div className="container pb-5 pt-4">
         <div className="border p-5 m-5 formLogin">
           <div className="col-lg-12 col-12">
             <div className="row">

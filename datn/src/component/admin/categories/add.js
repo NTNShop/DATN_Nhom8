@@ -4,6 +4,7 @@ import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 
+
 const AddCategory = () => {
     const [categoryData, setCategoryData] = useState({
         name: "",
@@ -52,6 +53,7 @@ const AddCategory = () => {
     const handleCloseModal = () => {
         setShowModal(false);
     };
+    const [selectedColor, setSelectedColor] = useState ("");
 
     return (
         <div>
@@ -97,6 +99,7 @@ const AddCategory = () => {
                                             <select id="status" value={categoryData.status} className="form-control-line border-input" onChange={handleChange} required>
                                                 <option value="1">Kích hoạt</option>
                                                 <option value="0">Không kích hoạt</option>
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -111,13 +114,17 @@ const AddCategory = () => {
                                             <button type="submit" className="btn btn-success mx-auto mx-md-0 text-white">Thêm danh mục</button>
                                         </div>
                                     </div>
+                                    <div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
+                
             </div>
-
+            
             {/* Success Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>

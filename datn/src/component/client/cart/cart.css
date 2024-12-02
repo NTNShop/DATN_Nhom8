@@ -1,256 +1,287 @@
-.pro-qty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Space between buttons and input */
+/* Reset and Base Styles */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --text-color: #333;
+    --background-color: #f4f8fb;
+    --border-radius: 12px;
   }
   
-  .qty-btn {
-    background-color: #f0f0f0; /* Light gray background */
-    border: 1px solid #d9d9d9; /* Border color */
-    padding: 8px 12px; /* Padding inside the buttons */
-    border-radius: 5px; /* Rounded corners */
-    font-size: 18px; /* Font size for button text */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for hover effects */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   
-  .qty-btn:hover {
-    background-color: #e0e0e0; /* Darker gray on hover */
-    transform: translateY(-2px); /* Lift effect on hover */
-  }
-  
-  .qty-btn:disabled {
-    cursor: not-allowed; /* Not-allowed cursor for disabled state */
-    background-color: #f9f9f9; /* Light background for disabled state */
-  }
-  
-  .qty-input {
-    width: 50px; /* Fixed width for input */
-    height: 40px; /* Fixed height for input */
-    text-align: center; /* Center text */
-    border: 1px solid #d9d9d9; /* Border for input */
-    border-radius: 5px; /* Rounded corners for input */
-    font-size: 16px; /* Font size for input text */
-  }
   body {
-  font-family: Arial, sans-serif; /* Font chung cho toàn bộ trang */
-}
-
-.promotion-section {
-  background-color: #f9f9f9; /* Màu nền sáng để tạo sự tương phản */
-  padding: 40px 20px; /* Khoảng đệm dọc */
-}
-
-.container {
-  width: 80%; /* Điều chỉnh để phù hợp với thiết kế của bạn */
-  margin: auto; /* Giữa trang */
-}
-
-.promotion-item {
-  margin-bottom: 40px; /* Khoảng cách giữa các mục */
-  padding: 20px; /* Khoảng đệm quanh nội dung */
-  border: 1px solid #ccc; /* Đường viền nhẹ quanh các mục */
-  border-radius: 10px; /* Góc bo tròn */
-  background-color: #fff; /* Nền trắng cho từng mục */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng nhẹ */
-  position: relative; /* Để có thể đặt hình ảnh trong header */
-}
-
-.promotion-header {
-  display: flex;
-  align-items: center; /* Căn giữa theo chiều dọc */
-}
-
-.promotion-header img {
-  max-width: 80px; /* Chiều rộng tối đa cho hình ảnh */
-  margin-right: 20px; /* Khoảng cách giữa hình ảnh và tiêu đề */
-}
-
-.promotion-item h2 {
-  font-size: 24px; /* Kích thước phông cho tiêu đề */
-  color: #ec4237; /* Màu đỏ cho tiêu đề */
-  margin: 0; /* Xóa khoảng cách mặc định */
-}
-
-.promotion-item p {
-  font-size: 16px; /* Kích thước phông cho văn bản */
-  line-height: 1.6; /* Khoảng cách giữa các dòng */
-  color: #333; /* Màu tối cho văn bản */
-  margin: 10px 0; /* Khoảng cách giữa các đoạn */
-}
-body {
-    font-family: Arial, sans-serif; /* Font chung cho toàn bộ trang */
-  }
-  
-  .promotion-section {
-    background-color: #f9f9f9; /* Màu nền sáng */
-    padding: 40px 20px; /* Khoảng đệm dọc */
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
   }
   
   .container {
-    width: 80%; /* Điều chỉnh chiều rộng */
-    margin: auto; /* Giữa trang */
+    width: 95%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
   }
   
-  .promotion-item {
-    margin-bottom: 40px; /* Khoảng cách giữa các mục */
-    padding: 20px; /* Khoảng đệm quanh nội dung */
-    border: 1px solid #ccc; /* Đường viền nhẹ quanh các mục */
-    border-radius: 10px; /* Góc bo tròn */
-    background-color: #fff; /* Nền trắng */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng nhẹ */
+  /* Shopping Cart Table */
+  .shoping__cart__table {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 30px;
   }
   
-  .promotion-header {
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  thead {
+    background-color: #f9fafb;
+  }
+  
+  th, td {
+    padding: 20px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+  }
+  
+  /* Product Image and Details */
+  .shoping__cart__item {
     display: flex;
-    align-items: center; /* Căn giữa theo chiều dọc */
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
   }
   
-  .promo-image {
-    max-width: 80px; /* Chiều rộng tối đa cho hình ảnh */
-    margin-right: 20px; /* Khoảng cách giữa hình ảnh và tiêu đề */
+  .shoping__cart__item img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
   }
   
-  .promo-title {
-    display: flex;
-    flex-direction: column; /* Sắp xếp tiêu đề theo cột */
+  .shoping__cart__item:hover img {
+    transform: scale(1.05);
   }
   
-  .promo-title h2 {
-    font-size: 24px; /* Kích thước phông cho tiêu đề */
-    color: #ec4237; /* Màu đỏ cho tiêu đề */
-    margin: 0; /* Xóa khoảng cách mặc định */
+  .shoping__cart__item h5 {
+    font-size: 18px;
+    font-weight: 600;
   }
   
-  .highlight {
-    font-size: 18px; /* Kích thước phông cho phần nhấn mạnh */
-    font-weight: bold; /* Đậm */
-    color: #ec4237; /* Màu đỏ cho phần nhấn mạnh */
-  }
-  
-  .promotion-item p {
-    font-size: 16px; /* Kích thước phông cho văn bản */
-    line-height: 1.6; /* Khoảng cách giữa các dòng */
-    color: #333; /* Màu tối cho văn bản */
-    margin: 10px 0; /* Khoảng cách giữa các đoạn */
-  }
-  
-  .promotion-item p:last-of-type {
-    margin-bottom: 0; /* Xóa khoảng cách dưới cùng của đoạn cuối */
-  }
-  .error {
-    border: 1px solid #ff0000 !important;
-  }
-  
-  .error-message {
-    color: #ff0000;
-    font-size: 12px;
+  .product-color {
+    display: block;
+    color: #6c757d;
+    font-size: 14px;
     margin-top: 5px;
-    display: block;
   }
   
-  .payment-error {
-    margin: 10px 0;
-    text-align: center;
-    display: block;
+  /* Quantity Control */
+  .quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the buttons and input */
+    background-color: #f8f9fa;
+    border-radius: 50px;
+    overflow: hidden;
+    width: auto; /* Adjust width automatically based on content */
+    min-width: 160px; /* Ens
   }
-  /* Quantity Controls */
-.shoping__cart__quantity .quantity {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.shoping__cart__quantity .pro-qty {
-  display: flex;
-  align-items: center;
-}
-
-.shoping__cart__quantity .pro-qty button {
-  background-color: #3498db;
-  color: white;
-  border: 1px solid #3498db;
-  font-size: 18px;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  padding: 0;
-}
-
-.shoping__cart__quantity .pro-qty button:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
-}
-
-.shoping__cart__quantity .pro-qty input {
-  width: 50px;
-  text-align: center;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin: 0 10px;
-  padding: 5px;
-  background-color: #f9f9f9;
-  color: #333;
-}
-
-.shoping__cart__quantity .pro-qty input:read-only {
-  background-color: #f9f9f9;
-}
-
-.shoping__cart__quantity .pro-qty button:active {
-  background-color: #2980b9;
-  border-color: #2980b9;
-}
-/* Căn đều bảng giỏ hàng */
-.shoping__cart__table table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-/* Đảm bảo các cột có chiều rộng đều */
-.shoping__cart__table th, .shoping__cart__table td {
-  text-align: center;
-  padding: 15px;
-}
-
-/* Định dạng cho các cột, ví dụ như Hình ảnh, Sản phẩm, Giá, Số lượng... */
-.shoping__cart__table th {
-  background-color: #f7f7f7;
-  font-weight: bold;
-}
-
-.shoping__cart__table td {
-  border-bottom: 1px solid #ddd;
-}
-
-.shoping__cart__item img {
-  max-width: 100%;
-  height: auto;
-  max-height: 150px;
-}
-
-/* Sửa chữa cột số lượng */
-.shoping__cart__quantity .pro-qty {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.shoping__cart__quantity .pro-qty input {
-  width: 60px;
-  text-align: center;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin: 0 5px;
-  padding: 5px;
-  background-color: #f9f9f9;
-  color: #333;
-}
+  
+  .quantity .btn {
+    background-color: transparent;
+    border: none;
+    padding: 8px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #3498db;
+    width: 40px; Ensure both buttons have equal width */
+    height: 40px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .quantity .btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .quantity input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    outline: none;
+  }
+  
+  .quantity .btn:active {
+    transform: scale(0.95);
+  }
+  
+  .quantity input:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  /* Icons */
+  .icon_close {
+    color: #e74c3c;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .icon_close:hover {
+    color: #c0392b;
+    transform: scale(1.2);
+  }
+  
+  /* Cart Actions */
+  .shoping__cart__btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+  }
+  
+  .primary-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none
+    (--border-radius);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .primary-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+  }
+  
+  /* Discount Section */
+  .shoping__discount {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .shoping__discount input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .site-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .site-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+  }
+  
+  .site-btn:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+  }
+  
+  /* Checkout Section */
+  .shoping__checkout {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  }
+  
+  .shoping__checkout ul {
+    list-style: none;
+    margin-bottom: 20px;
+  }
+  
+  .shoping__checkout li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+  }
+  
+  .shoping__checkout li:last-child {
+    border-bottom: none;
+    font-weight: bold;
+  }
+  
+  /* Tick Icon */
+  .tick-icon {
+    color: #2ecc71;
+    font-size: 20px;
+    display: inline-block;
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .tick-icon.visible {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    table {
+      font-size: 14px;
+    }
+    
+    .shoping__cart__item {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .shoping__cart__item img {
+      margin-bottom: 10px;
+    }
+  }
+  
+  /* Accessibility and Print Styles */
+  @media print {
+    body {
+      background: white;
+    }
+    
+    .site-btn, .primary-btn {
+      display: none;
+    }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  tbody tr {
+    animation: fadeIn 0.5s ease;
+  }

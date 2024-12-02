@@ -1,6 +1,6 @@
 
 import React from "react"
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements,  Outlet,  Navigate  } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements  } from "react-router-dom";
 import Home from "./component/client/home";
 import Blog from './component/client/blog';
 import Cart from "./component/client/cart";
@@ -22,7 +22,6 @@ import './assets/css/font-awesome.min.css'
 import './assets/css/nice-select.css'
 import './assets/css/slicknav.min.css'
 import './assets/css/style2.css'
-
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -34,6 +33,8 @@ import './assets/css/style2.css'
 import Dashboard from "./component/admin/dashboard/index";
 import Profile from "./component/admin/profile/index";
 import Categories from "./component/admin/categories/list";
+import Contacts from "./component/admin/contact/list";
+
 import EditCategories from "./component/admin/categories/edit";
 import AddCategories from "./component/admin/categories/add";
 import ListBrand from "./component/admin/brand/list";
@@ -65,7 +66,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-
 import './assets/css/bootstrap.min.css'
 import './assets/css/elegant-icons.css'
 import './assets/css/font-awesome.min.css'
@@ -81,6 +81,8 @@ import Momo from "./component/client/paypal/momo";
 import Atm from "./component/client/paypal/atm";
 import Qratm from "./component/client/paypal/qratm";
 import Qrmomo from "./component/client/paypal/qrmomo";
+// import ResetPassword from "./component/client/profile/resetpassword";
+// import EditProfile from "./component/client/profile/editprofile";
 // import './assets/css/all.min.css'
 // import './assets/css/animate.css'
 // import './assets/css/magnific-popup.css'
@@ -88,7 +90,6 @@ import Qrmomo from "./component/client/paypal/qrmomo";
 // import './assets/css/owl.carousel.css'
 // import './assets/css/meanmenu.min.css'
 // import './assets/css/responsive.css'
-
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -96,7 +97,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog-details/:id" element={<BlogDetails />} />
-
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
         <Route path="/product" element={<Product/>}/>
@@ -109,6 +109,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProfileClient />} />
+        {/* <Route path="/editprofile" element={<EditProfile />} /> */}
 
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
@@ -122,11 +123,16 @@ function App() {
         <Route path="/atm" element={<Atm/>}/>
         <Route path="/qratm" element={<Qratm/>}/>
         <Route path="/qrmomo" element={<Qrmomo/>}/>
+        {/* <Route path="/ResetPassword" element={<ResetPassword/>}/> */}
+        
+
+
       {/* Các route admin */}
       <Route path="/admin" element={<Layout />} />
       <Route path="/admin/dashboard" element={<Dashboard />} />
       <Route path="/admin/profile" element={<Profile />} />
       <Route path="/admin/category" element={<Categories />} />
+      <Route path="/admin/contact" element={<Contacts />} />
       <Route path="/admin/category/edit/:id" element={<EditCategories />} />
       <Route path="/admin/category/add" element={<AddCategories />} />
       <Route path="/admin/brand" element={<ListBrand />} />
@@ -158,8 +164,10 @@ function App() {
   );
  
   return (
+    <>
+
     <RouterProvider router={router} />
-   
+    </>
   );
 }
 
