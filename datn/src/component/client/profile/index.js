@@ -32,23 +32,33 @@ const ProfileS = () => {
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
-
   const handleSaveChanges = async () => {
     try {
-      setLoading(true); // Hiển thị trạng thái loading
-      await updateUserProfile({
+      setLoading(true); // Bắt đầu loading
+      const profileData = {
         full_name: userInfo.fullName,
         email: userInfo.email,
         address: userInfo.address,
         phone: userInfo.phone,
-      });
-      setEditMode(false); // Quay lại chế độ xem
-      setLoading(false);
+      };
+      const updatedData = await updateUserProfile(profileData);
+      setUserInfo((prev) => ({
+        ...prev,
+        fullName: updatedData.full_name,
+        email: updatedData.email,
+        address: updatedData.address,
+        phone: updatedData.phone,
+      }));
+      setEditMode(false);
     } catch (error) {
-      setLoading(false);
-      alert("Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại!");
+      alert(error.response?.data?.message || "Đã xảy ra lỗi khi cập nhật. Vui lòng thử lại!");
+    } finally {
+      setLoading(false); // Kết thúc loading
     }
   };
+  
+  
+
   const [avatarFile, setAvatarFile] = useState(null);
 
   const handleAvatarChange = (e) => {
@@ -80,7 +90,7 @@ const ProfileS = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const data = await getUserProfile(); // Call the service to fetch user data
+        const data = await getUserProfile(); // Lấy dữ liệu từ API
         setUserInfo({
           fullName: data.full_name,
           email: data.email,
@@ -89,14 +99,14 @@ const ProfileS = () => {
           userRole: data.role || "",
           avatar: data.avatar || avt,
         });
-        setLoading(false); // Set loading to false when data is fetched successfully
+        setLoading(false); // Dừng trạng thái loading
       } catch (error) {
-        setError("Failed to load profile data.");
-        setLoading(false); // Set loading to false in case of error
+        setError("Không thể tải thông tin tài khoản.");
+        setLoading(false);
       }
     };
 
-    fetchUserProfile();
+    fetchUserProfile(); // Gọi API khi trang tải
   }, []);
 
   if (loading) {
@@ -137,13 +147,16 @@ const ProfileS = () => {
         <center className="mt-4">
           <img
             src={
-              `http://127.0.0.1:8000${userInfo.avatar}` || "default-avatar-url"
+              userInfo.avatar.startsWith("http")
+                ? userInfo.avatar
+                : `http://127.0.0.1:8000${userInfo.avatar}`
             }
             alt={userInfo.fullName}
             className="rounded-circle"
             width="100"
             height="100"
           />
+
           <div className="position-relative d-inline-block">
             {editMode && (
               <label
@@ -154,7 +167,7 @@ const ProfileS = () => {
                   transform: "translate(30%, -130%)",
                 }}
               >
-               <i className="bi bi-camera text-danger"></i>
+                <i className="bi bi-camera text-danger"></i>
               </label>
             )}
             <input

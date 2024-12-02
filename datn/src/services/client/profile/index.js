@@ -20,21 +20,24 @@ export const getUserProfile = async () => {
     throw error;
   }
 };
-//update
-export const updateUserProfile = async (updatedData) => {
+// Cập nhật thông tin người dùng
+export const updateUserProfile = async (profileData) => {
   try {
     const token = Cookies.get('authToken');
-    const response = await axios.put(apiUrl, updatedData, {
+    const response = await axios.put(apiUrl, profileData, {
       headers: {
         'Authorization': token ? `Bearer ${token}` : undefined,
+        'Content-Type': 'application/json',
       },
     });
-    return response.data;
+    return response.data.data; 
   } catch (error) {
-    console.error('Error updating profile:', error);
+    console.error('Error updating user profile:', error);
     throw error;
   }
 };
+
+
 export const updateUserAvatar = async (avatarFile) => {
   try {
     const token = Cookies.get('authToken');
