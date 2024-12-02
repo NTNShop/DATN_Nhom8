@@ -67,11 +67,11 @@ export const CartService = {
         if (!isValidToken()) {
             throw new Error('Vui lòng đăng nhập để thêm vào giỏ hàng');
         }
-
+    
         return await axiosInstance.post('/cart/add', {
             product_id: productId,
             quantity: quantity,
-            variant_id: variantId,
+            variant_id: variantId, // Đảm bảo gửi variant_id
             user_id: userInfo.id
         });
     },

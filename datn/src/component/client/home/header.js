@@ -2,53 +2,34 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { logoutUser } from "../../../services/client/Login";
-import { getUserProfile } from "../../../services/client/profile"; // Hàm gọi API lấy thông tin user
 import logo from "../../../assets/img/logo.png";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Header = () => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-  const [full_name, setFullName] = useState(""); // Lưu full_name
+  const [fullName, setFullName] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  // Lấy thông tin người dùng từ API
-  const fetchUserProfile = async () => {
-    try {
-      const authToken = Cookies.get("authToken");
-
-      if (authToken) {
-        const response = await getUserProfile(authToken); // Gọi API với token
-        console.log("Response Data:", response);
-
-        if (response && response.data && response.data.full_name) {
-          setFullName(response.data.full_name); // Lưu full_name vào state
-        } else {
-          console.warn("Full Name Not Found in Response");
-          setFullName("Người dùng");
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi lấy thông tin người dùng:", error);
-      setFullName("Người dùng");
-    }
-  };
-
-  // Kiểm tra trạng thái đăng nhập khi component mount
+  // Kiểm tra trạng thái đăng nhập khi component mount và khi cookies thay đổi
   useEffect(() => {
     const checkAuth = () => {
+      const userFullName = Cookies.get("full_name");
       const authToken = Cookies.get("authToken");
-      if (authToken) {
+
+
+      if (userFullName && authToken) {
+        setFullName(userFullName);
         setIsAuthenticated(true);
-        fetchUserProfile(); // Lấy thông tin user khi có token
       } else {
+        setFullName("");
         setIsAuthenticated(false);
         setFullName("");
       }
     };
 
     checkAuth();
-    window.addEventListener("storage", checkAuth); // Listen for changes in localStorage/cookies
+    window.addEventListener("storage", checkAuth);  // Listen for changes in localStorage/cookies
 
     return () => {
       window.removeEventListener("storage", checkAuth);
@@ -58,11 +39,12 @@ const Header = () => {
   // Xử lý đăng xuất
   const handleLogout = async () => {
     try {
-      await logoutUser(); // Call API to logout user
+      await logoutUser();  // Call API to logout user
       Cookies.remove("authToken", { path: "/" });
+      Cookies.remove("fullname", { path: "/" });
       setIsAuthenticated(false);
       setFullName("");
-      navigate("/"); // Redirect to homepage after logout
+      navigate("/");  // Redirect to homepage after logout
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       alert("Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại!");
@@ -73,10 +55,10 @@ const Header = () => {
   const ProfileMenu = () => (
     <li>
       <Link className="ten-menu" to="/profile">
-        {full_name ? ( // Hiển thị full_name nếu có
-          <p>Xin chào, {full_name}</p>
+        {fullName ? (
+          <p>Xin chào, {fullName}</p>
         ) : (
-          <p>Hiii</p> // Hiển thị "Hiii" nếu chưa có tên
+          <p>hiii</p>  // Show homepage link if not logged in
         )}
       </Link>
       <ul className="menu-con">
@@ -90,7 +72,7 @@ const Header = () => {
             <li><Link className="name-menucon" to="/profile">THÔNG TIN CÁ NHÂN</Link></li>
             <li><button className="name-menucon" onClick={handleLogout}>ĐĂNG XUẤT</button></li>
           </>
-)}
+        )}
       </ul>
     </li>
   );
@@ -107,15 +89,20 @@ const Header = () => {
                 <li>
                   <Link className="ten-menu" to="/product">SẢN PHẨM</Link>
                   <ul className="menu-con">
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ VIỆT</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ THẾ GIỚI</Link></li>
-                    <li><Link className="name-menucon" to="/">CÀ PHÊ CẢM HỨNG</Link></li>
-                    <li><Link className="name-menucon" to="/">SẢN PHẨM KHÁC</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP TRẺ EM</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP THỂ THAO</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP FIXED GEAR</Link></li>
+                    <li><Link className="name-menucon" to="/">XE ĐẠP ĐỊA HÌNH</Link></li>
                   </ul>
                 </li>
                 <li><Link className="ten-menu" to="/introduce">GIỚI THIỆU</Link></li>
                 <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
                 <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
+                <li>
+                      <a href="/cart">
+                        <i className="fa fa-shopping-cart"></i>
+                      </a>
+                    </li>
                 <ProfileMenu />
               </ul>
             </nav>

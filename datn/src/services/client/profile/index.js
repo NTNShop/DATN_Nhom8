@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -63,9 +62,5 @@ export const updateUserAvatar = async (avatarFile) => {
     console.error('Error updating avatar:', error);
     throw error; 
   }
+  
 };
-
-
-
-
-

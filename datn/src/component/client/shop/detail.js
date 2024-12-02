@@ -9,6 +9,8 @@
     import Cookies from "js-cookie";
     import { ToastContainer } from 'react-toastify';
     import 'react-toastify/dist/ReactToastify.css';
+    import { ReviewService } from "../../../services/client/Reviews";
+
     const Detail = () => {
         const [mainImage, setMainImage] = useState(null);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -40,7 +42,77 @@
         const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
         return (yiq >= 128) ? '#000000' : '#ffffff';
     };
+    const [userReview, setUserReview] = useState({
+        rating: 0,
+        review_content: '',
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Thêm useEffect để fetch reviews của sản phẩm
+    useEffect(() => {
+        if (id) {
+            fetchProductReviews();
+        }
+    }, [id]);
+
+    const fetchProductReviews = async () => {
+        try {
+            const response = await ReviewService.getProductReviews(id);
+            console.log('Reviews response:', response);
+            
+            if (response && response.data) {
+                setReviews(response.data);
+            } else {
+                setReviews([]);
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+            // Không hiển thị lỗi nếu chưa đăng nhập
+            if (error.message !== 'Unauthenticated.') {
+                setError(error.message || "Không thể tải đánh giá. Vui lòng thử lại sau.");
+            }
+            setReviews([]); // Set empty array in case of error
+        }
+    };
+    
+    const handleSubmitReview = async () => {
+        if (!Cookies.get('authToken')) {
+            toast.error('Vui lòng đăng nhập để đánh giá sản phẩm');
+            return;
+        }
+    
+        if (userReview.rating === 0) {
+            toast.warning('Vui lòng chọn số sao đánh giá');
+            return;
+        }
+    
+        if (!userReview.review_content.trim()) {
+            toast.warning('Vui lòng nhập nội dung đánh giá');
+            return;
+        }
+    
+        try {
+            setIsSubmitting(true);
+            await ReviewService.createReview({
+                product_id: id,
+                rating: userReview.rating,
+                review_content: userReview.review_content
+            });
+    
+            toast.success('Đánh giá của bạn đã được gửi thành công!');
+            
+            // Reset form
+            setUserReview({ rating: 0, review_content: '' });
+            setHover(null);
+            
+            // Fetch lại danh sách reviews
+            await fetchProductReviews();
+        } catch (error) {
+            toast.error(error.message || 'Có lỗi xảy ra khi gửi đánh giá');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
@@ -436,6 +508,95 @@
             )}
         </>
     );
+    // Thêm component render đánh giá
+    const renderReviewSection = () => (
+        <div className="card">
+            <div className="card-header">
+                <h4>Đánh giá sản phẩm</h4>
+            </div>
+            <div className="card-body">
+                {/* Form đánh giá */}
+                <div className="mb-4 p-3 bg-light rounded">
+                    <h5>Đánh giá của bạn</h5>
+                    <div className="d-flex align-items-center mb-3">
+                        {[...Array(5)].map((star, index) => {
+                            const ratingValue = index + 1;
+                            return (
+                                <FaStar
+                                    key={index}
+                                    className="star"
+                                    color={ratingValue <= (hover || userReview.rating) ? "#ffc107" : "#e4e5e9"}
+                                    size={25}
+                                    onMouseEnter={() => setHover(ratingValue)}
+                                    onMouseLeave={() => setHover(null)}
+                                    onClick={() => setUserReview({...userReview, rating: ratingValue})}
+                                    style={{ cursor: 'pointer', marginRight: '5px' }}
+                                />
+                            );
+                        })}
+                    </div>
+
+                    <textarea
+                        className="form-control mb-3"
+                        rows="4"
+                        placeholder="Nhập đánh giá của bạn (tối thiểu 10 ký tự)..."
+                        value={userReview.review_content}
+                        onChange={(e) => setUserReview({...userReview, review_content: e.target.value})}
+                    ></textarea>
+
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleSubmitReview}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+                    </button>
+                </div>
+
+                {/* Danh sách đánh giá */}
+                <div>
+                    <h5 className="mb-3">Đánh giá từ khách hàng ({reviews.length})</h5>
+                    {reviews.length > 0 ? (
+                        reviews.map((review) => (
+                            <div key={review.id} className="card mb-3 shadow-sm">
+                                <div className="card-body">
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <div className="d-flex align-items-center">
+                                            <strong className="me-2">{review.user?.name || 'Ẩn danh'}</strong>
+                                            <div className="d-flex">
+                                                {[...Array(5)].map((_, index) => (
+                                                    <FaStar
+                                                        key={index}
+                                                        color={index < review.rating ? "#ffc107" : "#e4e5e9"}
+                                                        size={15}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <small className="text-muted">
+                                            {new Date(review.created_at).toLocaleDateString('vi-VN', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </small>
+                                    </div>
+                                    <p className="mb-0">{review.review_content}</p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="alert alert-info">
+                            Chưa có đánh giá nào cho sản phẩm này
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
         return (
             <>
                 <Header />
@@ -561,53 +722,7 @@
                     {/* Phần đánh giá */}
                     <div className="row mt-5">
                                 <div className="col-12">
-                                    <div className="card">
-                                        <div className="card-header">
-                                            <h4>Đánh giá sản phẩm</h4>
-                                        </div>
-                                        <div className="card-body">
-                                            {/* Phần danh sách bình luận */}
-                                            {error ? (
-                                                <p>{error}</p>
-                                            ) : reviews.length > 0 ? (
-                                                reviews.map((review) => (
-                                                    <div key={review.id} className="mb-4">
-                                                        <div className="d-flex justify-content-between">
-                                                            <strong>ID Khách hàng: {review.user_id}</strong>
-                                                            <span className="text-muted">{review.created_at}</span>
-                                                        </div>
-                                                        <p>{review.review_content}</p>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <p>Không có bình luận nào</p>
-                                            )}
-                                            {/* Phần nhập bình luận */}
-                                            <div className="mt-4">
-                                                <h5>Viết bình luận</h5>
-                                                <textarea
-                                                    className="form-control"
-                                                    rows="4"
-                                                    placeholder="Nhập bình luận của bạn..."
-                                                    value={comment}
-                                                    onChange={(e) => setComment(e.target.value)}
-                                                ></textarea>
-                                            <button
-                                                    className="btn btn-primary mt-3"
-                                                    onClick={() => {
-                                                        if (!comment.trim()) {
-                                                            alert("Vui lòng nhập bình luận.");
-                                                            return;
-                                                        }
-                                                        
-                                                    }}
-                                                >
-                                                    Gửi bình luận
-                                                </button>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                {renderReviewSection()}
                                 </div>
                             </div>
                     </div>

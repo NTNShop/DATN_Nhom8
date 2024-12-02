@@ -24,7 +24,7 @@ export const ContactService = {
         } catch (error) {
             // Xử lý lỗi giới hạn số lần liên hệ
             if (error.response && error.response.status === 429) {
-                throw new Error('Bạn đã vượt quá số lần liên hệ cho phép trong ngày. Vui lòng thử lại vào ngày mai.');
+                throw new Error('Bạn đã gửi quá 3 tin nhắn trong vòng 30 phút. Vui lòng thử lại sau.');
             }
             throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi gửi liên hệ');
         }
