@@ -5,7 +5,7 @@ import Footer from "./footer";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import axios from 'axios'; // Import axios for making API calls
-
+import Chatbot from "./chatbot";
 // Import images
 import sp from "../../../assets/img/cart/sp1.webp";
 import sp3 from "../../../assets/img/cart/xe-dap-fixed-gear.webp";
@@ -796,6 +796,7 @@ Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn b
         </div>
       </div>
       <Footer />
+      <Chatbot />
     </div>
   );
 };

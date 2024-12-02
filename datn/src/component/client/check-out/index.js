@@ -8,6 +8,8 @@ import SanPham1 from "../../../assets/img/cart/sp1.png"
 import { Link } from 'react-router-dom';
 import { CartService } from '../../../services/client/Cart';
 import { OrderService } from '../../../services/client/Payment';
+
+
 import { toast } from 'react-toastify';
 import '../cart/cart.css'
 const CheckoutSection = () => {
@@ -26,7 +28,7 @@ const CheckoutSection = () => {
     address: '',
     phone: '',
     email: '',
-    note: '',
+    notes: '',
     // payment_status: '',
   });
   const [errors, setErrors] = useState({
@@ -81,6 +83,15 @@ const CheckoutSection = () => {
 
     fetchSelectedItems();
   }, [navigate]);
+
+
+
+    
+      
+ 
+
+
+  
   
   
   const fetchCartItems = async () => {
@@ -234,32 +245,40 @@ const PaymentMethodRadio = ({ method }) => (
       )}
     </div>
   );
+  
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
-
+  
+    if (!validateForm()) {
+      toast.error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+  
     if (!selectedPaymentMethod) {
       toast.error('Vui lòng chọn phương thức thanh toán');
       return;
     }
-
+  
+    if (cartItems.length === 0) {
+      toast.error('Giỏ hàng của bạn đang trống');
+      return;
+    }
+  
     setLoading(true);
-
+  
     try {
-      // Tính toán subtotal từ giỏ hàng
       const subtotal = cartItems.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
-      const roundedTotal = Math.round(subtotal); // Làm tròn tổng tiền
-
+      const roundedTotal = Math.round(subtotal);
+  
       const orderItems = cartItems.map(item => ({
         product_id: parseInt(item.product.id),
         variant_id: item.variant_id || null,
         quantity: parseInt(item.quantity),
         price: parseFloat(item.unit_price)
       }));
-
+  
       const normalizedPaymentMethod = PAYMENT_METHODS[selectedPaymentMethod] || selectedPaymentMethod;
-
+  
       let paymentStatus;
       switch (selectedPaymentMethod) {
         case PAYMENT_METHODS.VNPAY:
@@ -273,8 +292,7 @@ const PaymentMethodRadio = ({ method }) => (
           paymentStatus = 3; // Bank Transfer
           break;
       }
-
-      // Dữ liệu đơn hàng
+  
       const orderData = {
         items: orderItems,
         shipping_address: {
@@ -282,58 +300,71 @@ const PaymentMethodRadio = ({ method }) => (
           email: formData.email.trim(),
           phone: formData.phone.trim(),
           address: formData.address.trim(),
-          city: formData.city.trim(),
-          note: formData.note?.trim() || ''
+city: formData.city.trim(),
+          notes: formData.notes?.trim() || ''
         },
-payment_method: normalizedPaymentMethod,
+        payment_method: normalizedPaymentMethod,
         subtotal: subtotal,
         total_amount: roundedTotal,
         payment_status: paymentStatus,
-        
         vnpay_data: {
-          amount: roundedTotal, // Gửi tổng tiền chính xác
+          amount: roundedTotal,
           order_type: 'other',
           order_description: `Thanh toán đơn hàng - ${formData.fullName}`
-          
         }
       };
-
-      console.log('Dữ liệu đơn hàng gửi lên backend:', orderData);
-
-      // Gửi dữ liệu lên backend để tạo đơn hàng
+  
       const response = await OrderService.createOrder(orderData);
 
+  
       if (response.success) {
+        // Xóa các sản phẩm đã mua khỏi giỏ hàng
+        await CartService.removeFromCart(cartItems.map(item => item.id));
+  
         sessionStorage.removeItem('selectedCartItems');
         sessionStorage.removeItem('selectedProducts');
-
-        // Nếu phương thức thanh toán là VNPAY và có URL trả về
-        console.log('VNPAY URL:', response.data.vnpay_payment_url);
+  
+        // Xử lý thanh toán VNPAY
         if (response.data.vnpay_payment_url) {
-          window.open(response.data.vnpay_payment_url, '_blank');
-          // hoặc
-          // window.location.replace(response.data.vnpay_payment_url);
-        }else {
-          toast.error('Không tìm thấy URL thanh toán VNPAY');
-        }
-
-        // Nếu đơn hàng đã được tạo thành công và không phải thanh toán VNPAY, điều hướng đến trang thành công
-        navigate('/success', {
-          state: {
+          sessionStorage.setItem('pendingOrderDetails', JSON.stringify({
             orderId: response.data.id,
             orderCode: response.data.order_code,
-            orderDetails: {
-              ...response.data,
-              total: response.data.total,
-              payment_status: paymentStatus,
-              payment_url: response.data.payment_url,
-             
+            totalAmount: response.data.total,
+            paymentStatus: paymentStatus,
+            paymentMethod: normalizedPaymentMethod
+            // Thông tin đơn hàng
+            
+          }));
+        
+        
+          // Thực thi hàm bổ sung (nếu cần)
+          // handlePaymentRedirect(); // Ví dụ: ghi nhận sự kiện hoặc thao tác khác trước khi chuyển hướng
+  
+          // Chuyển hướng người dùng đến VNPay
+          window.location.replace(response.data.vnpay_payment_url);
+        
+          return;
+        }
+        
+        // Đối với các phương thức thanh toán khác VNPAY
+        if (selectedPaymentMethod !== PAYMENT_METHODS.VNPAY) {
+          navigate('/success', {
+            state: {
+              orderId: response.data.id,
+              orderCode: response.data.order_code,
+              orderDetails: {
+                ...response.data,
+                total: response.data.total,
+                payment_status: paymentStatus,
+                payment_url: response.data.payment_url,
+              }
             }
-          }
-        });
-
-        // Thông báo đặt hàng thành công
-        toast.success('Đặt hàng thành công!');
+          });
+  
+          toast.success('Đặt hàng thành công!');
+        }
+      } else {
+        toast.error(response.message || 'Không thể tạo đơn hàng');
       }
     } catch (error) {
       console.error('Chi tiết lỗi:', error);
@@ -342,6 +373,14 @@ payment_method: normalizedPaymentMethod,
       setLoading(false);
     }
   };
+  
+  
+  // Hàm xử lý phản hồi từ VNPAY
+ 
+  
+  // Hook useEffect để xử lý phản hồi VNPAY
+
+  
   
   
 
@@ -357,7 +396,7 @@ payment_method: normalizedPaymentMethod,
               </h6>
             </div>
           </div>
-          <div className="checkout__form">
+<div className="checkout__form">
             <form onSubmit={handlePlaceOrder}>
               <div className="row">
                 {/* Adjusting both columns to be equally sized */}
@@ -366,7 +405,7 @@ payment_method: normalizedPaymentMethod,
                   <div className="checkout__input">
                     <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Họ và Tên<span>*</span></p>
                     <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className={errors.fullName ? 'error' : ''}
-placeholder="Nhập họ và tên của bạn (bắt buộc)" />
+                      placeholder="Nhập họ và tên của bạn (bắt buộc)" />
                     {errors.fullName && <span className="error-message">{errors.fullName}</span>}
                   </div>
 
@@ -404,7 +443,7 @@ placeholder="Nhập họ và tên của bạn (bắt buộc)" />
                       <div className="checkout__input">
                         <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Số điện thoại<span>*</span></p>
                         <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className={errors.phone ? 'error' : ''}
-                          placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message">{errors.phone}</span>}
+placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message">{errors.phone}</span>}
                       </div>
                     </div>
                     <div className="col-lg-6">
@@ -414,13 +453,13 @@ placeholder="Nhập họ và tên của bạn (bắt buộc)" />
                           placeholder="(bắt buộc)" /> {errors.email && <span className="error-message">{errors.email}</span>}
                       </div>
                     </div>
-</div>
+                  </div>
 
                   <div className="checkout__input">
                     <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Ghi chú đơn hàng<span></span></p>
                     <textarea
-                      type="text" name="note"
-                      placeholder="Ghi chú về đơn hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng." value={formData.note} onChange={handleInputChange}
+                      type="text" name="notes"
+                      placeholder="Ghi chú về đơn hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng." value={formData.notes} onChange={handleInputChange}
                       style={{
                         width: '100%',
                         padding: '10px',
@@ -457,7 +496,7 @@ placeholder="Nhập họ và tên của bạn (bắt buộc)" />
                             />
                             <div>
                               <div>{item.product.name}</div>
-                              <div style={{ fontSize: '0.9em', color: '#666' }}>
+<div style={{ fontSize: '0.9em', color: '#666' }}>
                                 Giá: {formatCurrency(item.unit_price)} - Số lượng: {item.quantity}
                               </div>
                             </div>
@@ -473,7 +512,7 @@ placeholder="Nhập họ và tên của bạn (bắt buộc)" />
                     <div className="checkout__order__subtotal">
                       Tạm tính <span>{formatCurrency(subtotal)}</span>
                     </div>
-{/* <div className="checkout__order__subtotal">
+                    {/* <div className="checkout__order__subtotal">
                       Phí vận chuyển <span>{formatCurrency(shipping)}</span>
                     </div> */}
                     <div className="checkout__order__total">

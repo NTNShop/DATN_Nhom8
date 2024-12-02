@@ -246,6 +246,11 @@ const handleUpdateCartItem = async (itemId, quantity) => {
                             style={{ width: '150px' }}
                           />
                           <h5>{item.product.name}</h5>
+                          {item.variant && (
+            <span className="product-color">
+                Màu: <strong>{item.variant.color}</strong>
+            </span>
+        )}
                         </td>
                         <td className="shoping__cart__price">
                           {formatCurrency(parseFloat(item.unit_price))}
@@ -333,6 +338,14 @@ const handleUpdateCartItem = async (itemId, quantity) => {
         </div>
       </section>
       <Footer />
+      <style jsx>{`
+    .product-color {
+        display: block;
+        font-size: 0.9em;
+        color: #666;
+        margin-top: 5px;
+    }
+`}</style>
       
     </>
   );

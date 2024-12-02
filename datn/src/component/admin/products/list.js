@@ -195,8 +195,6 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     <th className="border-top-0">Giá</th>
                                                     <th className="border-top-0">Hình ảnh</th>
                                                     <th className="border-top-0">Số lượng</th>
-                                                    <th className="border-top-0">Hình ảnh</th>
-                                                    <th className="border-top-0">Số lượng</th>
                                                     <th className="border-top-0">Trạng thái</th>
                                                     <th className="border-top-0">Thao tác</th>
                                                 </tr>
@@ -216,11 +214,9 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     filteredProducts.map((product, index) => (
                                                         <tr key={product.id}>
                                                             <td>{index + 1}</td>
-                                                            <td>{index + 1}</td>
                                                             <td>{product.name}</td>
                                                             <td>{product.category?.name || "N/A"}</td>
                                                             <td>{product.brand?.name || "N/A"}</td>
-                                                            <td>{formatPrice(product.price)}</td>
                                                             <td>{formatPrice(product.price)}</td>
                                                             <td>
                                                                 {product.images.length > 0 ? (
@@ -237,16 +233,6 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                                 ) : (
                                                                     "Không có hình ảnh"
                                                                 )}
-                                                            </td>
-                                                            <td>{product.stock}</td>
-                                                            <td>
-                                                                <span
-                                                                    className={`status-dot ${product.status === "in_stock"
-                                                                        ? "dot-success"
-                                                                        : "dot-danger"
-                                                                        }`}
-                                                                ></span>
-                                                                {product.status === "in_stock" ? "Kích hoạt" : "Không kích hoạt"}
                                                             </td>
                                                             <td>{product.stock}</td>
                                                             <td>

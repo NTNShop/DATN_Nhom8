@@ -14,7 +14,7 @@ const UpdateOrderStatusModal = ({ order, onClose, onSuccess }) => {
         const newIndex = statusOrder.indexOf(newStatus);
 
         if (currentStatus === 5) return false; // Đơn hủy không thể update
-        if (newStatus === 5) return true; // Luôn cho phép hủy đơn 
+        // if (newStatus === 5) return true; // Luôn cho phép hủy đơn 
         
         return newIndex === currentIndex + 1; // Chỉ cho update sang trạng thái kế tiếp
     };

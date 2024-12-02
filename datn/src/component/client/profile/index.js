@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
-import { getUserProfile, updateUserProfile, updateUserAvatar } from "../../../services/admin/profile";
+import { getUserProfile } from "../../../services/client/profile";
+import { updateUserProfile } from "../../../services/client/profile";
+import { updateUserAvatar } from "../../../services/client/profile";
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const ProfileS = () => {
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [userInfo, setUserInfo] = useState({
     fullName: "",
@@ -88,13 +96,13 @@ const ProfileS = () => {
           userRole: data.role || "",
           avatar: data.avatar || avt,
         });
-        setLoading(false); // Set loading to false when data is fetched successfully
+setLoading(false); // Set loading to false when data is fetched successfully
       } catch (error) {
         setError("Failed to load profile data.");
         setLoading(false); // Set loading to false in case of error
       }
     };
-fetchUserProfile();
+    fetchUserProfile();
   }, []);
   useEffect(() => {
     const fetchUserProfileAndOrders = async () => {
@@ -133,13 +141,68 @@ fetchUserProfile();
     fetchUserProfileAndOrders();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  // if (error) {
+  //   return <div>{error}</div>;
+
+  // }
+  const handleCancelOrder = async (orderId, orderStatus, paymentStatus) => {
+    if ((orderStatus === 1 || orderStatus === 2) && paymentStatus !== 2) {
+      try {
+        setLoading(true);
+        const token = Cookies.get('authToken');
+
+        if (!token) {
+          alert('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
+          return;
+        }
+
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/v1/orders/${orderId}`,
+          {
+            status: 5,
+            _method: 'PUT',
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+          }
+        );
+
+        if (response.data.success) {
+          toast.success('Hủy đơn hàng thành công!');
+
+          // Update the order status in the state
+          setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+              order.id === orderId ? { ...order, status: 5 } : order
+            )
+          );
+
+        } else {
+          toast.error(response.data.message || 'Không thể hủy đơn hàng. Vui lòng thử lại.');
+        }
+      } catch (error) {
+        console.error('Lỗi khi hủy đơn hàng:', error);
+        toast.error('Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+alert('Đơn hàng không thể hủy do trạng thái hoặc tình trạng thanh toán không hợp lệ.');
+    }
+  };
+
+
+
+
+
 
   return (
     <>
@@ -196,7 +259,7 @@ fetchUserProfile();
               type="file"
               accept="image/*"
               onChange={handleAvatarChange}
-className="d-none"
+              className="d-none"
             />
             {avatarFile && (
               <div className=" text-center">
@@ -228,7 +291,7 @@ className="d-none"
         </center>
 
         <div className="col-lg-9 col-xlg-9 col-md-9">
-          <div className="col-lg-12 col-xlg-12 col-md-12">
+<div className="col-lg-12 col-xlg-12 col-md-12">
             <div className="card">
               <div className="pt-3 pb-3">
                 <form className="form-horizontal form-material col-lg-12 col-12 row">
@@ -262,7 +325,14 @@ className="d-none"
                         <span>{userInfo.phone}</span>
                       </div>
                     </div>
-
+                    <div className="form-group">
+                      <label className="col-md-12 mb-0">
+                        Vai trò người dùng
+                      </label>
+                      <div className="col-md-12">
+                        <span>{userInfo.userRole}</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
@@ -288,7 +358,7 @@ className="d-none"
                               className="form-control"
                               name="fullName"
                               value={userInfo.fullName}
-                              onChange={handleInputChange}
+onChange={handleInputChange}
                             />
                           </div>
                         </div>
@@ -329,7 +399,7 @@ className="d-none"
                           </div>
                         </div>
                         <div className="col-lg-12">
-<button
+                          <button
                             type="button"
                             className="btn btn-danger text-light"
                             onClick={handleSaveChanges}
@@ -359,18 +429,20 @@ className="d-none"
                     <table className="table table-striped mx-2 col-lg-12 col-12 mt-4">
                       <thead className="table-light">
                         <tr>
-                          <th scope="col">#</th>
+<th scope="col">STT</th>
                           <th scope="col">Mã đơn hàng</th>
                           <th scope="col">Ngày đặt</th>
                           <th scope="col">Trạng thái</th>
                           <th scope="col">Tổng tiền</th>
+                          <th scope="col">Hình ảnh</th>
                           <th scope="col">Sản phẩm</th>
+                          <th scope="col">Hành động</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {orders.map((order, index) => (
+                        {orders.map((order,index) => (
                           <tr key={order.id}>
-                            <td>{index + 1}</td>
+                            <td>{index+1}</td>
                             <td>{order.order_code}</td>
                             <td>{new Date(order.created_at).toLocaleDateString()}</td>
                             <td>
@@ -383,25 +455,75 @@ className="d-none"
                             </td>
                             <td>{order.total.toLocaleString()} VNĐ</td>
                             <td>
-                              {order.items.map((item) => (
-                                <div key={item.id}>
-                                  {item.product.name} (SL: {item.quantity})
-                                </div>
-                              ))}
+  {order.items && order.items.length > 0 ? (
+    order.items.map((item) => {
+      const primaryImage = item.product && item.product.images 
+        ? item.product.images.find(img => img.is_primary === 1) || item.product.images[0]
+        : null;
+      
+      return (
+        <div key={item.id} className="mb-2">
+          {primaryImage ? (
+            <img
+              src={`http://127.0.0.1:8000${primaryImage.image_url}`}
+              alt={item.product?.name || 'Product'}
+              style={{ width: '170px', height: '50px', objectFit: 'cover' }}
+            />
+          ) : (
+            <span>No image available</span>
+          )}
+        </div>
+      );
+    })
+  ) : (
+    <span>No items</span>
+  )}
+</td>
+<td>
+  {order.items && order.items.length > 0 ? (
+    order.items.map((item) => (
+      <div key={item.id}>
+        {item.product?.name || 'Unknown Product'} (SL: {item.quantity || 0})
+      </div>
+    ))
+  ) : (
+    <span>No items</span>
+  )}
+</td>
+                            <td>
+                              {order.status === 5 ? (
+                                <span className="text-muted">Đã hủy</span>
+) : (order.status === 1 || order.status === 2) && order.payment_status !== 2 ? (
+                                <button
+                                  className="btn btn-danger"
+                                  onClick={() => handleCancelOrder(order.id, order.status, order.payment_status)}
+                                >
+                                  Hủy đơn hàng
+                                </button>
+                              ) : (
+                                <span className="text-warning">
+                                  {order.payment_status === 2 ? 'Không thể hủy do đã thanh toán' : 'Không được hủy'}
+                                </span>
+                              )}
                             </td>
+
+
+
                           </tr>
                         ))}
                       </tbody>
                     </table>
+
+
                   ) : (
                     <p className="text-center">Bạn chưa có đơn hàng nào.</p>
                   )}
-</div>
+                  <ToastContainer />
+                </div>
+
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
       <Footer />

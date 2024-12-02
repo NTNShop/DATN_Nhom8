@@ -44,5 +44,32 @@ export const ReviewService = {
         throw new Error('Không thể tải danh sách đánh giá');
       }
     }
-  }
+  },
+  // Thêm method mới vào ReviewService
+  getProductReviews: async (productId) => {
+    try {
+        const token = Cookies.get('authToken');
+        const response = await axios.get(`${BASE_URL}/reviews/product/${productId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('API Error:', error);
+        if (error.response) {
+            if (error.response.status === 401) {
+                // Xử lý khi chưa đăng nhập
+                return { status: 'success', data: [] }; // Trả về mảng rỗng nếu chưa đăng nhập
+            }
+            throw new Error(error.response.data.message || 'Không thể tải đánh giá sản phẩm');
+        } else if (error.request) {
+            throw new Error('Không thể kết nối đến server');
+        } else {
+            throw new Error('Có lỗi xảy ra khi tải đánh giá');
+        }
+    }
+},
+  
 };
