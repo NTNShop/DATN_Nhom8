@@ -5,6 +5,7 @@ import Home from "./component/client/home";
 import Blog from './component/client/blog';
 import Cart from "./component/client/cart";
 import CheckoutSection from "./component/client/check-out";
+import VNPayReturnHandler from "./component/client/check-out/VNPayReturnHandler";
 import ProfileClient from "./component/client/profile/index";
 import Login from "./component/client/profile/login";
 import Register from "./component/client/profile/register";
@@ -99,6 +100,7 @@ function App() {
         <Route path="/blog-details/:id" element={<BlogDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutSection />} />
+        <Route path="/vnpay-return" element={<VNPayReturnHandler />} />
         <Route path="/product" element={<Product/>}/>
         <Route path="/product-details/:id" element={<ProductDetail/>}/>
         <Route path="/contact" element={<Contact/>}/>
@@ -155,6 +157,8 @@ function App() {
       <Route path="/admin/addBlog" element={<AddBlog />} />
       <Route path="/admin/editBlog" element={<EditBlog />} />
       <Route path="/admin/warring" element={<LoginWarning />} />
+
+      
 
     
         

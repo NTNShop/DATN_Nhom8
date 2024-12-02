@@ -11,19 +11,19 @@
     import 'react-toastify/dist/ReactToastify.css';
     import { ReviewService } from "../../../services/client/Reviews";
 
-    const Detail = () => {
-        const [mainImage, setMainImage] = useState(null);
+const Detail = () => {
+    const [mainImage, setMainImage] = useState(null);
     const [filteredProducts, setFilteredProducts] = useState([]);
-        const [quantity, setQuantity] = useState(1);
-        const [product, setProduct] = useState(null);
-        const [loading, setLoading] = useState(true);
-        const [rating, setRating] = useState(0);
-        const [reviews, setReviews] = useState([]);
-        const [error, setError] = useState(null);
-        const [hover, setHover] = useState(null);
-        const [comment, setComment] = useState('');
-        const { id } = useParams();
-        const [cartItems, setCartItems] = useState([]);
+    const [quantity, setQuantity] = useState(1);
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [rating, setRating] = useState(0);
+    const [reviews, setReviews] = useState([]);
+    const [error, setError] = useState(null);
+    const [hover, setHover] = useState(null);
+    const [comment, setComment] = useState('');
+    const { id } = useParams();
+    const [cartItems, setCartItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [products, setProducts] = useState([]);
@@ -37,7 +37,7 @@
         const r = parseInt(hexColor.slice(1, 3), 16);
         const g = parseInt(hexColor.slice(3, 5), 16);
         const b = parseInt(hexColor.slice(5, 7), 16);
-        
+
         // Tính toán độ tương phản theo công thức YIQ
         const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
         return (yiq >= 128) ? '#000000' : '#ffffff';
@@ -140,7 +140,7 @@
             }
         };
 
-    fetchProductDetail();
+        fetchProductDetail();
     }, [id]);
     // Validate input trước khi thêm vào giỏ hàng
     const validateCartInput = () => {
@@ -163,27 +163,27 @@
         return true;
     };
 
-        const fetchReviews = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/v1/reviews');
-                if (response.data && response.data.data) {
-                    setReviews(response.data.data.data);
-                }
-            } catch (error) {
-                console.error("Error fetching reviews:", error);
-                setError("Không thể tải bình luận. Vui lòng thử lại sau.");
+    const fetchReviews = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/reviews');
+            if (response.data && response.data.data) {
+                setReviews(response.data.data.data);
             }
-        };
-        const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+            setError("Không thể tải bình luận. Vui lòng thử lại sau.");
+        }
+    };
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
     const toggleCategories = () => {
         setIsCategoriesOpen(!isCategoriesOpen);
     };
-        if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Loading...</div>;
 
-        const handleThumbnailClick = (image) => {
-            setMainImage(image); // Set the main image to the selected thumbnail
-        };
+    const handleThumbnailClick = (image) => {
+        setMainImage(image); // Set the main image to the selected thumbnail
+    };
 
         const incrementQuantity = () => setQuantity((prev) => prev + 1);
         const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
@@ -235,7 +235,7 @@
             <p className="mb-4">
                 {product.description}
             </p>
-            
+
             {/* Hiển thị phần chọn màu cho tất cả sản phẩm xe đạp */}
             {isBicycleProduct(product) && product.variants && product.variants.length > 0 && renderColorOptions()}
 
@@ -252,8 +252,8 @@
                     </div>
                 </div>
             </div>
-            
-            <button 
+
+            <button
                 className="primary-btn"
                 onClick={handleAddToCart}
                 disabled={isAddingToCart}
@@ -265,42 +265,42 @@
             </a>
         </div>
     );
-        // xử lý cart
-        const handleAddToCart = async () => {
-            try {
-                if (!validateCartInput()) {
-                    return;
-                }
-    
-                setIsAddingToCart(true);
-    
-                const userInfo = Cookies.get('userInfo');
-                if (!userInfo) {
-                    toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
-                    return;
-                }
-    
-                const parsedUserInfo = JSON.parse(userInfo);
-                
-                const response = await CartService.addToCart(
-                    id,
-                    quantity,
-                    parsedUserInfo,
-                    isBicycleProduct(product) ? selectedVariant?.id : null
-                );
-    
-                if (response && response.data) {
-                    toast.success('Đã thêm sản phẩm vào giỏ hàng!');
-                }
-            } catch (error) {
-                console.error('Add to cart error:', error);
-                toast.error(error.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng');
-            } finally {
-                setIsAddingToCart(false);
+    // xử lý cart
+    const handleAddToCart = async () => {
+        try {
+            if (!validateCartInput()) {
+                return;
             }
-        };
-        // Cập nhật giỏ hàng
-        const updateCartItems = async () => {
+
+            setIsAddingToCart(true);
+
+            const userInfo = Cookies.get('userInfo');
+            if (!userInfo) {
+                toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng');
+                return;
+            }
+
+            const parsedUserInfo = JSON.parse(userInfo);
+
+            const response = await CartService.addToCart(
+                id,
+                quantity,
+                parsedUserInfo,
+                isBicycleProduct(product) ? selectedVariant?.id : null
+            );
+
+            if (response && response.data) {
+                toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+            }
+        } catch (error) {
+            console.error('Add to cart error:', error);
+            toast.error(error.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng');
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
+    // Cập nhật giỏ hàng
+    const updateCartItems = async () => {
         try {
             const token = Cookies.get('authToken');
             if (!token) return;
@@ -314,12 +314,12 @@
             // Không hiển thị toast lỗi ở đây vì đây là thao tác ngầm
         }
     };
-    
-            // Handle search
+
+    // Handle search
     const handleSearch = (event) => {
         event.preventDefault();
         const searchResults = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredProducts(searchResults);
         setCurrentPage(1);
@@ -329,7 +329,7 @@
         setSearchTerm(event.target.value);
         // Nếu muốn tìm kiếm realtime, bỏ comment đoạn code dưới đây
         const searchResults = products.filter(product =>
-        product.name.toLowerCase().includes(event.target.value.toLowerCase())
+            product.name.toLowerCase().includes(event.target.value.toLowerCase())
         );
         setFilteredProducts(searchResults);
         setCurrentPage(1);
@@ -344,13 +344,13 @@
     const handlePriceChange = () => {
         const [minPrice, maxPrice] = priceRange;
         const filtered = products.filter((product) => {
-        const price = parseFloat(product.price);
-        return price >= minPrice && price <= maxPrice;
+            const price = parseFloat(product.price);
+            return price >= minPrice && price <= maxPrice;
         });
         setFilteredProducts(filtered);
         setCurrentPage(1);
     };
-    
+
     // Component render phần màu sắc
     const renderColorOptions = () => (
         <div className="product__details__color mb-4">
@@ -376,8 +376,8 @@
                             backgroundColor: colorMap[variant.color] || variant.color || '#fff',
                             color: getContrastColor(colorMap[variant.color] || variant.color || '#fff'),
                             transition: 'all 0.3s ease',
-                            boxShadow: selectedVariant?.id === variant.id 
-                                ? '0 2px 8px rgba(0,0,0,0.1)' 
+                            boxShadow: selectedVariant?.id === variant.id
+                                ? '0 2px 8px rgba(0,0,0,0.1)'
                                 : 'none',
                             display: 'flex',
                             alignItems: 'center',
@@ -388,7 +388,7 @@
                     >
                         <span>{variant.color}</span>
                         {selectedVariant?.id === variant.id && (
-                            <span 
+                            <span
                                 className="check-icon"
                                 style={{
                                     position: 'absolute',
@@ -404,7 +404,7 @@
                     </div>
                 ))}
             </div>
-            
+
             {selectedVariant && (
                 <div className="selected-color-info mt-3"
                     style={{
@@ -439,10 +439,10 @@
     };
     // Format tiền tệ
     const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(amount);
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
     };
     //thong so ky thuat
     const renderSpecificationsModal = () => (
@@ -658,30 +658,30 @@
                                         <img className="img-fluid w-100" src={mainImage} alt="Product" />
                                     </div>
 
-                                    {/* Thumbnails */}
-                                    <div className="row">
-                                        {product.images.map((imageObj, index) => (
-                                            <div className="col-3" key={index}>
-                                                <img
-                                                    src={`http://127.0.0.1:8000${imageObj.image_url}`}
-                                                    alt={`Thumbnail ${index + 1}`}
-                                                    className={`img-thumbnail ${mainImage === `http://127.0.0.1:8000${imageObj.image_url}` ? 'border-primary' : ''}`}
-                                                    onClick={() => handleThumbnailClick(`http://127.0.0.1:8000${imageObj.image_url}`)}
-                                                    style={{ cursor: "pointer" }}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
+                                {/* Thumbnails */}
+                                <div className="row">
+                                    {product.images.map((imageObj, index) => (
+                                        <div className="col-3" key={index}>
+                                            <img
+                                                src={`http://127.0.0.1:8000${imageObj.image_url}`}
+                                                alt={`Thumbnail ${index + 1}`}
+                                                className={`img-thumbnail ${mainImage === `http://127.0.0.1:8000${imageObj.image_url}` ? 'border-primary' : ''}`}
+                                                onClick={() => handleThumbnailClick(`http://127.0.0.1:8000${imageObj.image_url}`)}
+                                                style={{ cursor: "pointer" }}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                            {/* Other Product Details */}
-                    
-                            <div className="col-lg-6 col-md-6">
-                            {renderProductDetails()}
-                            </div>
+                        </div>
+                        {/* Other Product Details */}
 
-                            {/* Bảng thông số kỹ thuật */}
-                            <div className="col-lg-12 mt-5">
+                        <div className="col-lg-6 col-md-6">
+                            {renderProductDetails()}
+                        </div>
+
+                        {/* Bảng thông số kỹ thuật */}
+                        <div className="col-lg-12 mt-5">
                             <ul className="list-group list-group-flush mb-4">
                                 <li className="list-group-item">
                                     <strong>Thông số kĩ thuật</strong>
@@ -733,4 +733,4 @@
         );
     };
 
-    export default Detail;
+export default Detail;

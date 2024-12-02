@@ -28,7 +28,7 @@ const CheckoutSection = () => {
     address: '',
     phone: '',
     email: '',
-    notes: '',
+    note: '',
     // payment_status: '',
   });
   const [errors, setErrors] = useState({
@@ -87,7 +87,7 @@ const CheckoutSection = () => {
 
 
     
-      
+      
  
 
 
@@ -300,8 +300,8 @@ const PaymentMethodRadio = ({ method }) => (
           email: formData.email.trim(),
           phone: formData.phone.trim(),
           address: formData.address.trim(),
-city: formData.city.trim(),
-          notes: formData.notes?.trim() || ''
+          city: formData.city.trim(),
+          note: formData.note?.trim() || ''
         },
         payment_method: normalizedPaymentMethod,
         subtotal: subtotal,
@@ -350,17 +350,12 @@ city: formData.city.trim(),
         if (selectedPaymentMethod !== PAYMENT_METHODS.VNPAY) {
           navigate('/success', {
             state: {
-              orderId: response.data.id,
-              orderCode: response.data.order_code,
-              orderDetails: {
-                ...response.data,
-                total: response.data.total,
-                payment_status: paymentStatus,
-                payment_url: response.data.payment_url,
-              }
-            }
+              orderId: response.data.id,  // Chắc chắn truyền ID
+              orderDetails: response.data
+            },
+            // Thêm query params để backup
+            search: `?orderId=${response.data.id}`
           });
-  
           toast.success('Đặt hàng thành công!');
         }
       } else {
@@ -396,7 +391,7 @@ city: formData.city.trim(),
               </h6>
             </div>
           </div>
-<div className="checkout__form">
+          <div className="checkout__form">
             <form onSubmit={handlePlaceOrder}>
               <div className="row">
                 {/* Adjusting both columns to be equally sized */}
@@ -443,7 +438,7 @@ city: formData.city.trim(),
                       <div className="checkout__input">
                         <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Số điện thoại<span>*</span></p>
                         <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className={errors.phone ? 'error' : ''}
-placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message">{errors.phone}</span>}
+                          placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message">{errors.phone}</span>}
                       </div>
                     </div>
                     <div className="col-lg-6">
@@ -458,8 +453,8 @@ placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message"
                   <div className="checkout__input">
                     <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Ghi chú đơn hàng<span></span></p>
                     <textarea
-                      type="text" name="notes"
-                      placeholder="Ghi chú về đơn hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng." value={formData.notes} onChange={handleInputChange}
+                      type="text" name="note"
+                      placeholder="Ghi chú về đơn hàng của bạn, ví dụ: ghi chú đặc biệt khi giao hàng." value={formData.note} onChange={handleInputChange}
                       style={{
                         width: '100%',
                         padding: '10px',
@@ -496,7 +491,7 @@ placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message"
                             />
                             <div>
                               <div>{item.product.name}</div>
-<div style={{ fontSize: '0.9em', color: '#666' }}>
+                              <div style={{ fontSize: '0.9em', color: '#666' }}>
                                 Giá: {formatCurrency(item.unit_price)} - Số lượng: {item.quantity}
                               </div>
                             </div>
@@ -516,8 +511,10 @@ placeholder="(bắt buộc)" /> {errors.phone && <span className="error-message"
                       Phí vận chuyển <span>{formatCurrency(shipping)}</span>
                     </div> */}
                     <div className="checkout__order__total">
+                      
                       Tổng cộng <span>{formatCurrency(subtotal)}</span>
                     </div>
+                    
                     <div className="checkout__order__payment">
                       <h4>Phương thức thanh toán</h4>
                       <PaymentMethodRadio method={PAYMENT_METHODS.BANK_TRANSFER} />

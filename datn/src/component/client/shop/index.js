@@ -52,25 +52,25 @@ const Product = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-        const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
-        if (response.data?.data?.data) {
-            const allProducts = response.data.data.data;
+      const response = await axios.get("http://127.0.0.1:8000/api/v1/products");
+      if (response.data?.data?.data) {
+        const allProducts = response.data.data.data;
 
-            // Lọc sản phẩm có trạng thái khác "out_of_stock"
-            const availableProducts = allProducts.filter(product => product.status !== 'out_of_stock');
+        // Lọc sản phẩm có trạng thái khác "out_of_stock"
+        const availableProducts = allProducts.filter(product => product.status !== 'out_of_stock');
 
-            setProducts(availableProducts); // Lưu trữ sản phẩm hợp lệ
-            setFilteredProducts(availableProducts); // Cập nhật danh sách hiển thị
-        } else {
-            throw new Error("Định dạng dữ liệu không hợp lệ");
-        }
+        setProducts(availableProducts); // Lưu trữ sản phẩm hợp lệ
+        setFilteredProducts(availableProducts); // Cập nhật danh sách hiển thị
+      } else {
+        throw new Error("Định dạng dữ liệu không hợp lệ");
+      }
     } catch (error) {
-        console.error("Lỗi khi tải sản phẩm:", error);
-        setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+      console.error("Lỗi khi tải sản phẩm:", error);
+      setError("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const Product = () => {
       const price = parseFloat(product.price);
       return price >= minPrice && price <= maxPrice;
     });
-setFilteredProducts(filtered);
+    setFilteredProducts(filtered);
     setCurrentPage(1);
   };
 
@@ -135,7 +135,7 @@ setFilteredProducts(filtered);
   return (
     <>
       <Header />
-      <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+      <section className="hero hero-normal" style={{ paddingTop: "100px" }}>
         <div className="container">
           <div className="row">
             <div className="col-lg-3">
@@ -211,7 +211,7 @@ setFilteredProducts(filtered);
                             style={{ cursor: 'pointer', color: '#808080' }}
                           >
                             {category.name}
-                                </span>
+                          </span>
 
                           {/* Danh mục con */}
                           {category.children &&
@@ -278,7 +278,7 @@ setFilteredProducts(filtered);
                   <div className="latest-product__text">
                     <h4>SẢN PHẨM MỚI NHẤT</h4>
                     <div className="latest-product__slider">
-<div className="latest-product__item">
+                      <div className="latest-product__item">
                         <Link to="/product-details/1" className="latest-product__item">
                           <div className="latest-product__item__pic">
                             <img src={sp4} alt="Product" />
@@ -350,7 +350,7 @@ setFilteredProducts(filtered);
                   <div className="row">
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((product) => (
-<div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
+                        <div className="col-lg-4 col-md-6 col-sm-6" key={product.id}>
                           <div className="product__item">
                             <div className="product__item__pic position-relative">
                               {product.images && product.images.length > 0 ? (

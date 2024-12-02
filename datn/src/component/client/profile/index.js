@@ -2,16 +2,13 @@ import React, { useState, useEffect } from "react";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import avt from "../../../assets/images/users/avt.png";
-import { getUserProfile } from "../../../services/client/profile";
-import { updateUserProfile } from "../../../services/client/profile";
-import { updateUserAvatar } from "../../../services/client/profile";
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getUserProfile, updateUserProfile, updateUserAvatar } from "../../../services/client/profile";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Modal, Button } from "react-bootstrap"; // Import Modal
 
 const ProfileS = () => {
   const navigate = useNavigate();
@@ -27,7 +24,11 @@ const ProfileS = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prevState) => ({
@@ -42,27 +43,26 @@ const ProfileS = () => {
 
   const handleSaveChanges = async () => {
     try {
-      setLoading(true); // Hiển thị trạng thái loading
+      setLoading(true);
       await updateUserProfile({
         full_name: userInfo.fullName,
         email: userInfo.email,
         address: userInfo.address,
         phone: userInfo.phone,
       });
-      setEditMode(false); // Quay lại chế độ xem
+      setEditMode(false);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       alert("Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại!");
     }
   };
-  const [avatarFile, setAvatarFile] = useState(null);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setAvatarFile(file);
-      const preview = URL.createObjectURL(file); // Hiển thị ảnh xem trước
+      const preview = URL.createObjectURL(file);
       setUserInfo((prev) => ({
         ...prev,
         avatar: preview,
@@ -75,9 +75,8 @@ const ProfileS = () => {
 
     try {
       setLoading(true);
-      await updateUserAvatar(avatarFile); // Gửi ảnh avatar lên server
-
-      window.location.reload(); // Tự động tải lại trang sau khi cập nhật thành công
+      await updateUserAvatar(avatarFile);
+      window.location.reload();
     } catch (error) {
       setLoading(false);
       alert("Có lỗi khi cập nhật avatar. Vui lòng thử lại!");
@@ -87,7 +86,7 @@ const ProfileS = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const data = await getUserProfile(); // Call the service to fetch user data
+        const data = await getUserProfile();
         setUserInfo({
           fullName: data.full_name,
           email: data.email,
@@ -96,14 +95,15 @@ const ProfileS = () => {
           userRole: data.role || "",
           avatar: data.avatar || avt,
         });
-setLoading(false); // Set loading to false when data is fetched successfully
+        setLoading(false);
       } catch (error) {
         setError("Failed to load profile data.");
-        setLoading(false); // Set loading to false in case of error
+        setLoading(false);
       }
     };
     fetchUserProfile();
   }, []);
+
   useEffect(() => {
     const fetchUserProfileAndOrders = async () => {
       try {
@@ -117,11 +117,10 @@ setLoading(false); // Set loading to false when data is fetched successfully
 
         const response = await axios.get(`http://127.0.0.1:8000/api/v1/orders?user_id=${userId}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        // Correctly extract orders from the nested data structure
         const ordersData = response.data.data.data || [];
         setOrders(ordersData);
         setLoading(false);
@@ -141,22 +140,14 @@ setLoading(false); // Set loading to false when data is fetched successfully
     fetchUserProfileAndOrders();
   }, []);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>{error}</div>;
-
-  // }
   const handleCancelOrder = async (orderId, orderStatus, paymentStatus) => {
     if ((orderStatus === 1 || orderStatus === 2) && paymentStatus !== 2) {
       try {
         setLoading(true);
-        const token = Cookies.get('authToken');
+        const token = Cookies.get("authToken");
 
         if (!token) {
-          alert('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
+          alert("Không tìm thấy token xác thực. Vui lòng đăng nhập lại.");
           return;
         }
 
@@ -164,40 +155,52 @@ setLoading(false); // Set loading to false when data is fetched successfully
           `http://127.0.0.1:8000/api/v1/orders/${orderId}`,
           {
             status: 5,
-            _method: 'PUT',
+            _method: "PUT",
           },
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
+              "Content-Type": "application/json",
+              Accept: "application/json",
             },
           }
         );
 
         if (response.data.success) {
-          toast.success('Hủy đơn hàng thành công!');
-
-          // Update the order status in the state
+          toast.success("Hủy đơn hàng thành công!");
           setOrders((prevOrders) =>
             prevOrders.map((order) =>
               order.id === orderId ? { ...order, status: 5 } : order
             )
           );
-
         } else {
-          toast.error(response.data.message || 'Không thể hủy đơn hàng. Vui lòng thử lại.');
+          toast.error(response.data.message || "Không thể hủy đơn hàng. Vui lòng thử lại.");
         }
       } catch (error) {
-        console.error('Lỗi khi hủy đơn hàng:', error);
-        toast.error('Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại.');
+        console.error("Lỗi khi hủy đơn hàng:", error);
+        toast.error("Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại.");
       } finally {
         setLoading(false);
       }
     } else {
-alert('Đơn hàng không thể hủy do trạng thái hoặc tình trạng thanh toán không hợp lệ.');
+      alert("Đơn hàng không thể hủy do trạng thái hoặc tình trạng thanh toán không hợp lệ.");
     }
   };
+
+  const openConfirmModal = (orderId) => {
+    setSelectedOrderId(orderId);
+    setShowConfirmModal(true);
+  };
+
+  const confirmCancelOrder = () => {
+    if (selectedOrderId) {
+      handleCancelOrder(selectedOrderId, 1, 1); // Example orderStatus and paymentStatus
+      setShowConfirmModal(false);
+    }
+  };
+
+
+
 
 
 
@@ -429,7 +432,7 @@ onChange={handleInputChange}
                     <table className="table table-striped mx-2 col-lg-12 col-12 mt-4">
                       <thead className="table-light">
                         <tr>
-<th scope="col">STT</th>
+                          <th scope="col">STT</th>
                           <th scope="col">Mã đơn hàng</th>
                           <th scope="col">Ngày đặt</th>
                           <th scope="col">Trạng thái</th>
@@ -440,9 +443,9 @@ onChange={handleInputChange}
                         </tr>
                       </thead>
                       <tbody>
-                        {orders.map((order,index) => (
+                        {orders.map((order, index) => (
                           <tr key={order.id}>
-                            <td>{index+1}</td>
+                            <td>{index + 1}</td>
                             <td>{order.order_code}</td>
                             <td>{new Date(order.created_at).toLocaleDateString()}</td>
                             <td>
@@ -455,57 +458,65 @@ onChange={handleInputChange}
                             </td>
                             <td>{order.total.toLocaleString()} VNĐ</td>
                             <td>
-  {order.items && order.items.length > 0 ? (
-    order.items.map((item) => {
-      const primaryImage = item.product && item.product.images 
-        ? item.product.images.find(img => img.is_primary === 1) || item.product.images[0]
-        : null;
-      
-      return (
-        <div key={item.id} className="mb-2">
-          {primaryImage ? (
-            <img
-              src={`http://127.0.0.1:8000${primaryImage.image_url}`}
-              alt={item.product?.name || 'Product'}
-              style={{ width: '170px', height: '50px', objectFit: 'cover' }}
-            />
-          ) : (
-            <span>No image available</span>
-          )}
-        </div>
-      );
-    })
-  ) : (
-    <span>No items</span>
-  )}
-</td>
-<td>
-  {order.items && order.items.length > 0 ? (
-    order.items.map((item) => (
-      <div key={item.id}>
-        {item.product?.name || 'Unknown Product'} (SL: {item.quantity || 0})
-      </div>
-    ))
-  ) : (
-    <span>No items</span>
-  )}
-</td>
+                              {order.items.map((item) => {
+                                const primaryImage = item.product.images.find(img => img.is_primary === 1) || item.product.images[0];
+                                return (
+                                  <div key={item.id} className="mb-2">
+                                    {primaryImage ? (
+                                      <img
+                                        src={`http://127.0.0.1:8000${primaryImage.image_url}`}
+                                        alt={item.product.name}
+                                        style={{ width: '170px', height: '50px', objectFit: 'cover' }}
+                                      />
+                                    ) : (
+                                      <span>No image available</span>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </td>
+                            <td>
+                              {order.items.map((item) => (
+                                <div key={item.id}>
+                                  {item.product.name} (SL: {item.quantity})
+                                </div>
+                              ))}
+                            </td>
                             <td>
                               {order.status === 5 ? (
                                 <span className="text-muted">Đã hủy</span>
-) : (order.status === 1 || order.status === 2) && order.payment_status !== 2 ? (
-                                <button
-                                  className="btn btn-danger"
-                                  onClick={() => handleCancelOrder(order.id, order.status, order.payment_status)}
-                                >
-                                  Hủy đơn hàng
-                                </button>
+                              ) : (order.status === 1 || order.status === 2) ? (
+                                <div className="d-flex flex-column">
+                                  <button
+                                    className="btn btn-danger mb-2"
+                                    onClick={() => openConfirmModal(order.id, order.status, order.payment_status)}
+                                    disabled={order.payment_status === "2"} // Vô hiệu hóa khi đã thanh toán
+                                  >
+                                    Hủy đơn hàng
+                                  </button>
+                                  {order.payment_status === "1" ? (
+                                    <span className="text-info">Thanh toán khi nhận hàng</span>
+                                  ) : order.payment_status === "2" ? (
+                                    <span className="text-success">Đã thanh toán</span>
+                                  ) : order.payment_status === "4" ? (
+                                    <span className="text-danger">Thanh toán thất bại</span>
+                                  ) : (
+                                    <span className="text-warning">Không được hủy</span>
+                                  )}
+                                </div>
                               ) : (
                                 <span className="text-warning">
-                                  {order.payment_status === 2 ? 'Không thể hủy do đã thanh toán' : 'Không được hủy'}
+                                  {order.payment_status === "2"
+                                    ? 'Đã thanh toán'
+                                    : order.payment_status === "4"
+                                      ? 'Thanh toán thất bại'
+                                      : 'Đơn hàng đang giao không được hủy'}
                                 </span>
                               )}
                             </td>
+
+
+
 
 
 
@@ -527,6 +538,20 @@ onChange={handleInputChange}
         </div>
       </div>
       <Footer />
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận hủy đơn hàng</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Bạn có chắc chắn muốn hủy đơn hàng này không?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Hủy bỏ
+          </Button>
+          <Button variant="danger" onClick={confirmCancelOrder}>
+            Đồng ý
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

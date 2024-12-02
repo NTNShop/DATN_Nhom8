@@ -8,12 +8,16 @@ import { FaDownload, FaTrashAlt } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import UpdateOrderStatusModal from './edit';
 
+import UpdateOrderStatusModal from './edit';
+
 const ListOrder = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [updatingStatusOrder, setUpdatingStatusOrder] = useState(null);
+    const [activeTab, setActiveTab] = useState(0);
     const [updatingStatusOrder, setUpdatingStatusOrder] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
     const navigate = useNavigate();
@@ -72,13 +76,22 @@ const ListOrder = () => {
         4: { text: 'Đã giao', value: 4 },
         5: { text: 'Đã hủy', value: 5 }
     };
+    const statusConfig = {
+        0: { text: 'Tất cả', value: null },
+        1: { text: 'Chờ xác nhận', value: 1 },
+        2: { text: 'Chờ đóng gói', value: 2 },
+        3: { text: 'Đang giao', value: 3 },
+        4: { text: 'Đã giao', value: 4 },
+        5: { text: 'Đã hủy', value: 5 }
+    };
     // Lọc danh sách orders dựa trên searchTerm
     const filteredOrders = orders.filter(order => 
+        (activeTab === 0 || order.status === statusConfig[activeTab].value) &&
         (activeTab === 0 || order.status === statusConfig[activeTab].value) &&
         order.order_code.toLowerCase().includes(searchTerm.toLowerCase())
     );
     const formatPrice = (price) => {
-        return new Intl.NumberFormat('vi-VN', { 
+return new Intl.NumberFormat('vi-VN', { 
             style: 'currency', 
             currency: 'VND' 
         }).format(price);
@@ -86,6 +99,11 @@ const ListOrder = () => {
 
     const getStatusBadge = (status) => {
         const statusConfig = {
+            1: { class: 'bg-secondary text-white', text: 'Chờ xác nhận' },
+            2: { class: 'bg-warning text-white', text: 'Chờ đóng gói' },
+            3: { class: 'bg-info text-white', text: 'Đang giao' },
+            4: { class: 'bg-success text-white', text: 'Đã giao' },
+            5: { class: 'bg-danger text-white', text: 'Đã hủy' },
             1: { class: 'bg-secondary text-white', text: 'Chờ xác nhận' },
             2: { class: 'bg-warning text-white', text: 'Chờ đóng gói' },
             3: { class: 'bg-info text-white', text: 'Đang giao' },
@@ -145,7 +163,7 @@ const ListOrder = () => {
                         } catch (err) {
                             console.error('Delete error:', err);
                             confirmAlert({
-                                title: 'Lỗi',
+title: 'Lỗi',
                                 message: 'Lỗi khi xóa đơn hàng: ' + err.message,
                                 buttons: [
                                     {
@@ -168,6 +186,10 @@ const ListOrder = () => {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Danh Sách Đơn Hàng");
         XLSX.writeFile(workbook, "DanhSachDonHang.xlsx");
+      };
+      const handleStatusUpdate = (order) => {
+        setUpdatingStatusOrder(order);
+    };
       };
       const handleStatusUpdate = (order) => {
         setUpdatingStatusOrder(order);
@@ -204,7 +226,7 @@ const ListOrder = () => {
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Mã sản phẩm</th>
+<th>Mã sản phẩm</th>
                                             <th>Số lượng</th>
                                             <th>Đơn giá</th>
                                             <th>Thành tiền</th>
@@ -311,7 +333,7 @@ const ListOrder = () => {
                                     {error && (
                                         <div className="alert alert-danger" role="alert">
                                             {error}
-                                        </div>
+</div>
                                     )}
                                     {filteredOrders.length === 0 ? (
                                         <div className="alert alert-info">
@@ -336,6 +358,9 @@ const ListOrder = () => {
                                                 {filteredOrders.map((order, index) => (
                                                         <tr key={order.id}>
                                                             <td>{index + 1}</td>
+                                                {filteredOrders.map((order, index) => (
+                                                        <tr key={order.id}>
+                                                            <td>{index + 1}</td>
                                                             <td>{order.order_code}</td>
                                                             <td>{order.user?.full_name || 'N/A'}</td>
                                                             <td>{formatPrice(order.total)}</td>
@@ -357,12 +382,12 @@ const ListOrder = () => {
                                                                     >
                                                                         Chi tiết
                                                                     </button>
-                                                                    <button 
+                                                                    {/* <button 
                                                                         className="btn btn-danger btn-sm"
                                                                         onClick={() => handleDelete(order.id)}
                                                                     >
                                                                         Xóa
-                                                                    </button>
+                                                                    </button> */}
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -378,6 +403,15 @@ const ListOrder = () => {
                 </div>
             </div>
             {selectedOrder && <OrderDetails order={selectedOrder} />}
+            {updatingStatusOrder && (
+                <UpdateOrderStatusModal
+                    order={updatingStatusOrder}
+                    onClose={() => setUpdatingStatusOrder(null)}
+                    onSuccess={() => {
+                        fetchOrders(); // Refresh the orders list after successful update
+                    }}
+                />
+            )}
             {updatingStatusOrder && (
                 <UpdateOrderStatusModal
                     order={updatingStatusOrder}
