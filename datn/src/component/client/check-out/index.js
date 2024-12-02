@@ -189,12 +189,55 @@ const CheckoutSection = () => {
       setLoading(false);
     }
   };
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
-  
+
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
   return (
     <>
       <Header />
-      <section className="checkout spad">
+      <section className="hero hero-normal" style={{paddingTop: "100px"}}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="hero__categories">
+                <div className="hero__categories__all" onClick={toggleCategories}>
+                  <i className="fa fa-bars"></i>
+                  <span>Tất cả danh mục</span>
+                </div>
+                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                  <li><Link to="#">Janus</Link></li>
+                  <li><Link to="#">Vario</Link></li>
+                  <li><Link to="#">Vision</Link></li>
+                  <li><Link to="#">Air Black</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-8">
+              <div className="hero__search">
+                <div className="hero__search__form">
+                  <form action="#">
+                    <input type="text" placeholder="What do you need?" />
+                    <button type="submit" className="site-btn">SEARCH</button>
+                  </form>
+                </div>
+                <div className="hero__search__phone">
+                  <div className="hero__search__phone__icon">
+                    <i className="fa fa-phone"></i>
+                  </div>
+                  <div className="hero__search__phone__text">
+                    <h5>+65 11.188.888</h5>
+                    <span>support 24/7 time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="checkout pt-0">
   <div className="container">
     <div className="row">
       <div className="col-lg-12">
@@ -294,34 +337,26 @@ const CheckoutSection = () => {
             <div className="checkout__order">
               <h4>Đơn hàng của bạn</h4>
               <div className="checkout__order__products">Sản phẩm <span>Tổng cộng</span></div>
-              <ul>
-              {cartItems.map((item) => (
-                <li key={item.id} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '10px 0',
-                  borderBottom: '1px solid #e1e1e1'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                    <img 
-                      src={`http://127.0.0.1:8000${item.product.image.url}`} 
-                      alt={item.product.name}
-                      style={{ width: '50px', height: '50px', marginRight: '10px' }}
-                    />
-                    <div>
-                      <div>{item.product.name}</div>
-                      <div style={{ fontSize: '0.9em', color: '#666' }}>
-                        {formatCurrency(item.unit_price)} x {item.quantity}
-                      </div>
-                    </div>
-                  </div>
-                  <span style={{ fontWeight: 'bold' }}>
-                    {formatCurrency(item.unit_price * item.quantity)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+
+              <ul style={{ padding: '0', listStyle: 'none' }}>
+  <li style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+    <img src={SanPham1} alt="Xe tay ga" style={{ width: '50px', marginRight: '20px' }} />
+    <span style={{ flex: '1' }}>Sản phẩm xe tay ga</span>
+    <span style={{ textAlign: 'right', minWidth: '100px' }}>$75.99</span>
+  </li>
+
+  <li style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+    <img src={SanPham1} alt="Xe côn tay" style={{ width: '50px',  marginRight: '20px' }} />
+    <span style={{ flex: '1' }}>Sản phẩm xe côn tay</span>
+    <span style={{ textAlign: 'right', minWidth: '100px' }}>$151.99</span>
+  </li>
+
+  <li style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+    <img src={SanPham1} alt="Xe gắn máy" style={{ width: '50px', marginRight: '20px' }} />
+    <span style={{ flex: '1' }}>Sản phẩm xe gắn máy</span>
+    <span style={{ textAlign: 'right', minWidth: '100px' }}>$53.99</span>
+  </li>
+</ul>
 
 
             <div className="checkout__order__subtotal">

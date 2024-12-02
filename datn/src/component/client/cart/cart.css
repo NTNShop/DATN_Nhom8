@@ -155,3 +155,102 @@ body {
     text-align: center;
     display: block;
   }
+  /* Quantity Controls */
+.shoping__cart__quantity .quantity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shoping__cart__quantity .pro-qty {
+  display: flex;
+  align-items: center;
+}
+
+.shoping__cart__quantity .pro-qty button {
+  background-color: #3498db;
+  color: white;
+  border: 1px solid #3498db;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  padding: 0;
+}
+
+.shoping__cart__quantity .pro-qty button:hover {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.shoping__cart__quantity .pro-qty input {
+  width: 50px;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin: 0 10px;
+  padding: 5px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.shoping__cart__quantity .pro-qty input:read-only {
+  background-color: #f9f9f9;
+}
+
+.shoping__cart__quantity .pro-qty button:active {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+/* Căn đều bảng giỏ hàng */
+.shoping__cart__table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Đảm bảo các cột có chiều rộng đều */
+.shoping__cart__table th, .shoping__cart__table td {
+  text-align: center;
+  padding: 15px;
+}
+
+/* Định dạng cho các cột, ví dụ như Hình ảnh, Sản phẩm, Giá, Số lượng... */
+.shoping__cart__table th {
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+.shoping__cart__table td {
+  border-bottom: 1px solid #ddd;
+}
+
+.shoping__cart__item img {
+  max-width: 100%;
+  height: auto;
+  max-height: 150px;
+}
+
+/* Sửa chữa cột số lượng */
+.shoping__cart__quantity .pro-qty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shoping__cart__quantity .pro-qty input {
+  width: 60px;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin: 0 5px;
+  padding: 5px;
+  background-color: #f9f9f9;
+  color: #333;
+}

@@ -4,7 +4,6 @@ import Header from "../layouts/header";
 import Footer from "../layouts/footer";
 
 const Blog = () => {
-<<<<<<< HEAD
   const [posts, setPosts] = useState([]); // Dữ liệu bài viết
   const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 }); // Dữ liệu phân trang, gán mặc định để tránh undefined
   const [loading, setLoading] = useState(true); // Trạng thái đang tải
@@ -48,39 +47,13 @@ const Blog = () => {
       } finally {
         setDeleting(false);
       }
-=======
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  const fetchBlogs = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/v1/posts/");
-      if (!response.ok) {
-        throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
-      }
-      const data = await response.json();
-      setBlogs(data.data);
-    } catch (error) {
-      console.error("Lỗi khi lấy danh sách bài viết:", error);
-      setError("Không thể tải danh sách bài viết. Vui lòng thử lại sau.");
-    } finally {
-      setLoading(false);
->>>>>>> origin/trunghmpc03248
     }
   };
 
   return (
     <div>
       <Header />
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/trunghmpc03248
       <div className="page-wrapper" style={{ position: "relative", left: "241px" }}>
         <div className="page-breadcrumb">
           <div className="row align-items-center">
@@ -103,76 +76,6 @@ const Blog = () => {
                 <div className="card-body">
                   <h4 className="card-title">Danh sách bài viết</h4>
                   <span>
-<<<<<<< HEAD
-                    <a href="/admin/addBlog" className="btn btn-primary mb-3">
-                      Thêm bài viết
-                    </a>
-                  </span> <div className="table-responsive">
-                    {loading ? (
-                      <p>Đang tải...</p>
-                    ) : error ? (
-                      <p>{error}</p>
-                    ) : (
-                      <table className="table user-table">
-                        <thead>
-                          <tr className="table-light">
-                            <th className="border-top-0">ID</th>
-                            <th className="border-top-0">Hình ảnh</th>
-                            <th className="border-top-0">Tiêu đề</th>
-                            <th className="border-top-0">Mô tả</th>
-                            <th className="border-top-0">Ngày tạo</th>
-                            <th className="border-top-0">Trạng Thái</th>
-                            <th className="border-top-0">Hành Động</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {posts && posts.length > 0 ? ( // Kiểm tra posts tồn tại và có dữ liệu
-                            posts.map((post) => (
-                              <tr key={post.id}>
-                                <td>{post.id}</td>
-                                <td>
-                                  <img
-                                    width={"150px"}
-                                    src={`http://127.0.0.1:8000${post.featured_image}`}
-                                    alt={post.title}
-                                  />
-                                </td>
-                                <td className="text-truncate" style={{ maxWidth: '150px' }}>
-                                  {post.title}
-                                </td>
-                                <td className="text-truncate" style={{ maxWidth: '170px' }}>
-                                  {post.content}
-                                </td>
-                                <td className="text-truncate" style={{ maxWidth: '100px' }}>
-                                  {new Date(post.created_at).toLocaleDateString()}
-                                </td>
-                                <td className="text-truncate" style={{ maxWidth: '100px' }}>
-                                  {post.status === 1 ? "Hoạt động" : "Không hoạt động"}
-                                </td>
-                                <td className="text-truncate" style={{ maxWidth: '130px' }}>
-                                  <div className="d-flex gap-2">
-                                    <a href={`blog/${post.id}`} className="btn btn-primary">
-                                      Sửa
-                                    </a>
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={() => handleDelete(post.id)}
-                                      disabled={deleting}
-                                    >
-                                      {deleting ? "Đang xóa..." : "Xóa"} </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan="7" className="text-center">Không có bài viết nào</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    )}
-=======
                     <a href="/admin/addBlog" className="btn btn-primary mb-3">Thêm bài viết</a>
                   </span>
 
@@ -200,8 +103,8 @@ const Blog = () => {
                           <tr>
                             <td colSpan="9" className="text-center">{error}</td>
                           </tr>
-                        ) : blogs.length > 0 ? (
-                          blogs.map((blog) => (
+                        ) : posts.length > 0 ? (
+                          posts.map((blog) => (
                             <tr key={blog.id}>
                               <td>{blog.id}</td>
                               <td className="text-truncate" style={{ maxWidth: '150px' }}>{blog.title}</td>
@@ -232,7 +135,6 @@ const Blog = () => {
                         )}
                       </tbody>
                     </table>
->>>>>>> origin/trunghmpc03248
                   </div>
 
                   {/* Phân trang */}
@@ -257,12 +159,7 @@ const Blog = () => {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-
-      {/* <Footer /> */}
-=======
       <Footer />
->>>>>>> origin/trunghmpc03248
     </div>
   );
 };
