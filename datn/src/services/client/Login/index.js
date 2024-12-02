@@ -14,6 +14,7 @@ export const loginUser = async (email, password) => {
             // Lưu thông tin người dùng và token vào cookie
             Cookies.set("userInfo", JSON.stringify(user), { expires: 1 }); // Lưu trong 1 ngày
             Cookies.set("authToken", token, { expires: new Date(Date.now() + 1 * 60 * 60 * 1000) }); // Lưu token trong 1 giờ
+            Cookies.set("authToken", token, { expires: new Date(Date.now() + 1 * 60 * 60 * 1000) }); // Lưu token trong 1 giờ
 
             // Lưu thêm các trường thông tin như email, full_name, phone và userId vào cookie
             Cookies.set("email", user.email, { expires: 1 });
@@ -70,40 +71,4 @@ export const logoutUser = async () => {
         // Xử lý lỗi và in thông báo lỗi cụ thể nếu có
         console.error("Lỗi khi đăng xuất:", error.response ? error.response.data : error.message);
     }
-};
-
-
-// API URL của backend
-const API_URL = 'http://127.0.0.1:8000/api/v1/auth/auth/google';
-
-// Hàm đăng nhập Google bằng phương thức GET
-export const googleLogin = async () => {
-  try {
-    // Gửi yêu cầu GET đến backend để nhận URL xác thực Google
-    const response = await axios.get(API_URL, {
-      withCredentials: true,  // Đảm bảo gửi cookie/session nếu cần thiết
-    });
-
-    // Nếu server trả về URL đăng nhập, chuyển hướng người dùng đến đó
-    if (response.data && response.data.url) {
-      window.location.href = response.data.url; // Chuyển hướng người dùng đến URL Google
-    } else {
-      throw new Error('Không nhận được URL từ server.');
-    }
-  } catch (error) {
-    // Xử lý lỗi nếu yêu cầu thất bại
-    throw new Error(error.response ? error.response.data.message : 'Lỗi kết nối đến API.');
-  }
-};
-
-// Hàm kiểm tra xem token đã hết hạn chưa
-export const checkTokenExpiry = () => {
-  const tokenExpiry = localStorage.getItem('tokenExpiry');
-  
-  if (!tokenExpiry) return true;  // Nếu không có token expiry, coi như hết hạn
-  
-  const currentTime = new Date().getTime();
-  
-  // Kiểm tra xem token đã hết hạn chưa
-  return currentTime >= parseInt(tokenExpiry, 10);
 };

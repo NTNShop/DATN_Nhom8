@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef  } from 'react';
 import Header from "../layouts/header";
 import "../../../assets/css/styleEdit.css";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
 
 const AddBrand = () => {
+    const navigate = useNavigate();
+    const fileInputRef = useRef(null);
     const [brandData, setBrandData] = useState({
         name: "",
         logo: null,
@@ -16,7 +20,7 @@ const AddBrand = () => {
         name: '',
         logo: '',
     });
-    
+    const [imagePreview, setImagePreview] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
@@ -30,11 +34,11 @@ const AddBrand = () => {
         if (!brandData.name.trim()) {
             tempErrors.name = 'Vui lòng nhập tên thương hiệu';
             isValid = false;
-        } else if (brandData.name.length < 2) {
-            tempErrors.name = 'Tên thương hiệu phải có ít nhất 2 ký tự';
+        } else if (brandData.name.length < 5) {
+            tempErrors.name = 'Tên thương hiệu phải có ít nhất 5 ký tự';
             isValid = false;
         } else if (brandData.name.length > 50) {
-            tempErrors.name = 'Tên thương hiệu không được vượt quá 50 ký tự';
+            tempErrors.name = 'Tên thương hiệu không được vượt quá 20 ký tự';
             isValid = false;
         }
 
@@ -77,8 +81,32 @@ const AddBrand = () => {
                 logo: ''
             });
         }
-    };
+        // Tạo preview URL
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
 
+        setBrandData({ ...brandData, logo: file });
+        // Xóa lỗi khi người dùng chọn file mới
+        setErrors({
+            ...errors,
+            logo: ''
+        });
+    };
+    // Xóa ảnh preview và input file
+    const handleRemoveImage = () => {
+        setImagePreview(null);
+        setBrandData({ ...brandData, logo: null });
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setErrors(prev => ({
+            ...prev,
+            logo: 'Vui lòng chọn logo cho thương hiệu'
+        }));
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccessMessage("");
@@ -100,9 +128,16 @@ const AddBrand = () => {
                     'Content-Type': 'multipart/form-data',
                 }
             });
-            setSuccessMessage("Thương hiệu đã được thêm thành công!");
+            // toast.success('Danh mục đã được thêm');
+
+            toast.success("Thương hiệu đã được thêm thành công!");
             setBrandData({ name: "", logo: null, status: "1" });
             setShowModal(true);
+            // Lưu ID của brand mới vào localStorage
+            localStorage.setItem('newBrandId', response.data.data.id);
+            localStorage.setItem('newBrandTimestamp', Date.now().toString());
+            navigate('/admin/brand');
+
         } catch (error) {
             if (error.response) {
                 // Xử lý lỗi từ server
@@ -127,6 +162,7 @@ const AddBrand = () => {
 
     const handleCloseModal = () => {
         setShowModal(false);
+        navigate('/admin/brand');
     };
 
     return (
@@ -139,7 +175,7 @@ const AddBrand = () => {
                             <div className="d-flex align-items-center">
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="#">Danh sách danh mục</a></li>
+                                        <li className="breadcrumb-item"><a href="#">Danh sách thương hiệu</a></li>
                                         <li className="breadcrumb-item active" aria-current="page">Thêm thương hiệu</li>
                                     </ol>
                                 </nav>
@@ -163,11 +199,12 @@ const AddBrand = () => {
                                                 id="name"
                                                 value={brandData.name}
                                                 placeholder="Nhập tên thương hiệu"
+                                                
                                                 className={`form-control-line border-input ${errors.name ? 'is-invalid' : ''}`}
                                                 onChange={handleChange}
                                                 required
                                             />
-                                            {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+                                            {errors.name && <div className="invalid-feedback" style={{ fontSize: '14px' }}>{errors.name}</div>}
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
@@ -176,14 +213,33 @@ const AddBrand = () => {
                                             <input
                                                 type="file"
                                                 id="logo"
+                                                ref={fileInputRef}
                                                 className={`form-control-line border-input ${errors.logo ? 'is-invalid' : ''}`}
                                                 onChange={handleFileChange}
-                                                accept="image/*"
+                                                accept="image/jpeg,image/png,image/gif"
                                             />
-                                            {errors.logo && <div className="invalid-feedback">{errors.logo}</div>}
-                                            <small className="form-text text-muted">
+                                            {errors.logo && <div className="invalid-feedback" style={{ fontSize: '14px' }}>{errors.logo}</div>}
+                                            <small className="form-text text-muted" style={{ fontSize: '14px' }}>
                                                 Chấp nhận các định dạng: JPG, PNG, GIF. Kích thước tối đa: 5MB
                                             </small>
+                                            {/* Hiển thị preview ảnh */}
+                                            {imagePreview && (
+                                                <div className="mt-3 position-relative" style={{ maxWidth: '300px' }}>
+                                                    <img 
+                                                        src={imagePreview} 
+                                                        alt="Logo preview" 
+                                                        className="img-fluid rounded border"
+                                                        style={{ maxHeight: '200px', objectFit: 'cover' }}
+                                                    />
+                                                    <button 
+                                                        type="button"
+                                                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                                                        onClick={handleRemoveImage}
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="form-group mb-3">
@@ -212,13 +268,15 @@ const AddBrand = () => {
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
+            {/* <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Thông báo</Modal.Title>
                 </Modal.Header>
@@ -228,7 +286,7 @@ const AddBrand = () => {
                         Đóng
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </div>
     );
 };

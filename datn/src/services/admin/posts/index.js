@@ -81,7 +81,7 @@ export const deletePost = async (postId) => {
         }
 
         const response = await axios.delete(`http://127.0.0.1:8000/api/v1/posts/${postId}`, {
-            headers: {
+headers: {
                 Authorization: `Bearer ${token}`, // Gửi token trong header Authorization
             },
 });
@@ -149,7 +149,7 @@ export const updatePost = async (postId, postData) => {
   
       // Kiểm tra xem token có tồn tại
       if (!token) {
-        throw new Error("Token không tồn tại. Bạn cần đăng nhập lại.");
+throw new Error("Token không tồn tại. Bạn cần đăng nhập lại.");
       }
   
       // Kiểm tra xem postData có phải là FormData không

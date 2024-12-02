@@ -96,7 +96,7 @@ const Header = () => {
     <div className="header-wrapper">
       <div
         id="main-wrapper"
-        data-layout="vertical"
+data-layout="vertical"
         data-navbarbg="skin6"
         data-sidebartype="full"
         data-sidebar-position="absolute"
@@ -165,7 +165,7 @@ const Header = () => {
                         height: "50px",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        marginRight: "10px",
+marginRight: "10px",
                       }}
                     />
                     {userInfo.full_name || "Người dùng"}
@@ -230,7 +230,7 @@ const Header = () => {
                   </a>
                 </li>
                 <li className="sidebar-item">
-                  <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
+<a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/order">
                     <i className="mdi me-2 mdi-package"></i>
                     <span className="hide-menu">Đơn hàng</span>
                   </a>

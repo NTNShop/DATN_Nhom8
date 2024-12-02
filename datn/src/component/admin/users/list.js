@@ -58,8 +58,8 @@ const ListUser = () => {
   useEffect(() => {
     const filtered = users.filter(
       (user) =>
-        user.full_name &&
-        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+        user.phone &&
+        user.phone.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
@@ -275,7 +275,7 @@ const ListUser = () => {
                         {currentUsers.length > 0 ? (
                           currentUsers.map((user, index) => (
                             <tr key={index}>
-                              <td>{user.id}</td>
+                              <td>{index + 1}</td>
                               <td>
                                 <div
                                   className="text-ellipsis"

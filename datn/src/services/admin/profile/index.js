@@ -75,9 +75,3 @@ export const updateUserAvatar = async (avatarFile) => {
       throw error; 
     }
   };
-  
-  
-  
-  
-  
-  

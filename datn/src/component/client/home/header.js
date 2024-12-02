@@ -90,7 +90,7 @@ const Header = () => {
             <li><Link className="name-menucon" to="/profile">THÔNG TIN CÁ NHÂN</Link></li>
             <li><button className="name-menucon" onClick={handleLogout}>ĐĂNG XUẤT</button></li>
           </>
-        )}
+)}
       </ul>
     </li>
   );

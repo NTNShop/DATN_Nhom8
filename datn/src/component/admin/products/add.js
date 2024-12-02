@@ -5,6 +5,8 @@ import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useNavigate, } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -88,7 +90,8 @@ const AddProduct = () => {
                 console.error("Error fetching categories and brands:", error);
             }
 };
-fetchCategoriesAndBrands();
+
+        fetchCategoriesAndBrands();
     }, []);
 
     const handleInputChange = (e) => {
@@ -150,17 +153,20 @@ fetchCategoriesAndBrands();
             const response = await axios.post('http://127.0.0.1:8000/api/v1/products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                }
+                },
             });
 
             if (response.data.status === 'success') {
-                alert('Thêm sản phẩm thành công');
-                // Reset form or redirect
+                toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+                setTimeout(() => {
+                    navigate('/admin/product'); // Điều hướng sau 2 giây
+                }, 2000);
             }
         } catch (error) {
             console.error("Error response:", error.response?.data);
-            alert(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
+            toast.error(error.response?.data?.message || "Có lỗi xảy ra khi thêm sản phẩm");
         }
+
     };
 
 
@@ -177,7 +183,7 @@ fetchCategoriesAndBrands();
         if (!product.stock) {
             errors.stock = "Số lượng là bắt buộc";
 } else if (isNaN(product.stock) || product.stock < 0) {
-errors.stock = "Số lượng phải là số không âm";
+            errors.stock = "Số lượng phải là số không âm";
         }
 
         return errors;
@@ -231,17 +237,30 @@ errors.stock = "Số lượng phải là số không âm";
                                                 value={product.category_id}
                                                 onChange={handleInputChange}
 className="form-control-line border-input"
->
+                                            >
                                                 <option value="">Chọn danh mục</option>
                                                 {categories.map((category) => (
-                                                    <option key={category.id} value={category.id}>
-                                                        {category.name}
-                                                    </option>
+                                                    <React.Fragment key={category.id}>
+                                                        {/* Danh mục chính */}
+                                                        <option value={category.id}>
+                                                            {category.name}
+                                                        </option>
+                                                        {/* Danh mục con */}
+                                                        {category.children &&
+                                                            category.children.map((child) => (
+                                                                <option key={child.id} value={child.id}>
+                                                                    &nbsp;&nbsp;&nbsp;Danh mục con: {child.name}
+                                                                </option>
+                                                            ))}
+                                                    </React.Fragment>
                                                 ))}
                                             </select>
-                                            {errors.category_id && <span className="text-danger">{errors.category_id}</span>}
+                                            {errors.category_id && (
+                                                <span className="text-danger">{errors.category_id}</span>
+                                            )}
                                         </div>
                                     </div>
+
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thương hiệu</label>
                                         <div className="col-md-12">
@@ -258,7 +277,7 @@ className="form-control-line border-input"
                                                     </option>
                                                 ))}
                                             </select>
-                                            {errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
+{errors.brand_id && <span className="text-danger">{errors.brand_id}</span>}
                                         </div>
                                     </div>
 
@@ -275,9 +294,10 @@ className="form-control-line border-input"
                                             />
                                         </div>
                                     </div>
-<div className="form-group mb-3">
+
+                                    <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Giá</label>
-<div className="col-md-12">
+                                        <div className="col-md-12">
                                             <input
                                                 type="text"
                                                 name="price"
@@ -302,14 +322,14 @@ className="form-control-line border-input"
                                             className="form-control-line border-input"
 
                                         />
-                                        {errors.stock && <span className="error">{errors.stock}</span>}
+                                        {errors.stock && <span className="text-danger">{errors.stock}</span>}
                                     </div>
 
 
                                     {/* Phần thêm variant màu sắc */}
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Thêm biến thể màu sắc</label>
-                                        <div className="col-md-12">
+<div className="col-md-12">
                                             <div className="d-flex gap-2 mb-2">
                                                 <input
                                                     type="text"
@@ -323,9 +343,9 @@ className="form-control-line border-input"
                                                     type="number"
                                                     name="price"
                                                     value={currentVariant.price}
-onChange={handleVariantChange}
+                                                    onChange={handleVariantChange}
                                                     placeholder="Nhập giá"
-className="form-control"
+                                                    className="form-control"
                                                 />
                                                 <button
                                                     type="button"
@@ -351,7 +371,7 @@ className="form-control"
                                                             Xóa
                                                         </button>
                                                     </div>
-                                                ))}
+))}
                                             </div>
                                         </div>
                                     </div>
@@ -368,9 +388,9 @@ className="form-control"
                                                 placeholder="Nhập mô tả ngắn"
                                                 className="form-control-line border-input"
                                             />
-{errors.short_description && <span className="text-danger">{errors.short_description}</span>}
+                                            {errors.short_description && <span className="text-danger">{errors.short_description}</span>}
                                         </div>
-</div>
+                                    </div>
 
                                     <div className="form-group mb-3">
                                         <label className="col-md-12 mb-0">Mô tả</label>
@@ -397,7 +417,7 @@ className="form-control"
                                                 className="form-control"
                                             >
                                                 <option value="6">6 tháng</option>
-                                                <option value="12">12 tháng</option>
+<option value="12">12 tháng</option>
                                             </select>
                                         </div>
                                     </div>
@@ -414,10 +434,10 @@ className="form-control"
                                     </div>
 
                                     <div className="form-group mb-3">
-<label className="col-md-12 mb-0">Trạng Thái</label>
+                                        <label className="col-md-12 mb-0">Trạng Thái</label>
                                         <div className="col-md-12">
                                             <select
-name="status"
+                                                name="status"
                                                 value={product.status}
                                                 onChange={handleInputChange}
                                                 className="form-control-line border-input"
@@ -443,12 +463,15 @@ name="status"
                                         </div>
                                     </div>
                                 </form>
+                                <ToastContainer />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            
+
+</div>
     );
 };
 

@@ -97,7 +97,7 @@ const AddBlog = () => {
 
       if (response) {
         setSuccess("Bài viết đã được thêm thành công!");
-        setError({});
+setError({});
         setFormData(initialFormData);
         setTimeout(() => navigate("/admin/blog"), 2000);
       } else {
@@ -166,7 +166,7 @@ const AddBlog = () => {
                         {formData.featured_image && (
                           <div className="mt-2">
                             <img
-                              src={URL.createObjectURL(formData.featured_image)}
+src={URL.createObjectURL(formData.featured_image)}
                               alt="Featured"
                               style={{ width: '200px', height: 'auto' }}
                             />
@@ -233,7 +233,7 @@ const AddBlog = () => {
           </div>
         </div>
       </div>
-    </div>
+</div>
   );
 };
 

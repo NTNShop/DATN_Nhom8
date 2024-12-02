@@ -47,8 +47,8 @@ const Blog = () => {
   };
 
   useEffect(() => {
-    fetchPosts(currentPage);
-  }, [currentPage]);
+    fetchPosts(currentPage, searchQuery); // Lấy bài viết dựa trên trang hiện tại và từ khóa tìm kiếm
+  }, [currentPage, searchQuery]);
 
   // Search handler
   const handleSearch = (e) => {
@@ -238,7 +238,6 @@ const Blog = () => {
           </div>
         </div>
       </div>
-
       <Footer />
       <style>
         {`
