@@ -19,12 +19,13 @@ const PaymentSuccessPage = () => {
   const isSuccess = transactionStatus === '00';
   const isFailure = transactionStatus === '02';
 
-  const formatCurrency = (amount) => {  
+  const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+        style: 'decimal', // Sử dụng style "decimal" thay vì "currency"
+        minimumFractionDigits: 0, // Số chữ số thập phân tối thiểu
+        maximumFractionDigits: 2 // Số chữ số thập phân tối đa (nếu cần)
     }).format(amount);
-  };
+};
 
   const getPaymentMethodText = (method) => {
     const methods = {

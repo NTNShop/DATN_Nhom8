@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { CartService } from "../../../services/client/Cart";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
+import '../shop/product.css'
 
 // Set default axios configs
 axios.defaults.headers.common['Accept'] = 'application/json';
@@ -128,10 +129,11 @@ const Product = () => {
   // Format tiền tệ
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+        style: 'decimal', // Sử dụng style "decimal" thay vì "currency"
+        minimumFractionDigits: 0, // Số chữ số thập phân tối thiểu
+        maximumFractionDigits: 2 // Số chữ số thập phân tối đa (nếu cần)
     }).format(amount);
-  };
+};
   return (
     <>
       <Header />

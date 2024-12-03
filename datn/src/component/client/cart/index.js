@@ -141,10 +141,11 @@ const Cart = () => {
   // Format tiền tệ
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+        style: 'decimal', // Sử dụng style "decimal" thay vì "currency"
+        minimumFractionDigits: 0, // Số chữ số thập phân tối thiểu
+        maximumFractionDigits: 2 // Số chữ số thập phân tối đa (nếu cần)
     }).format(amount);
-  };
+};
 
   // Xử lý thanh toán
   const handleCheckout = () => {
@@ -222,12 +223,11 @@ const Cart = () => {
                           onChange={handleSelectAll}
                         />
                       </th>
-                      <th className="shoping__product">SẢN PHẨM XE</th>
+                      <th className="shoping__product">SẢN PHẨM</th>
                       <th>MÀU SẮC</th>
                       <th>GIÁ SẢN PHẨM</th>
                       <th>SỐ LƯỢNG</th>
                       <th>TỔNG CỘNG</th>
-                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -248,10 +248,10 @@ const Cart = () => {
                           />
                           <h5>{item.product.name}</h5>
                           {item.variant && (
-            <span className="product-color">
-                Màu: <strong>{item.variant.color}</strong>
-            </span>
-        )}
+                            <span className="product-color">
+                                Màu: <strong>{item.variant.color}</strong>
+                            </span>
+                        )}
                         </td>
                         <td className="shoping__cart__price">
                           {formatCurrency(parseFloat(item.unit_price))}
@@ -294,6 +294,7 @@ const Cart = () => {
                             onClick={() => handleRemoveItem(item.id)}
                           ></span>
                         </td>
+                        <td></td>
                       </tr>
                     ))}
                   </tbody>
