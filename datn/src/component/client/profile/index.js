@@ -96,7 +96,7 @@ const ProfileS = () => {
     if (!avatarFile) return;
 
     try {
-      setLoading(true);
+setLoading(true);
       await updateUserAvatar(avatarFile);
       window.location.reload();
     } catch (error) {
@@ -199,7 +199,7 @@ const ProfileS = () => {
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
               Accept: "application/json",
             },
@@ -246,29 +246,6 @@ const ProfileS = () => {
   return (
     <>
       <Header />
-      <section
-        className="breadcrumb-section set-bg"
-        style={{
-          backgroundImage: `url(${banner})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12 text-center">
-              <div className="breadcrumb__text">
-                <h2>CHỈNH SỬA THÔNG TIN</h2>
-                <div className="breadcrumb__option">
-                  <Link to="/">TRANG CHỦ</Link>
-                  <span>CHỈNH SỬA</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="container">
         <div className="row">
           <div className="col-lg-12 text-center">
@@ -319,7 +296,7 @@ const ProfileS = () => {
             <input
               id="avatarUpload"
               type="file"
-              accept="image/*"
+accept="image/*"
               onChange={handleAvatarChange}
               className="d-none"
             />
@@ -389,7 +366,7 @@ const ProfileS = () => {
                     </div>
                     <div className="form-group">
                       <label className="col-md-12 mb-0">
-                        Vai trò người dùng
+Vai trò người dùng
                       </label>
                       <div className="col-md-12">
                         <span>{userInfo.userRole}</span>
@@ -460,7 +437,7 @@ onChange={handleInputChange}
                             />
                           </div>
                         </div>
-                        <div className="col-lg-12">
+<div className="col-lg-12">
                           <button
                             type="button"
                             className="btn btn-danger text-light"
@@ -518,11 +495,11 @@ onChange={handleInputChange}
                             <td>{order.total.toLocaleString()} VNĐ</td>
                             <td>
                               {order.items.map((item) => {
-                                const primaryImage = item.product.images.find(img => img.is_primary === 1) || item.product.images[0];
+                                const primaryImage = item.product.images?.find(img => img.is_primary === 1) || item.product.images?.[0];
                                 return (
                                   <div key={item.id} className="mb-2">
                                     {primaryImage ? (
-                                      <img
+<img
                                         src={`http://127.0.0.1:8000${primaryImage.image_url}`}
                                         alt={item.product.name}
                                         style={{ width: '170px', height: '50px', objectFit: 'cover' }}
@@ -575,7 +552,7 @@ onChange={handleInputChange}
                               )}
 
                               {order.payment_status === "1" && order.status !== 4 && (
-                                <button className="btn btn-info btn-sm w-100 rounded-pill mb-2">Thanh toán COD</button>
+<button className="btn btn-info btn-sm w-100 rounded-pill mb-2">Thanh toán COD</button>
                               )}
 
                               {order.payment_status === "2" && order.status !== 4 && (
