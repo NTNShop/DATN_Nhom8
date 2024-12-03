@@ -222,7 +222,7 @@ const Cart = () => {
                           onChange={handleSelectAll}
                         />
                       </th>
-                      <th className="shoping__product">SẢN PHẨM XE</th>
+                      <th className="shoping__product">SẢN PHẨM </th>
                       <th>MÀU SẮC</th>
                       <th>GIÁ SẢN PHẨM</th>
                       <th>SỐ LƯỢNG</th>
@@ -260,7 +260,7 @@ const Cart = () => {
                           <div className="quantity">
                             <div className="pro-qty">
                               <button
-                                className="btn btn-sm btn-outline-secondary"
+                                className="btn btn-sm btn-outline-secondaryy"
                                 onClick={() => handleUpdateQuantity(item.id, item.quantity - 1, item)}
                                 onChange={(e) => handleUpdateCartItem(item.id, e.target.value)}
                                 disabled={isUpdating || item.quantity <= 1}
@@ -274,7 +274,7 @@ const Cart = () => {
                                 className="mx-2"
                               />
                               <button
-                                className="btn btn-sm btn-outline-secondary"
+                                className="btn btn-sm btn-outline-secondaryy"
                                 onClick={() => handleUpdateQuantity(item.id, item.quantity + 1, item)}
                                 onChange={(e) => handleUpdateCartItem(item.id, e.target.value)}
                                 disabled={isUpdating}
@@ -348,6 +348,7 @@ const Cart = () => {
         margin-top: 5px;
         
     }
+        
 `}</style>
       
     </>
