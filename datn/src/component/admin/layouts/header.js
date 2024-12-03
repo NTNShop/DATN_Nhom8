@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie"; 
 import { useNavigate } from "react-router-dom"; 
-import logo from "../../../assets/img/logo.png";
-// import avt from "../../../assets/images/users/avt.png";
+import logo from "../../../assets/img/logo2.png";
+import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
 import { logoutUser } from "../../../services/client/Login";  // Import the logoutUser function
 import { getUserProfile } from "../../../services/admin/profile";
@@ -105,11 +105,23 @@ const Header = () => {
         <header className="topbar" data-navbarbg="skin6">
           <nav className="navbar top-navbar navbar-expand-md navbar-dark">
             <div className="navbar-header" data-logobg="skin6">
-              <a className="navbar-brand ms-4" href="/admin">
+            <a className="navbar-brand ms-4" href="/">
+                {/* Logo icon */}
+
+                
+
+                {/* Logo text */}
+
+                <span className="logo-text" style={{marginLeft:"-10px"}}>
+                  <img
+                    src={logo}
+                    alt="homepage"
+                    className="dark-logo"
+                  />
+                </span>
                 <b className="logo-icon">
-                  <img src={logo} style={{ width: "100px" }} alt="trang chủ" className="dark-logo" />
+                  <p className="pb-1 text-white">BIKESHOOL</p>
                 </b>
-                <span className="logo-text"></span>
               </a>
               <a
                 className="nav-toggler waves-effect waves-light text-white d-block d-md-none"
@@ -118,8 +130,7 @@ const Header = () => {
                 <i className="ti-menu ti-close"></i>
               </a>
             </div>
-            <div
-              className="navbar-collapse collapse ml-2"
+            <div className="navbar-collapse collapse"
               id="navbarSupportedContent"
               data-navbarbg="skin5"
             >
@@ -135,9 +146,9 @@ const Header = () => {
               </ul>
               <ul className="navbar-nav me-auto mt-md-0">
                 <li className="nav-item search-box">
-                  <a className="nav-link text-muted" href="#" onClick={toggleSearch}>
-                    <i className="ti-search"></i>
-                  </a>
+                  <div className=" text-muted" href="#">
+                    
+                  </div>
                   <form className="app-search" style={{ display: showSearch ? "block" : "none" }}>
                     <input type="text" className="form-control" placeholder="Nhập từ khóa cần tìm" />
                     <a className="srh-btn" onClick={toggleSearch}>
@@ -157,8 +168,8 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <img
-                      src={userAvatar}
-                      alt=""
+                      src={userInfo?.avatar || avt}
+                      alt="người dùng"
                       className="profile-pic me-2"
                     />
                     {userInfo?.full_name || "Người dùng"} 

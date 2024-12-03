@@ -145,6 +145,12 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                             </div>
                                         </div>
                                         <div className="d-flex justify-content-start gap-4 mb-3">
+                                        <div className="position-relative w-100">
+                                        <div className="d-flex align-items-center mb-2">
+                                            <span className="me-2 text-secondary">
+                                                Trạng thái hoạt động
+                                            </span>
+                                        </div>
                                             {/* Lọc theo trạng thái */}
                                             <div className="input-group">
                                                 <input
@@ -179,6 +185,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                         ))}
 </ul>
                                                 )}
+                                                </div>
                                             </div>
 
                                         </div>
