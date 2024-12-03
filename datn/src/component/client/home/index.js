@@ -241,7 +241,7 @@ const Home = () => {
             <h1 className="suutam" style={{ textAlign: 'left'}}>SƯU TẦM</h1>
             <hr style={{ width: '300px', color: "white", height:"2px" }} />
             <p style={{ color: "white"}}>
-              Nhiều người, không chịu được vị đắng của cà phê nên thường bỏ đường hoặc sữa cho bớt đắng. Tôi không cho đường hay sữa vào cà phê bởi tôi biết phải nếm trải qua cay đắng mới cảm nhận được ngọt ngào đến lịm người. Cho dù vẫn tiếp tục phải uống cà phê đắng nhưng tôi vẫn không nản lòng vì dư vị ngọt ngào của nó.
+            Dòng xe đạp của chúng tôi kết hợp công nghệ tiên tiến với tính thẩm mỹ đẹp mắt, cung cấp nhiều lựa chọn phù hợp với nhiều phong cách và sở thích đạp xe khác nhau. Cho dù bạn là người đam mê đạp xe đường trường, người đam mê đạp xe leo núi đây sẽ là lựa chọn phù hợp với bạn
             </p>
           </div>
         
