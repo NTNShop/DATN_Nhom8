@@ -19,13 +19,7 @@ const Reviews = () => {
     try {
       const token = Cookies.get('authToken');
       
-      if (!token) {
-        setError("Bạn chưa đăng nhập. Vui lòng đăng nhập lại.");
-        window.location.href = '/login';
-        return;
-      }
-
-      const response = await fetch('http://127.0.0.1:8000/api/v1/reviews', {
+      const response = await fetch('http://127.0.0.1:8000/api/v1/reviews/all', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -33,26 +27,12 @@ const Reviews = () => {
           'Accept': 'application/json'
         }
       });
-
-      if (response.status === 401) {
-        Cookies.remove('authToken');
-        setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-        window.location.href = '/login';
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
-      }
-      
+  
       const data = await response.json();
-      
-      if (data && data.status === "success" && data.data) {
-        setReviews(data.data);
-      } else {
-        console.error('Cấu trúc dữ liệu không như mong đợi:', data);
-        setError('Định dạng dữ liệu không hợp lệ');
-      }
+      console.log('Dữ liệu nhận được:', data.data); // In ra toàn bộ dữ liệu để kiểm tra
+  
+      // Nếu API trả về trực tiếp mảng reviews
+      setReviews(data.data); 
     } catch (error) {
       console.error("Lỗi khi lấy bình luận:", error);
       setError("Không thể tải bình luận. Vui lòng thử lại sau.");
@@ -89,12 +69,12 @@ const Reviews = () => {
                 <div className="card-body">
                   <h4 className="card-title">Danh sách bình luận</h4>
                   <div className="table-responsive mt-3">
-                    <table className="table user-table text-center">
+                    <table className="table user-table table-bordered">
                       <thead>
                         <tr className='table-light'>
                           <th>ID</th>
-                          <th>ID Khách hàng</th>
-                          <th>ID sản phẩm</th>
+                          <th>Tên khách hàng</th>
+                          <th>Tên sản phẩm</th>
                           <th>Nội dung</th>
                           <th>Đánh giá</th>
                           <th>Trạng thái</th>
@@ -107,11 +87,11 @@ const Reviews = () => {
                         ) : error ? (
                           <tr><td colSpan="9">{error}</td></tr>
                         ) : reviews && Array.isArray(reviews) && reviews.length > 0 ? (
-                          reviews.map((review) => (
+                          reviews.map((review, index) => (
                             <tr key={review.id}>
-                              <td>{review.id}</td>
-                              <td>{review.user_id}</td>
-                              <td>{review.product_id}</td>
+                              <td>{index + 1}</td>
+                              <td>{review.user?.full_name || 'N/A'}</td>
+                              <td>{review.product?.name || 'N/A'}</td>
                               <td>{review.review_content}</td>
                               <td>{review.rating} sao</td>
                               <td>{review.review_status === 1 ? 'Hoạt động' : 'Không hoạt động'}</td>

@@ -179,7 +179,7 @@ const Contacts = () => {
                 <div className="card-body">
                   <h4 className="card-title">Danh sách phản hồi</h4>
                   <div className="table-responsive mt-3">
-                    <table className="table user-table text-center">
+                    <table className="table user-table table-bordered">
                       <thead>
                         <tr className='table-light'>
                           <th>ID</th>
@@ -198,9 +198,9 @@ const Contacts = () => {
                             <td colSpan="8" className="text-center">Không có dữ liệu</td>
                           </tr>
                         ) : (
-                          contacts.map((contact) => (
+                          contacts.map((contact, index) => (
                             <tr key={contact.id}>
-                              <td>{contact.id}</td>
+                              <td>{index + 1}</td>
                               <td>{contact.name}</td>
                               <td>{contact.email}</td>
                               <td>{contact.phone}</td>

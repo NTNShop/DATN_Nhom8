@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button } from "react-bootstrap"; // Import Modal
+import ProductReview from "../reviews";
 
 const ProfileS = () => {
   const navigate = useNavigate();
@@ -27,7 +28,28 @@ const ProfileS = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedOrderForReview, setSelectedOrderForReview] = useState(null);
+  // xử lý reviews
+  const handleReviewClick = (order) => {
+    setSelectedOrderForReview(order);
+    setShowReviewModal(true);
+  };
 
+  const handleReviewSubmitted = () => {
+    if (selectedOrderForReview) {
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === selectedOrderForReview.id 
+            ? { ...order, is_reviewed: true }
+            : order
+        )
+      );
+    }
+    setShowReviewModal(false);
+    setSelectedOrderForReview(null);
+    toast.success("Đánh giá sản phẩm thành công!");
+  };
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -122,7 +144,15 @@ const ProfileS = () => {
         });
 
         const ordersData = response.data.data.data || [];
-        setOrders(ordersData);
+        
+        const savedReviewStates = JSON.parse(localStorage.getItem('reviewedOrders') || '{}');
+        
+        const updatedOrders = ordersData.map(order => ({
+          ...order,
+          is_reviewed: savedReviewStates[order.id] || false
+        }));
+        
+        setOrders(updatedOrders);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile and orders:", error.response?.data || error.message);
@@ -139,6 +169,16 @@ const ProfileS = () => {
 
     fetchUserProfileAndOrders();
   }, []);
+
+  useEffect(() => {
+    if (orders.length > 0) {
+      const reviewStates = orders.reduce((acc, order) => ({
+        ...acc,
+        [order.id]: order.is_reviewed || false
+      }), {});
+      localStorage.setItem('reviewedOrders', JSON.stringify(reviewStates));
+    }
+  }, [orders]);
 
   const handleCancelOrder = async (orderId, orderStatus, paymentStatus) => {
     if ((orderStatus === 1 || orderStatus === 2) && paymentStatus !== 2) {
@@ -199,13 +239,9 @@ const ProfileS = () => {
     }
   };
 
-
-
-
-
-
-
-
+  const isOrderReviewed = (order) => {
+    return order.is_reviewed || (order.reviews && order.reviews.length > 0);
+  };
 
   return (
     <>
@@ -482,44 +518,55 @@ onChange={handleInputChange}
                                 </div>
                               ))}
                             </td>
-                            <td>
+                            <td className="text-center">
                               {order.status === 5 ? (
-                                <span className="text-muted">Đã hủy</span>
-                              ) : (order.status === 1 || order.status === 2) ? (
-                                <div className="d-flex flex-column">
+                                <button className="btn btn-danger btn-sm disabled w-100 rounded-pill mb-2">Đơn hàng đã hủy</button>
+                              ) : order.status === 4 ? (
+                                <>
                                   <button
-                                    className="btn btn-danger mb-2"
-                                    onClick={() => openConfirmModal(order.id, order.status, order.payment_status)}
-                                    disabled={order.payment_status === "2"} // Vô hiệu hóa khi đã thanh toán
+                                    className="btn btn-success btn-sm disabled w-100 rounded-pill mb-2"
                                   >
-                                    Hủy đơn hàng
+                                    Đơn hàng đã giao thành công
                                   </button>
-                                  {order.payment_status === "1" ? (
-                                    <span className="text-info">Thanh toán khi nhận hàng</span>
-                                  ) : order.payment_status === "2" ? (
-                                    <span className="text-success">Đã thanh toán</span>
-                                  ) : order.payment_status === "4" ? (
-                                    <span className="text-danger">Thanh toán thất bại</span>
-                                  ) : (
-                                    <span className="text-warning">Không được hủy</span>
+                                  {!isOrderReviewed(order) && (
+                                    <button
+                                      className="btn btn-primary btn-sm w-100 rounded-pill mb-2"
+                                      onClick={() => handleReviewClick(order)}
+                                    >
+                                      Đánh giá sản phẩm
+                                    </button>
                                   )}
-                                </div>
+                                </>
+                              ) : order.status === 3 ? (
+                                <button className="btn btn-warning btn-sm disabled w-100 rounded-pill mb-2">
+                                  Đơn hàng đã được vận chuyển
+                                </button>
                               ) : (
-                                <span className="text-warning">
-                                  {order.payment_status === "2"
-                                    ? 'Đã thanh toán'
-                                    : order.payment_status === "4"
-                                      ? 'Thanh toán thất bại'
-                                      : 'Đơn hàng đang giao không được hủy'}
-                                </span>
+                                <button
+                                  className="btn btn-danger btn-sm w-100 rounded-pill mb-2"
+                                  onClick={() => openConfirmModal(order.id, order.status, order.payment_status)}
+                                  disabled={["2", "4"].includes(order.payment_status)}
+                                >
+                                  Hủy đơn hàng
+                                </button>
+                              )}
+
+                              {order.payment_status === "1" && order.status !== 4 && (
+                                <button className="btn btn-info btn-sm w-100 rounded-pill mb-2">Thanh toán COD</button>
+                              )}
+
+                              {order.payment_status === "2" && order.status !== 4 && (
+                                <button className="btn btn-success btn-sm w-100 rounded-pill mb-2">Đã thanh toán</button>
+                              )}
+
+                              {order.payment_status === "3" && order.status !== 4 && (
+                                <button className="btn btn-warning btn-sm w-100 rounded-pill mb-2">Chưa thanh toán</button>
+                              )}
+
+                              {order.payment_status === "4" && order.status !== 4 && (
+                                <button className="btn btn-dark btn-sm w-100 rounded-pill mb-2">Thanh toán thất bại</button>
                               )}
                             </td>
-
-
-
-
-
-
                           </tr>
                         ))}
                       </tbody>
@@ -529,9 +576,7 @@ onChange={handleInputChange}
                   ) : (
                     <p className="text-center">Bạn chưa có đơn hàng nào.</p>
                   )}
-                  <ToastContainer />
                 </div>
-
               </div>
             </div>
           </div>
@@ -552,6 +597,27 @@ onChange={handleInputChange}
           </Button>
         </Modal.Footer>
       </Modal>
+      <Modal 
+        show={showReviewModal} 
+        onHide={() => setShowReviewModal(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Đánh giá sản phẩm</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedOrderForReview && (
+            <ProductReview 
+              order={selectedOrderForReview}
+              onReviewSubmitted={handleReviewSubmitted}
+              
+            />
+          )}
+        </Modal.Body>
+      </Modal>
+      <ToastContainer />
+
     </>
   );
 };

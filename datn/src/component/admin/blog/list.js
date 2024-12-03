@@ -227,12 +227,12 @@ const Blog = () => {
                             <td colSpan="7" className="text-center">Đang tải...</td>
                           </tr>
                         ) : currentPosts.length > 0 ? (
-                          currentPosts.map((post) => (
+                          currentPosts.map((post, index) => (
                             <tr
                               key={post.id}
                               className={post.id === newPostId ? "bg-success text-white" : ""}
                             >
-                              <td>{post.id}</td>
+                              <td>{index + 1}</td>
                               <td>
                                 <img
                                   src={post.featured_image ? `http://127.0.0.1:8000${post.featured_image}` : "default-image-url"}

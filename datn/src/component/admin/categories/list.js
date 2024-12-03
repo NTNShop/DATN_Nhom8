@@ -142,7 +142,7 @@ const fetchCategories = async () => {
                                         <table className="table table-bordered mt-2">
                                             <thead>
                                                 <tr className="table-light">
-                                                    <th className="border-top-0">STT</th>
+                                                    <th className="border-top-0">#</th>
                                                     <th className="border-top-0">ID</th>
 
                                                     <th className="border-top-0">Tên danh mục</th>

@@ -204,7 +204,7 @@ const ListBrand = () => {
                                         <table className="table table-bordered">
                                             <thead>
                                                 <tr className='table-light'>
-                                                    <th className="border-top-0">ID</th>
+                                                    <th className="border-top-0">#</th>
                                                     <th className="border-top-0">Tên thương hiệu</th>
                                                     <th className="border-top-0">Hình ảnh</th>
                                                     <th className="border-top-0">Trạng thái</th>
@@ -222,11 +222,11 @@ const ListBrand = () => {
                                                     </tr>
                                                 ) : filteredBrands.length > 0 ? (
                                                     filteredBrands.sort((a, b) => b.id - a.id).map((brand,index) => (
-                                                        <tr key={brand.id} style={{
+                                                        <tr key={(brand.id, index)} style={{
                                                             backgroundColor: brand.id === newBrandId ? '#d4edda' : 'inherit',
                                                             transition: 'background-color 0.3s ease'
                                                         }}>
-                                                            <td>{brand.id}</td>
+                                                            <td>{index + 1}</td>
                                                             <td>{brand.name}</td>
                                                             <td>
                                                                 <img 

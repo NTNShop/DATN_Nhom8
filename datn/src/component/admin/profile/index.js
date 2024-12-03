@@ -5,7 +5,6 @@ import {
   getUserProfile,
   updateUserProfile,
 } from "../../../services/admin/profile";
-import avt from "../../../assets/images/users/avt.png";
 import { toast } from "react-toastify";
 import { updateUserAvatar } from "../../../services/admin/profile";
 
@@ -224,7 +223,7 @@ const Profile = () => {
                           className="d-none"
                         />
                         <img
-                          src={previewAvatar || profile.avatar || avt}
+                          src={previewAvatar || profile.avatar}
                           alt="Avatar"
                           className="rounded-circle object-fit-cover"
                           width="150"

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Cookies from "js-cookie";
-import Cookies from "js-cookie";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -199,5 +198,4 @@ const UpdateOrderStatusModal = ({ order, onClose, onSuccess }) => {
     );
 };
 
-export default UpdateOrderStatusModal;
 export default UpdateOrderStatusModal;
