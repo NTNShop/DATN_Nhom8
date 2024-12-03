@@ -368,17 +368,7 @@ const CheckoutSection = () => {
       setLoading(false);
     }
   };
-  
-  
-  // Hàm xử lý phản hồi từ VNPAY
- 
-  
-  // Hook useEffect để xử lý phản hồi VNPAY
-
-  
-  
-  
-
+    
   return (
     <>
       <Header />

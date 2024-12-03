@@ -419,7 +419,7 @@ const ProfileS = () => {
           </div>
           {/* order user */}
           <div className="col-lg-12 col-xlg-12 col-md-12 ">
-            <div className="card">
+            <div className="card card-lg" >
               <div className="card-body">
                 <span className="text-dark fw-bold d-flex justify-content-center">Đơn hàng của bạn</span>
 
@@ -466,7 +466,7 @@ const ProfileS = () => {
                                       <img
                                         src={`http://127.0.0.1:8000${primaryImage.image_url}`}
                                         alt={item.product.name}
-                                        style={{ width: '170px', height: '50px', objectFit: 'cover' }}
+                                        style={{ width: '100%', height: 'auto', objectFit: 'contain' }} // Tạo kích thước linh hoạt cho hình ảnh
                                       />
                                     ) : (
                                       <span>No image available</span>
@@ -482,47 +482,50 @@ const ProfileS = () => {
                                 </div>
                               ))}
                             </td>
-                            <td>
+                            <td className="text-center">
                               {order.status === 5 ? (
-                                <span className="text-muted">Đã hủy</span>
-                              ) : (order.status === 1 || order.status === 2) ? (
-                                <div className="d-flex flex-column">
-                                  <button
-                                    className="btn btn-danger mb-2"
-                                    onClick={() => openConfirmModal(order.id, order.status, order.payment_status)}
-                                    disabled={order.payment_status === "2"} // Vô hiệu hóa khi đã thanh toán
-                                  >
-                                    Hủy đơn hàng
-                                  </button>
-                                  {order.payment_status === "1" ? (
-                                    <span className="text-info">Thanh toán khi nhận hàng</span>
-                                  ) : order.payment_status === "2" ? (
-                                    <span className="text-success">Đã thanh toán</span>
-                                  ) : order.payment_status === "4" ? (
-                                    <span className="text-danger">Thanh toán thất bại</span>
-                                  ) : (
-                                    <span className="text-warning">Không được hủy</span>
-                                  )}
-                                </div>
+                                <button className="btn btn-danger btn-sm disabled w-100 rounded-pill mb-2">Đơn hàng đã hủy</button>
+                              ) : order.status === 3 ? (
+                                <button className="btn btn-warning btn-sm disabled w-100 rounded-pill mb-2">
+                                  Đơn hàng đã được vận chuyển
+                                </button>
+                              ) : order.status === 4 ? (
+                                // Khi đơn hàng đã giao thành công, không còn nút hủy
+                                <button className="btn btn-success btn-sm disabled w-100 rounded-pill mb-2">
+                                  Đơn hàng đã giao thành công
+                                </button>
                               ) : (
-                                <span className="text-warning">
-                                  {order.payment_status === "2"
-                                    ? 'Đã thanh toán'
-                                    : order.payment_status === "4"
-                                      ? 'Thanh toán thất bại'
-                                      : 'Đơn hàng đang giao không được hủy'}
-                                </span>
+                                <button
+                                  className="btn btn-danger btn-sm w-100 rounded-pill mb-2"
+                                  onClick={() => openConfirmModal(order.id, order.status, order.payment_status)}
+                                  disabled={["2", "4"].includes(order.payment_status)}
+                                >
+                                  Hủy đơn hàng
+                                </button>
+                              )}
+
+                              {order.payment_status === "1" && order.status !== 4 && (
+                                <button className="btn btn-info btn-sm w-100 rounded-pill mb-2">Thanh toán COD</button>
+                              )}
+
+                              {order.payment_status === "2" && order.status !== 4 && (
+                                <button className="btn btn-success btn-sm w-100 rounded-pill mb-2">Đã thanh toán</button>
+                              )}
+
+                              {order.payment_status === "3" && order.status !== 4 && (
+                                <button className="btn btn-warning btn-sm w-100 rounded-pill mb-2">Chưa thanh toán</button>
+                              )}
+
+                              {order.payment_status === "4" && order.status !== 4 && (
+                                <button className="btn btn-dark btn-sm w-100 rounded-pill mb-2">Thanh toán thất bại</button>
                               )}
                             </td>
-
-
-
-
 
 
                           </tr>
                         ))}
                       </tbody>
+
                     </table>
 
 
@@ -536,7 +539,10 @@ const ProfileS = () => {
             </div>
           </div>
         </div>
+
+
       </div>
+
       <Footer />
       <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
         <Modal.Header closeButton>
