@@ -42,7 +42,7 @@ createReview: async (reviewData) => {
 
   getUserReviews: async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/reviews`, {
+      const response = await axios.get(`${BASE_URL}/reviews/user-reviews`, {
         headers: {
           'Authorization': `Bearer ${Cookies.get('authToken')}`
         }

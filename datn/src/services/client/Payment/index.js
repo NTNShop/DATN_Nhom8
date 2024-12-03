@@ -16,7 +16,45 @@ const getAuthConfig = () => {
   }; 
 };  
 
-export const OrderService = {   
+export const OrderService = {  
+  updateOrderStatus: async (orderId, status) => {
+    try {
+      const config = getAuthConfig();
+
+      if (!orderId || !status) {
+        throw new Error('ID đơn hàng và trạng thái không được để trống');
+      }
+
+      const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+      const normalizedStatus = status.toLowerCase().trim();
+
+      if (!validStatuses.includes(normalizedStatus)) {
+        throw new Error('Trạng thái không hợp lệ.');
+      }
+
+      const response = await axios.put(`${BASE_URL}/orders/${orderId}/status`, { status: normalizedStatus }, config);
+
+      return {
+        success: true,
+        data: response.data.data
+      };
+    } catch (error) {
+      console.error('Update Order Status Error:', error);
+      console.error('Error Response:', error.response?.data);
+
+      if (error.response?.status === 401) {
+        Cookies.remove("authToken");
+        throw new Error('Phiên đăng nhập đã hết hạn');
+      }
+
+      if (error.response?.data?.errors) {
+        const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
+        throw new Error(errorMessages);
+      }
+
+      throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
+    }
+  }, 
   createOrder: async (orderData) => {     
     try {       
       const config = getAuthConfig();        
@@ -75,8 +113,9 @@ export const OrderService = {
       };
 
       // Log formatted order data for debugging (caution with sensitive data)
-      console.log('Formatted Order Data:', formattedOrderData);
-// Send the request to the backend
+      console.log('Formatted Order Data:', formattedOrderData);        
+
+      // Send the request to the backend
       try {
         const response = await axios.post(`${BASE_URL}/orders`, formattedOrderData, config);
       
@@ -124,5 +163,19 @@ export const OrderService = {
       // Handle general errors
       throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi xử lý đơn hàng');     
     }
+  },
+  getLatestOrder: async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/orders`, {
+        headers: {
+          'Authorization': `Bearer ${Cookies.get('authToken')}`
+        }
+      });
+      return response.data.data;
+    } catch (error) {
+      throw error.response?.data || new Error('Không thể lấy đơn hàng');
+    }
   }
+  
 };
+

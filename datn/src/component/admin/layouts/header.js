@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie"; 
 import { useNavigate } from "react-router-dom"; 
 import logo from "../../../assets/img/logo.png";
-import avt from "../../../assets/images/users/avt.png";
+// import avt from "../../../assets/images/users/avt.png";
 import "../../../assets/css/styleEdit.css";
 import { logoutUser } from "../../../services/client/Login";  // Import the logoutUser function
-
+import { getUserProfile } from "../../../services/admin/profile";
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [userInfo, setUserInfo] = useState(null); 
+  const [userAvatar, setUserAvatar] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // State for logout confirmation
   const navigate = useNavigate(); 
 
@@ -19,6 +20,23 @@ const Header = () => {
   const removeAuthToken = () => {
     Cookies.remove("AuthToken");
   };
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await getUserProfile();
+        setUserInfo(profile);
+        
+        // Nếu có avatar từ server, sử dụng luôn
+        if (profile.avatar) {
+          setUserAvatar(profile.avatar);
+        }
+      } catch (error) {
+        console.error("Lỗi lấy thông tin người dùng:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
   // Get user info from cookies
   useEffect(() => {
     const storedUserInfo = Cookies.get("userInfo");
@@ -139,8 +157,8 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <img
-                      src={userInfo?.avatar || avt}
-                      alt="người dùng"
+                      src={userAvatar}
+                      alt=""
                       className="profile-pic me-2"
                     />
                     {userInfo?.full_name || "Người dùng"} 
@@ -212,8 +230,8 @@ const Header = () => {
                 </li>
                 <li className="sidebar-item">
                   <a className="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/comment">
-                    <i className="mdi me-2 mdi-comment"></i>
-                    <span className="hide-menu">Bình luận</span>
+                  <i className="mdi me-2 mdi-star"></i>
+                    <span className="hide-menu">Đánh giá</span>
                   </a>
                 </li>
                 <li className="sidebar-item">

@@ -60,7 +60,9 @@ const AddBrand = () => {
         setErrors(tempErrors);
         return isValid;
     };
-
+    const handleGoBack = () => {
+        navigate(-1);
+    };
     const handleChange = (e) => {
         const { id, value } = e.target;
         setBrandData({ ...brandData, [id]: value });
@@ -261,10 +263,17 @@ const AddBrand = () => {
                                         <div className="col-sm-12 d-flex">
                                             <button
                                                 type="submit"
-                                                className="btn btn-success mx-auto mx-md-0 text-white"
+                                                className="btn btn-success mt-3 mx-auto mx-md-0 text-white"
                                             >
                                                 Thêm thương hiệu
                                             </button>
+                                            <button
+                                            className="btn btn-secondary mt-3 mx-auto mx-md-0 text-white"
+                                            type="button"
+                                            onClick={handleGoBack}
+                                        >
+                                            Trở về
+                                                </button>
                                         </div>
                                     </div>
                                 </form>

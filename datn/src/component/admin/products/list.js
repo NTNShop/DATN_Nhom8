@@ -188,7 +188,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                         <table className="table table-bordered mt-2">
                                             <thead>
                                                 <tr className="table-light">
-                                                    <th className="border-top-0">STT</th>
+                                                    <th className="border-top-0">#</th>
                                                     <th className="border-top-0">Tên</th>
                                                     <th className="border-top-0">Danh mục</th>
                                                     <th className="border-top-0">Thương hiệu</th>
@@ -220,7 +220,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                             <td>{formatPrice(product.price)}</td>
                                                             <td>
                                                                 {product.images.length > 0 ? (
-<img
+                                                                        <img
                                                                         src={`http://127.0.0.1:8000${product.images[0].image_url}`}
                                                                         alt={product.name}
                                                                         style={{
@@ -249,17 +249,17 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                                     <Link
                                                                         to={`/admin/product/edit/${product.id}`}
                                                                         className="btn btn-outline-dark "
-                                >
-                                  <i className="fa-solid fa-pen-to-square"></i>
+                                                                        >
+                                                                        <i className="fa-solid fa-pen-to-square"></i>
                                                                     </Link>
                                                                     <button
                                                                         onClick={() => confirmDelete(product.id)}
                                                                         className="btn btn-outline-dark mx-1"
->
-<FaTrashAlt />
-                                                                    </button>
-                                                                </div>
-</td>
+                                                                    >
+                                                                    <FaTrashAlt />
+                                                                        </button>
+                                                                        </div>
+                                                                    </td>
                                                         </tr>
                                                     ))
                                                 ) : (

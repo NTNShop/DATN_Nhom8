@@ -72,13 +72,13 @@ const ListOrder = () => {
         4: { text: 'Đã giao', value: 4 },
         5: { text: 'Đã hủy', value: 5 }
     };
-    // Lọc danh sách orders dựa trên searchTerm
+  // Lọc danh sách orders dựa trên searchTerm
     const filteredOrders = orders.filter(order => 
         (activeTab === 0 || order.status === statusConfig[activeTab].value) &&
         order.order_code.toLowerCase().includes(searchTerm.toLowerCase())
     );
     const formatPrice = (price) => {
-        return new Intl.NumberFormat('vi-VN', { 
+return new Intl.NumberFormat('vi-VN', { 
             style: 'currency', 
             currency: 'VND' 
         }).format(price);
@@ -145,7 +145,7 @@ const ListOrder = () => {
                         } catch (err) {
                             console.error('Delete error:', err);
                             confirmAlert({
-                                title: 'Lỗi',
+title: 'Lỗi',
                                 message: 'Lỗi khi xóa đơn hàng: ' + err.message,
                                 buttons: [
                                     {
@@ -204,7 +204,7 @@ const ListOrder = () => {
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Mã sản phẩm</th>
+<th>Mã sản phẩm</th>
                                             <th>Số lượng</th>
                                             <th>Đơn giá</th>
                                             <th>Thành tiền</th>
@@ -311,7 +311,7 @@ const ListOrder = () => {
                                     {error && (
                                         <div className="alert alert-danger" role="alert">
                                             {error}
-                                        </div>
+</div>
                                     )}
                                     {filteredOrders.length === 0 ? (
                                         <div className="alert alert-info">
@@ -357,12 +357,12 @@ const ListOrder = () => {
                                                                     >
                                                                         Chi tiết
                                                                     </button>
-                                                                    <button 
+                                                                    {/* <button 
                                                                         className="btn btn-danger btn-sm"
                                                                         onClick={() => handleDelete(order.id)}
                                                                     >
                                                                         Xóa
-                                                                    </button>
+                                                                    </button> */}
                                                                 </div>
                                                             </td>
                                                         </tr>

@@ -40,19 +40,19 @@ const Cart = () => {
   useEffect(() => {
     calculateTotal();
   }, [selectedItems, cartItems]);
-  
+
   // Xử lý cập nhật số lượng với debounce
   const handleUpdateQuantity = async (cartItemId, newQuantity, currentItem) => {
     if (isUpdating) return;
-  
+
     try {
       setIsUpdating(true);
-  
+
       if (newQuantity < 1) {
         toast.error('Số lượng không thể nhỏ hơn 1');
         return;
       }
-  
+
       // Cập nhật UI trước
       const updatedItems = cartItems.map(item => {
         if (item.id === cartItemId) {
@@ -65,30 +65,30 @@ const Cart = () => {
         return item;
       });
       setCartItems(updatedItems);
-  
+
       // Tính lại tổng tiền
       const newTotalAmount = updatedItems
         .filter(item => selectedItems.includes(item.id))
         .reduce((sum, item) => sum + (parseFloat(item.unit_price) * item.quantity), 0);
       setTotalAmount(newTotalAmount);
-  
+
       // Gọi API cập nhật
       const response = await CartService.updateCartItem(cartItemId, newQuantity);
-  
+
       if (response.status === 'success') {
         toast.success('Cập nhật số lượng thành công');
       }
     } catch (error) {
       console.error('Lỗi chi tiết:', error);
       toast.error(error.message || 'Có lỗi xảy ra khi cập nhật số lượng');
-  
+
       // Khôi phục lại số lượng cũ
       setCartItems(prevItems =>
         prevItems.map(item =>
           item.id === cartItemId ? currentItem : item
         )
       );
-  
+
       // Tải lại dữ liệu
       await fetchCartItems();
     } finally {
@@ -100,22 +100,22 @@ const Cart = () => {
   const handleRemoveItem = async (cartItemId) => {
     try {
       await CartService.removeFromCart(cartItemId);
-  
+
       // Cập nhật UI
       setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
       setSelectedItems(prevSelected => prevSelected.filter(id => id !== cartItemId));
-  
+
       // Tính lại tổng tiền
       const newTotalAmount = cartItems
         .filter(item => selectedItems.includes(item.id) && item.id !== cartItemId)
         .reduce((sum, item) => sum + (parseFloat(item.unit_price) * item.quantity), 0);
       setTotalAmount(newTotalAmount);
-  
+
       toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
     } catch (error) {
       console.error('Lỗi khi xóa sản phẩm:', error);
       toast.error('Có lỗi xảy ra khi xóa sản phẩm');
-  
+
       // Tải lại dữ liệu từ server nếu có lỗi
       fetchCartItems();
     }
@@ -147,49 +147,49 @@ const Cart = () => {
   };
 
   // Xử lý thanh toán
-const handleCheckout = () => {
-  if (selectedItems.length === 0) {
-    toast.error('Vui lòng chọn ít nhất một sản phẩm để thanh toán');
-    return;
-  }
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      toast.error('Vui lòng chọn ít nhất một sản phẩm để thanh toán');
+      return;
+    }
 
-  // Lưu danh sách sản phẩm đã chọn vào sessionStorage
-  const selectedProducts = cartItems.filter(item =>
-    selectedItems.includes(item.id)
-  );
+    // Lưu danh sách sản phẩm đã chọn vào sessionStorage
+    const selectedProducts = cartItems.filter(item =>
+      selectedItems.includes(item.id)
+    );
 
-  // Lưu thông tin cần thiết cho trang thanh toán
-  sessionStorage.setItem('selectedCartItems', JSON.stringify(selectedItems));
-  sessionStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
+    // Lưu thông tin cần thiết cho trang thanh toán
+    sessionStorage.setItem('selectedCartItems', JSON.stringify(selectedItems));
+    sessionStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
 
-  navigate('/checkout');
-};
+    navigate('/checkout');
+  };
   // Hàm cập nhật số lượng sản phẩm và tổng giá trị đơn hàng
-const handleUpdateCartItem = async (itemId, quantity) => {
-  try {
-    // Cập nhật số lượng sản phẩm
-    await CartService.updateCartItem(itemId, quantity);
+  const handleUpdateCartItem = async (itemId, quantity) => {
+    try {
+      // Cập nhật số lượng sản phẩm
+      await CartService.updateCartItem(itemId, quantity);
 
-    // Cập nhật lại danh sách sản phẩm trong giỏ hàng
-    const updatedCartItems = await CartService.getCartItems();
-    setCartItems(updatedCartItems);
+      // Cập nhật lại danh sách sản phẩm trong giỏ hàng
+      const updatedCartItems = await CartService.getCartItems();
+      setCartItems(updatedCartItems);
 
-    // Tính toán lại tổng giá trị đơn hàng
-    const newTotalAmount = updatedCartItems.reduce((total, item) => {
-      return total + (parseFloat(item.unit_price) * item.quantity);
-    }, 0);
-    setTotalAmount(newTotalAmount);
-  } catch (error) {
-    console.error('Lỗi khi cập nhật giỏ hàng:', error);
-    toast.error('Có lỗi xảy ra khi cập nhật giỏ hàng. Vui lòng thử lại.');
-  }
-};
-  
+      // Tính toán lại tổng giá trị đơn hàng
+      const newTotalAmount = updatedCartItems.reduce((total, item) => {
+        return total + (parseFloat(item.unit_price) * item.quantity);
+      }, 0);
+      setTotalAmount(newTotalAmount);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật giỏ hàng:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật giỏ hàng. Vui lòng thử lại.');
+    }
+  };
+
   return (
     <>
       <Header />
-      <section 
-        className="breadcrumb-section set-bg" 
+      <section
+        className="breadcrumb-section set-bg"
         style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <div className="container">
@@ -216,13 +216,14 @@ const handleUpdateCartItem = async (itemId, quantity) => {
                   <thead>
                     <tr>
                       <th>
-                      <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           checked={selectedItems.length === cartItems.length && cartItems.length > 0}
                           onChange={handleSelectAll}
                         />
                       </th>
                       <th className="shoping__product">SẢN PHẨM XE</th>
+                      <th>MÀU SẮC</th>
                       <th>GIÁ SẢN PHẨM</th>
                       <th>SỐ LƯỢNG</th>
                       <th>TỔNG CỘNG</th>
@@ -233,14 +234,14 @@ const handleUpdateCartItem = async (itemId, quantity) => {
                     {cartItems.map(item => (
                       <tr key={item.id}>
                         <td>
-                        <input 
+                          <input
                             type="checkbox"
                             checked={selectedItems.includes(item.id)}
                             onChange={() => handleItemSelect(item.id)}
                           />
                         </td>
                         <td className="shoping__cart__item">
-                          <img 
+                          <img
                             src={`http://127.0.0.1:8000${item.product.image.url}`}
                             alt={item.product.name}
                             style={{ width: '150px' }}
@@ -325,7 +326,7 @@ const handleUpdateCartItem = async (itemId, quantity) => {
                     Tổng cộng <span>{formatCurrency(totalAmount)}</span>
                   </li>
                 </ul>
-                <button 
+                <button
                   className="site-btn"
                   onClick={handleCheckout}
                   disabled={selectedItems.length === 0}
@@ -351,7 +352,7 @@ const handleUpdateCartItem = async (itemId, quantity) => {
       
     </>
   );
-  
+
 };
 
 export default Cart;
