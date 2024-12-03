@@ -339,11 +339,13 @@ const handleUpdateCartItem = async (itemId, quantity) => {
       </section>
       <Footer />
       <style jsx>{`
+      
     .product-color {
         display: block;
         font-size: 0.9em;
         color: #666;
         margin-top: 5px;
+        
     }
 `}</style>
       

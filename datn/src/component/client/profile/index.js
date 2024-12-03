@@ -9,6 +9,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from 'react-toastify';
+import banner from "../../../assets/img/hero/banner2.jpg";
+
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -207,6 +209,29 @@ alert('Đơn hàng không thể hủy do trạng thái hoặc tình trạng than
   return (
     <>
       <Header />
+      <section
+        className="breadcrumb-section set-bg"
+        style={{
+          backgroundImage: `url(${banner})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12 text-center">
+              <div className="breadcrumb__text">
+                <h2>CHỈNH SỬA THÔNG TIN</h2>
+                <div className="breadcrumb__option">
+                  <Link to="/">TRANG CHỦ</Link>
+                  <span>CHỈNH SỬA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="container">
         <div className="row">
           <div className="col-lg-12 text-center">

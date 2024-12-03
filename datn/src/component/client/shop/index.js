@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { CartService } from "../../../services/client/Cart";
 import banner from "../../../assets/img/hero/banner2.jpg";
 import sp4 from "../../../assets/img/cart/xe-dap-dia-hinh.webp";
-
+import '../../client/shop/shop.css'
 // Set default axios configs
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -174,6 +174,9 @@ setFilteredProducts(filtered);
           </div>
         </div>
       </section>
+
+
+
       <section
         className="breadcrumb-section set-bg"
         style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
@@ -192,6 +195,8 @@ setFilteredProducts(filtered);
           </div>
         </div>
       </section>
+
+
       <section className="product spad">
         <div className="container">
           <div className="row pt-5">
@@ -285,7 +290,20 @@ setFilteredProducts(filtered);
                           </div>
                           <div className="latest-product__item__text">
                             <h6>Xe đạp đua carbon Nesto Rhino</h6>
-                            <span>40.000.000đ</span>
+                            <span className="price" >4.000.000đ</span>
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="latest-product__slider">
+<div className="latest-product__item">
+                        <Link to="/product-details/1" className="latest-product__item">
+                          <div className="latest-product__item__pic">
+                            <img src={sp4} alt="Product" />
+                          </div>
+                          <div className="latest-product__item__text">
+                            <h6>Xe đạp đua carbon Nesto</h6>
+                            <span className="price" >1.500.000đ</span>
                           </div>
                         </Link>
                       </div>
@@ -339,11 +357,12 @@ setFilteredProducts(filtered);
 
               {/* Loading Spinner */}
               {loading ? (
-                <div className="text-center">
-                  <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Đang tải...</span>
-                  </div>
-                </div>
+             <div className="text-center">
+             <div className="spinner-border" role="status">
+               <span className="visually-hidden">Đang tải...</span>
+             </div>
+           </div>
+           
               ) : (
                 <>
                   {/* Product Grid */}
@@ -400,6 +419,7 @@ setFilteredProducts(filtered);
         </div>
       </section>
       <Footer />
+   
     </>
   );
 }

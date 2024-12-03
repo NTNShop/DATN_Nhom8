@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from "react-router-dom"; 
 import Header from '../home/header';
 import Footer from '../home/footer';
 import banner from "../../../assets/img/hero/banner2.jpg";
 import { ContactService, contactValidation } from '../../../services/client/Contact';
+
 const Contact = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -78,55 +78,57 @@ const Contact = () => {
             setIsSubmitting(false);
         }
     };
+
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
     const toggleCategories = () => {
       setIsCategoriesOpen(!isCategoriesOpen);
     };
+
     return (
         <>
             <Header />
             <section className="hero hero-normal" style={{paddingTop: "100px"}}>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
-              <div className="hero__categories">
-                <div className="hero__categories__all" onClick={toggleCategories}>
-                  <i className="fa fa-bars"></i>
-                  <span>Tất cả danh mục</span>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-3">
+                            <div className="hero__categories">
+                                <div className="hero__categories__all" onClick={toggleCategories}>
+                                    <i className="fa fa-bars"></i>
+                                    <span>Tất cả danh mục</span>
+                                </div>
+                                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
+                                    <li><Link to="#">Janus</Link></li>
+                                    <li><Link to="#">Vario</Link></li>
+                                    <li><Link to="#">Vision</Link></li>
+                                    <li><Link to="#">Air Black</Link></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="col-8">
+                            <div className="hero__search">
+                                <div className="hero__search__form">
+                                    <form action="#">
+                                        <input type="text" placeholder="Bạn cần gì?" />
+                                        <button type="submit" className="site-btn">SEARCH</button>
+                                    </form>
+                                </div>
+                                <div className="hero__search__phone">
+                                    <div className="hero__search__phone__icon">
+                                        <i className="fa fa-phone"></i>
+                                    </div>
+                                    <div className="hero__search__phone__text">
+                                        <h5>+65 11.188.888</h5>
+                                        <span>support 24/7 time</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
-                  <li><Link to="#">Janus</Link></li>
-                  <li><Link to="#">Vario</Link></li>
-                  <li><Link to="#">Vision</Link></li>
-                  <li><Link to="#">Air Black</Link></li>
-                </ul>
-              </div>
-            </div>
-            <div className="col-8">
-              <div className="hero__search">
-                <div className="hero__search__form">
-                  <form action="#">
-                    <input type="text" placeholder="Bạn cần gì?" />
-                    <button type="submit" className="site-btn">SEARCH</button>
-                  </form>
-                </div>
-                <div className="hero__search__phone">
-                  <div className="hero__search__phone__icon">
-                    <i className="fa fa-phone"></i>
-                  </div>
-                  <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </section>
             {/* Breadcrumb Section Begin */}
-<section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+            <section className="breadcrumb-section set-bg" style={{ backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12 text-center">
@@ -204,8 +206,9 @@ const Contact = () => {
                 </div>
             </div>
             {/* Contact Form End */}
-{/* Contact Section Begin */}
-<section className="contact spad">
+
+            {/* Contact Section Begin */}
+            <section className="contact spad">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-3 col-md-3 col-sm-6 text-center">
@@ -233,7 +236,7 @@ const Contact = () => {
                             <div className="contact__widget">
                                 <span className="icon_mail_alt"></span>
                                 <h4>Email</h4>
-                                <p>hondanambinh@gmail.com</p>
+                                <p>tungpham01@fpoly.com.vn</p>
                             </div>
                         </div>
                     </div>
@@ -241,8 +244,8 @@ const Contact = () => {
             </section>
             {/* Contact Section End */}
 
-            {/* Map Begin */}
-            <div className="map">
+               {/* Map Begin */}
+               <div className="map">
                 <iframe
 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.732825072662!2d105.74000587484636!3d10.03889199006856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08866bfd1b2b9%3A0xdf03e748a7072048!2zNTAgxJAuIE5ndXnhu4VuIFbEg24gTGluaCwgTG9uZyBIb8OgLCBOaW5oIEtp4buBdSwgQ-G6p24gVGjGoSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1726290869193!5m2!1svi!2s"
                     height="500"
@@ -264,7 +267,6 @@ src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.732825072662!2d1
                 </div>
             </div>
             {/* Map End */}
-
             <Footer />
         </>
     );
