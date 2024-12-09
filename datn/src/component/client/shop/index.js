@@ -159,7 +159,7 @@ const Product = () => {
                 <div className="hero__search__form">
                   <form action="#">
                     <input type="text" placeholder="Bạn cần gì?" />
-                    <button type="submit" className="site-btn">SEARCH</button>
+                    <button type="submit" className="site-btn">Tìm kiếm</button>
                   </form>
                 </div>
                 <div className="hero__search__phone">
