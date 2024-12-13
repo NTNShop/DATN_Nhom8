@@ -8,9 +8,11 @@ const BlogDetails = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
+  const [latestPosts, setLatestPosts] = useState([]); // Thêm state cho bài viết mới nhất
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
   const toggleCategories = () => {
     setIsCategoriesOpen(!isCategoriesOpen);
   };
@@ -18,13 +20,20 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch current post details
+        // Lấy chi tiết bài viết hiện tại
         const postResponse = await getPostById(id);
         setPost(postResponse.data);
 
-        // Fetch related posts (same category or recent posts)
+        // Lấy bài viết liên quan theo danh mục
         const relatedResponse = await getPosts(1, "", postResponse.data.category);
         setRelatedPosts(relatedResponse.data.posts.slice(0, 3));
+
+        // Lấy bài viết mới nhất trên toàn hệ thống
+        const latestResponse = await getPosts(1, "", "");
+        const sortedLatestPosts = latestResponse.data.posts.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+        setLatestPosts(sortedLatestPosts.slice(0, 3)); // Lấy tối đa 3 bài viết mới nhất
       } catch (error) {
         setError("Không thể tải bài viết");
         console.error(error);
@@ -36,12 +45,13 @@ const BlogDetails = () => {
     fetchData();
   }, [id]);
 
-  if (loading) return (
-    <div className="loading-container">
-      <div className="spinner"></div>
-      <p className="loading-text">Đang tải bài viết...</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p className="loading-text">Đang tải bài viết...</p>
+      </div>
+    );
 
   if (error) return <p className="error-message">{error}</p>;
   if (!post) return null;
@@ -73,7 +83,7 @@ const BlogDetails = () => {
       <div className="container blog-details-wrapper">
         <div className="row">
           {/* Main Content */}
-          <div className="col-lg-8" style={{ paddingLeft: '90px', paddingRight: '20px' }}>
+          <div className="col-lg-8" style={{ paddingLeft: "90px", paddingRight: "20px" }}>
             <article className="blog-post">
               <header className="post-header">
                 <h1 className="post-title">{post.title}</h1>
@@ -91,59 +101,47 @@ const BlogDetails = () => {
               </header>
 
               <div className="post-thumbnail">
-                <img 
-                  src={`http://127.0.0.1:8000${post.featured_image}`} 
-                  alt={post.title} 
+                <img
+                  src={`http://127.0.0.1:8000${post.featured_image}`}
+                  alt={post.title}
                   className="img-fluid"
                 />
               </div>
               <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
-
             </article>
           </div>
 
           {/* Sidebar */}
           <div className="col-lg-4">
-            {/* Advertisement Section */}
-            <div className="sidebar-section advertisement">
-              <div className="ad-card">
-                <h2 className="text-warning">MobiFone chiều lòng fan bóng với loạt ưu đãi hấp dẫn hòa nhịp EURO 2024</h2>
-                <p className="text-danger" >EURO 2024 quay trở lại khiến cư dân mạng thổn thức theo từng nhịp bóng lăn. Đồng hành cùng các fan cứng bóng đá lúc này có một nhà mạng ‘chơi lớn’ tung ra nhiều gói cước ưu đãi.</p>
-                <img 
-                  src="https://images2.thanhnien.vn/528068263637045248/2024/6/24/anh-km-50-17192042709781391655788.jpg" 
-                  alt="Khuyến Mãi" 
-                  className="img-fluid"
-                />
-                {/* <Link to="/products" className="btn btn-primary">Mua Ngay</Link> */}
-              </div>
-            </div>
-            <div className="sidebar-section advertisement">
-              <div className="ad-card">
-                <h3>Khuyến Mãi Đặc Biệt</h3>
-                <p className="text-danger">Casino online EUBET - EU9: Nhà cái số 1 hiện nay độ uy tín cao</p>
-                <img 
-                  src="https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/730151_713206/EU9%20Q4/2TRIEU%20%283%29.jpg" 
-                  alt="Khuyến Mãi" 
-                  className="img-fluid"
-                />
-                {/* <Link to="/products" className="btn btn-primary">Mua Ngay</Link> */}
-              </div>
-            </div>
+       
 
-            {/* Related Posts Section */}
+            {/* Bài Viết Liên Quan */}
             <div className="sidebar-section related-posts">
-              <h3>Bài Viết Liên Quan</h3>
-              {relatedPosts.map(relatedPost => (
+              <h3>Bài Viết mới nhất</h3>
+              {relatedPosts.map((relatedPost) => (
                 <div key={relatedPost.id} className="related-post-item">
-                  <img 
-                    src={`http://127.0.0.1:8000${relatedPost.featured_image}`} 
+                  <img
+                    src={`http://127.0.0.1:8000${relatedPost.featured_image}`}
                     alt={relatedPost.title}
                   />
                   <div className="related-post-details">
-                    <Link to={`/blogdetail/${relatedPost.id}`}>
-                      {relatedPost.title}
-                    </Link>
+                    <Link to={`/blogdetail/${relatedPost.id}`}>{relatedPost.title}</Link>
                     <span>{new Date(relatedPost.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+    
+     <div className="sidebar-section related-posts">
+              <h3>BÀI VIẾT LIÊN QUAN </h3>
+              {latestPosts.map((latestPost) => (
+                <div key={latestPost.id} className="related-post-item">
+                  <img
+                    src={`http://127.0.0.1:8000${latestPost.featured_image}`}
+                    alt={latestPost.title}
+                  />
+                  <div className="related-post-details">
+                    <Link to={`/blogdetail/${latestPost.id}`}>{latestPost.title}</Link>
                   </div>
                 </div>
               ))}
@@ -153,7 +151,6 @@ const BlogDetails = () => {
       </div>
 
       <Footer />
-
       <style jsx>{`
       
         .blog-details-wrapper {
