@@ -88,7 +88,7 @@ const ProductReview = ({ order, onReviewSubmitted }) => {
 
   return (
     <div className="product-review-form">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         {reviews.map((review, index) => (
           <div key={index} className="review-item mb-4 p-3" style={{ border: '1px solid #ddd', borderRadius: '8px' }}>
             <h5 className="mb-3">{review.productName}</h5>
