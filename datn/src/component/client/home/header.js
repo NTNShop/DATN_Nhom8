@@ -69,8 +69,8 @@ const Header = () => {
       <ul className="menu-con">
         {!isAuthenticated ? (
           <>
-            <li><Link className="name-menucon" to="/login">ĐĂNG NHẬP</Link></li>
-            <li><Link className="name-menucon" to="/register">ĐĂNG KÝ</Link></li>
+            <li><button className="name-menucon"><Link className="name-menucon" to="/login">ĐĂNG NHẬP</Link></button></li>
+            <li><button className="name-menucon"><Link className="name-menucon" to="/register">ĐĂNG KÝ</Link></button></li>
           </>
         ) : (
           <>

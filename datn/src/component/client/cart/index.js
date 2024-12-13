@@ -185,6 +185,13 @@ const Cart = () => {
     }
   };
 
+  const colorMapping = {
+    đỏ: 'red',
+    xanh: 'blue',
+    vàng: 'yellow',
+    // Các màu khác
+  };
+
   return (
     <>
       <Header />
@@ -213,7 +220,7 @@ const Cart = () => {
             <div className="col-lg-12">
               <div className="shoping__cart__table">
                 <table>
-                  <thead>
+                  <thead >
                     <tr>
                       <th>
                         <input
@@ -222,11 +229,11 @@ const Cart = () => {
                           onChange={handleSelectAll}
                         />
                       </th>
-                      <th className="shoping__product">SẢN PHẨM </th>
-                      <th>MÀU SẮC</th>
-                      <th>GIÁ SẢN PHẨM</th>
-                      <th>SỐ LƯỢNG</th>
-                      <th>TỔNG CỘNG</th>
+                      <th className="shoping__product text-white">SẢN PHẨM </th>
+                      
+                      <th  className='text-white'>GIÁ SẢN PHẨM</th>
+                      <th className='text-white'>SỐ LƯỢNG</th>
+                      <th className='text-white'>TỔNG CỘNG</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -248,9 +255,13 @@ const Cart = () => {
                           />
                           <h5>{item.product.name}</h5>
                           {item.variant && (
-            <span className="product-color">
-                Màu: <strong>{item.variant.color}</strong>
-            </span>
+   <strong
+   className="product-color"
+  
+ >
+   Màu: <strong  style={{ color: colorMapping[item.variant.color.toLowerCase()] || 'black' }} >{item.variant.color}</strong>
+ </strong>
+       
         )}
                         </td>
                         <td className="shoping__cart__price">
@@ -348,6 +359,8 @@ const Cart = () => {
         margin-top: 5px;
         
     }
+
+    
         
 `}</style>
       

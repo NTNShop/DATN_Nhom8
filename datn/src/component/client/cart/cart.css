@@ -1,7 +1,7 @@
 /* Reset and Base Styles */
 :root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
+  --primary-color: #b5e2ff;
+  --secondary-color: #a4ffca;
   --text-color: #333;
   --background-color: #f4f8fb;
   --border-radius: 12px;
@@ -22,14 +22,14 @@ body {
 
 .container {
   width: 95%;
-  max-width: 1400px;
+  max-width: auto;
   margin: 0 auto;
   padding: 20px;
 }
 
 /* Shopping Cart Table */
 .shoping__cart__table {
-  background-color: white;
+  background-color: rgb(238, 238, 238);
   border-radius: var(--border-radius);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -43,13 +43,14 @@ table {
 }
 
 thead {
-  background-color: #f9fafb;
+  background-color: #414141;
+  color: white;
 }
 
 th, td {
-  padding: 20px;
+  padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #eaf5ff;
   vertical-align: middle;
 }
 
@@ -301,4 +302,8 @@ tbody tr {
   --transition-speed: 0.3s;
   --shadow-color: rgba(0, 0, 0, 0.08); /* Đổ bóng nhẹ */
 }
+
+
+
+
 
