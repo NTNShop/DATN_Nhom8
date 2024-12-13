@@ -18,6 +18,8 @@ const ListBrand = () => {
   const [brandToDelete, setBrandToDelete] = useState(null);
   const [newBrandId, setNewBrandId] = useState(null);
   const [showStatus, setShowStatus] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [brandsPerPage] = useState(3);
   // State mới cho tìm kiếm và lọc
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("Tất cả");
@@ -107,6 +109,19 @@ const ListBrand = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Danh sách thương hiệu");
     XLSX.writeFile(workbook, "DanhSachThuongHieu.xlsx");
   };
+   // Tính toán brands cho trang hiện tại
+   const indexOfLastBrand = currentPage * brandsPerPage;
+   const indexOfFirstBrand = indexOfLastBrand - brandsPerPage;
+   const currentBrands = filteredBrands.slice(indexOfFirstBrand, indexOfLastBrand);
+ 
+   // Hàm để thay đổi trang
+   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+ 
+   // Tính toán số trang
+   const pageNumbers = [];
+   for (let i = 1; i <= Math.ceil(filteredBrands.length / brandsPerPage); i++) {
+     pageNumbers.push(i);
+   }
   return (
     <div>
       <Header />
@@ -149,7 +164,7 @@ const ListBrand = () => {
                     
                     {/* Tìm kiếm */}
                     <div className="de-search text-start">
-                      <div className="input-group mb-3">
+                      {/* <div className="input-group mb-3">
                         <input
                           type="text"
                           className="form-control"
@@ -160,7 +175,7 @@ const ListBrand = () => {
                         <span className="input-group-text bg-primary text-white">
                           <i className="fa-solid fa-magnifying-glass"></i>
                         </span>
-                      </div>
+                      </div> */}
                     </div>
 
                     {/* Chọn trạng thái */}
@@ -230,28 +245,27 @@ const ListBrand = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {loading ? (
-                        <tr>
-                          <td colSpan="6">Đang tải...</td>
-                        </tr>
-                      ) : error ? (
-                        <tr>
-                          <td colSpan="6">{error}</td>
-                        </tr>
-                      ) : filteredBrands.length > 0 ? (
-                        filteredBrands
-                          .sort((a, b) => b.id - a.id)
-                          .map((brand, index) => (
-                            <tr
-                              key={(brand.id, index)}
-                              style={{
-                                backgroundColor:
-                                  brand.id === newBrandId
-                                    ? "#d4edda"
-                                    : "inherit",
-                                transition: "background-color 0.3s ease",
-                              }}
-                            >
+      {loading ? (
+        <tr>
+          <td colSpan="6">Đang tải...</td>
+        </tr>
+      ) : error ? (
+        <tr>
+          <td colSpan="6">{error}</td>
+        </tr>
+      ) : currentBrands.length > 0 ? (
+        currentBrands
+          .sort((a, b) => b.id - a.id)
+          .map((brand, index) => (
+            <tr
+              key={brand.id}
+              style={{
+                backgroundColor:
+                  brand.id === newBrandId ? "#d4edda" : "inherit",
+                transition: "background-color 0.3s ease",
+              }}
+            >
+              {/* <td>{indexOfFirstBrand + index + 1}</td> */}
                               <td>{index + 1}</td>
                               <td>{brand.name}</td>
                               <td>
@@ -266,7 +280,7 @@ const ListBrand = () => {
                                 />
                               </td>
                               <td
-                                className={`text-center ${
+                                className={` ${
                                   brand.status === 1 ? "" : ""
                                 }`}
                               >
@@ -307,7 +321,23 @@ const ListBrand = () => {
                         </tr>
                       )}
                     </tbody>
+                    
                   </table>
+                  {/* Thêm phần phân trang sau bảng */}
+    <div className="d-flex justify-content-center">
+      <ul className="pagination">
+        {pageNumbers.map((number) => (
+          <li
+            key={number}
+            className={`page-item ${number === currentPage ? "active" : ""}`}
+          >
+            <button onClick={() => paginate(number)} className="page-link">
+              {number}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
                   <ToastContainer />
                 </div>
                 </div>

@@ -143,17 +143,17 @@ setTimeout(() => {
                                             id="name"
                                             value={categoryData.name}
                                             placeholder="Nhập tên danh mục"
-                                            className="form-control"
+                                            className="form-control-line border-input"
                                             onChange={handleChange}
                                         />
                                         <span className="text-danger">{errors.name}</span>
                                     </div>
                                     <div className="mb-3">
-<label htmlFor="image_url" className="form-label">Hình ảnh</label>
+                        <label htmlFor="image_url" className="form-label">Hình ảnh</label>
                                         <input
                                             type="file"
                                             id="image_url"
-                                            className="form-control"
+                                            className="form-control-line border-input"
                                             onChange={handleFileChange}
                                         />
                                         <span className="text-danger">{errors.image_url}</span>
@@ -175,7 +175,7 @@ setTimeout(() => {
                                         <select
                                             id="parent_id"
                                             value={categoryData.parent_id}
-                                            className="form-select"
+                                            className="form-control-line border-input"
                                             onChange={handleChange}
                                         >
                                             <option value="">Chọn danh mục cha</option>

@@ -3,18 +3,31 @@ import { Modal, Button } from 'react-bootstrap';
 import Cookies from 'js-cookie';
 import Header from "../layouts/header";
 import Footer from "../layouts/footer";
-
+import { FaStar } from 'react-icons/fa';
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [reviewsPerPage] = useState(5);
   useEffect(() => {
     fetchReviews();
   }, []);
+  // Tính toán reviews cho trang hiện tại
+  const indexOfLastReview = currentPage * reviewsPerPage;
+  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+  const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
 
+  // Hàm để thay đổi trang
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Tính toán số trang
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(reviews.length / reviewsPerPage); i++) {
+    pageNumbers.push(i);
+  }
   const fetchReviews = async () => {
     try {
       const token = Cookies.get('authToken');
@@ -45,7 +58,19 @@ const Reviews = () => {
     setReviewToDelete(id);
     setShowDeleteModal(true);
   };
-
+  const renderStars = (rating) => {
+    return (
+        <div className="d-flex align-items-center">
+            {[...Array(5)].map((_, index) => (
+                <FaStar
+                    key={index}
+                    className={index < rating ? 'text-warning' : 'text-secondary'}
+                    style={{ fontSize: '14px' }}
+                />
+            ))}
+        </div>
+    );
+};
   return (
     <div>
       <Header />
@@ -72,29 +97,29 @@ const Reviews = () => {
                     <table className="table user-table table-bordered">
                       <thead>
                         <tr className='table-light'>
-                          <th>ID</th>
-                          <th>Tên khách hàng</th>
+                          <th>#</th>
+                          <th className="text-nowrap">Tên khách hàng</th>
                           <th>Tên sản phẩm</th>
                           <th>Nội dung</th>
-                          <th>Đánh giá</th>
+                          <th className="text-nowrap">Đánh giá</th>
                           <th>Trạng thái</th>
-                          <th>Ngày bình luận</th>
+                          <th className="text-nowrap">Ngày bình luận</th>
                         </tr>
                       </thead>
                       <tbody className='align-middle'>
-                        {loading ? (
-                          <tr><td colSpan="9">Đang tải...</td></tr>
-                        ) : error ? (
-                          <tr><td colSpan="9">{error}</td></tr>
-                        ) : reviews && Array.isArray(reviews) && reviews.length > 0 ? (
-                          reviews.map((review, index) => (
-                            <tr key={review.id}>
+        {loading ? (
+          <tr><td colSpan="9">Đang tải...</td></tr>
+        ) : error ? (
+          <tr><td colSpan="9">{error}</td></tr>
+        ) : reviews && Array.isArray(reviews) && reviews.length > 0 ? (
+          currentReviews.map((review, index) => (
+            <tr key={review.id}>
                               <td>{index + 1}</td>
                               <td>{review.user?.full_name || 'N/A'}</td>
                               <td>{review.product?.name || 'N/A'}</td>
                               <td>{review.review_content}</td>
-                              <td>{review.rating} sao</td>
-                              <td>{review.review_status === 1 ? 'Hoạt động' : 'Không hoạt động'}</td>
+                              <td>{renderStars(review.rating)}</td>
+                              <td className="text-nowrap">{review.review_status === 1 ? 'Hoạt động' : 'Không hoạt động'}</td>
                               <td>{new Date(review.created_at).toLocaleDateString('vi-VN')}</td>
                             </tr>
                           ))
@@ -103,6 +128,21 @@ const Reviews = () => {
                         )}
                       </tbody>
                     </table>
+                    {/* Thêm phân trang */}
+    <div className="d-flex justify-content-center mt-3">
+      <ul className="pagination">
+        {pageNumbers.map((number) => (
+          <li
+            key={number}
+            className={`page-item ${number === currentPage ? "active" : ""}`}
+          >
+            <button onClick={() => paginate(number)} className="page-link">
+              {number}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
                   </div>
                 </div>
               </div>

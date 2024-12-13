@@ -15,43 +15,60 @@ const ListCategory = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        perPage: 10,
+    });
+    const [currentPage, setCurrentPage] = useState(1);
+    const [categoriesPerPage] = useState(2);
 
     // Fetch categories from API
-    // Fetch categories from API
-const fetchCategories = async () => {
-    try {
-        setLoading(true);
-        const { data } = await axios.get('http://127.0.0.1:8000/api/v1/categories');
-        const formattedCategories = data.data.map(category => ({
-            id: category.id,
-            parentId: category.parent_id,
-            name: category.name,
-            slug: category.slug,
-            imageUrl: category.image_url,
-            status: category.status,
-            createdAt: category.created_at,
-            updatedAt: new Date(category.updated_at), // Chuyển updated_at thành kiểu Date
-            children: category.children || [] // Nếu có children, lấy danh sách con
-        }));
-
-        // Sắp xếp danh mục theo updatedAt giảm dần
-        formattedCategories.sort((a, b) => b.updatedAt - a.updatedAt);
-
-        setCategories(formattedCategories);
-        setError(null); // Xóa lỗi trước đó nếu có
-    } catch (err) {
-        console.error("Lỗi khi lấy danh mục:", err);
-        setError("Không thể tải danh mục. Vui lòng thử lại sau.");
-    } finally {
-        setLoading(false);
-    }
-};
+    const fetchCategories = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/categories');
+            
+            // Kiểm tra xem response.data và response.data.data có tồn tại không
+            if (response.data && Array.isArray(response.data.data)) {
+                const formattedCategories = response.data.data.map(category => ({
+                    id: category.id,
+                    parentId: category.parent_id,
+                    name: category.name,
+                    slug: category.slug,
+                    imageUrl: category.image_url,
+                    status: category.status,
+                    createdAt: category.created_at,
+                    updatedAt: new Date(category.updated_at),
+                    children: category.children || []
+                }));
+    
+                // Sắp xếp danh mục theo updatedAt giảm dần
+                formattedCategories.sort((a, b) => b.updatedAt - a.updatedAt);
+    
+                setCategories(formattedCategories);
+                setError(null);
+            } else {
+                throw new Error('Dữ liệu không đúng định dạng');
+            }
+        } catch (err) {
+            console.error("Lỗi khi lấy danh mục:", err);
+            setError("Không thể tải danh mục. Vui lòng thử lại sau.");
+            setCategories([]); // Đặt categories là mảng rỗng khi có lỗi
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
     useEffect(() => {
         fetchCategories();
-    }, []);
-
+    }, [pagination.currentPage]);
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= pagination.totalPages) {
+            setPagination({ ...pagination, currentPage: newPage });
+        }
+    };
 
     // Filtered categories using useMemo for performance optimization
     const filteredCategories = useMemo(() => {
@@ -59,6 +76,20 @@ const fetchCategories = async () => {
             category.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [categories, searchTerm]);
+
+    // Tính toán categories cho trang hiện tại
+    const indexOfLastCategory = currentPage * categoriesPerPage;
+    const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
+    const currentCategories = filteredCategories.slice(indexOfFirstCategory, indexOfLastCategory);
+
+    // Hàm để thay đổi trang
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Tính toán số trang
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(filteredCategories.length / categoriesPerPage); i++) {
+        pageNumbers.push(i);
+    }
 
     // Handle delete confirmation
     const confirmDelete = (id) => {
@@ -86,7 +117,7 @@ const fetchCategories = async () => {
         setShowSuccessModal(false);
     };
 
-
+    
     return (
         <div>
             <Header />
@@ -161,12 +192,11 @@ const fetchCategories = async () => {
                                                     <tr>
                                                         <td colSpan="6" className="text-center text-danger">{error}</td>
                                                     </tr>
-                                                ) : filteredCategories.length > 0 ? (
-                                                    filteredCategories.map((category, index) => (
-                                                        <>
-                                                            {/* Hiển thị danh mục chính */}
-                                                            <tr key={category.id}>
-                                                                <td>{index + 1}</td>
+                                                ) : currentCategories.length > 0 ? (
+                                                    currentCategories.map((category, index) => (
+                                                        <React.Fragment key={category.id}>
+                                                            <tr>
+                                                                <td>{indexOfFirstCategory + index + 1}</td>
                                                                 <td>{category.id}</td>
                                                                 <td>{category.name}</td>
                                                                 <td>
@@ -209,9 +239,9 @@ width: "50px",
                                                             </tr>
                                                             {/* Hiển thị danh mục con */}
                                                             {category.children && category.children.length > 0 && (
-category.children.map((child, childIndex) => (
+                                                                category.children.map((child, childIndex) => (
                                                                     <tr key={child.id}>
-                                                                        <td>{`${index + 1}.${childIndex + 1}`}</td>
+                                                                        <td>{`${indexOfFirstCategory + index + 1}.${childIndex + 1}`}</td>
                                                                         <td>Danh mục con của {category.name}</td>
                                                                         <td>&nbsp;&nbsp;&nbsp;-- {child.name}</td>
                                                                         <td>
@@ -254,7 +284,7 @@ category.children.map((child, childIndex) => (
                                                                     </tr>
                                                                 ))
                                                             )}
-                                                        </>
+                                                        </React.Fragment>
                                                     ))
                                                 ) : (
                                                     <tr>
@@ -267,25 +297,23 @@ category.children.map((child, childIndex) => (
                                     </div>
 
                                     {/* Pagination */}
-                                    <div className="d-flex justify-content-center">
-                                        {/* <ul className="pagination">
-                                            {pageNumbers.map((number) => (
-                                                <li
-                                                    key={number}
-                                                    className={`page-item ${
-                                                        number === currentPage ? "active" : ""
-                                                    }`}
-                                                >
-                                                    <button
-                                                        onClick={() => paginate(number)}
-                                                        className="page-link"
-                                                    >
-                                                        {number}
-                                                    </button>
-                                                </li>
-                                            ))}
-</ul> */}
-                                    </div>
+                            <div className="d-flex justify-content-center">
+                                <ul className="pagination">
+                                    {pageNumbers.map((number) => (
+                                        <li
+                                            key={number}
+                                            className={`page-item ${number === currentPage ? "active" : ""}`}
+                                        >
+                                            <button
+                                                onClick={() => paginate(number)}
+                                                className="page-link"
+                                            >
+                                                {number}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                                 </div>
                             </div>
                         </div>

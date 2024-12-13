@@ -17,7 +17,8 @@ const ListOrder = () => {
     const [updatingStatusOrder, setUpdatingStatusOrder] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
     const navigate = useNavigate();
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [ordersPerPage] = useState(5);
     useEffect(() => {
         const token = Cookies.get('authToken');
         if (!token) {
@@ -243,7 +244,19 @@ title: 'Lỗi',
             </div>
         );
     }
-
+     // Tính toán orders cho trang hiện tại
+     const indexOfLastOrder = currentPage * ordersPerPage;
+     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+     const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+ 
+     // Hàm để thay đổi trang
+     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+ 
+     // Tính toán số trang
+     const pageNumbers = [];
+     for (let i = 1; i <= Math.ceil(filteredOrders.length / ordersPerPage); i++) {
+         pageNumbers.push(i);
+     }
     return (
         <div>
             <Header />
@@ -333,8 +346,8 @@ title: 'Lỗi',
                                                     </tr>
                                                 </thead>
                                                 <tbody className="align-middle">
-                                                {filteredOrders.map((order, index) => (
-                                                        <tr key={order.id}>
+                {currentOrders.map((order, index) => (
+                    <tr key={order.id}>
                                                             <td>{index + 1}</td>
                                                             <td>{order.order_code}</td>
                                                             <td>{order.user?.full_name || 'N/A'}</td>
@@ -369,6 +382,24 @@ title: 'Lỗi',
                                                     ))}
                                                 </tbody>
                                             </table>
+                                            {/* Thêm phân trang sau bảng */}
+            <div className="d-flex justify-content-center mt-3">
+                <ul className="pagination">
+                    {pageNumbers.map((number) => (
+                        <li
+                            key={number}
+                            className={`page-item ${number === currentPage ? "active" : ""}`}
+                        >
+                            <button
+                                onClick={() => paginate(number)}
+                                className="page-link"
+                            >
+                                {number}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
                                         </div>
                                     )}
                                 </div>

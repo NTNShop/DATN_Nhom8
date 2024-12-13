@@ -135,12 +135,6 @@ const Blog = () => {
                   <h4 className="card-title text-primary">Danh sách bài viết</h4>
 
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                    <button
-                      onClick={handleDownloadExcel}
-                      className="btn btn-success d-flex align-items-center"
-                    >
-                      <FaDownload className="me-2" /> Tải về
-                    </button>
                     <a
                       href="/admin/addBlog"
                       className="btn btn-success d-flex align-items-center"

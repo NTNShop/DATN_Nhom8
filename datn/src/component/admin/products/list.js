@@ -28,6 +28,8 @@ const ListProduct = () => {
         totalPages: 1,
         perPage: 10,
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(5);
 
     useEffect(() => {
         fetchProducts();
@@ -100,6 +102,20 @@ console.error("Lỗi khi xóa sản phẩm:", error);
             product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [products, searchTerm]);
+
+    // Tính toán sản phẩm hiện tại cho trang hiện tại
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    // Hàm để thay đổi trang
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Tính toán số trang
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(filteredProducts.length / productsPerPage); i++) {
+        pageNumbers.push(i);
+    }
 
     return (
         <div>
@@ -198,10 +214,10 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     <th className="border-top-0">#</th>
                                                     <th className="border-top-0">Tên</th>
                                                     <th className="border-top-0">Danh mục</th>
-                                                    <th className="border-top-0">Thương hiệu</th>
+                                                    <th className="border-top-0 text-nowrap">Thương hiệu</th>
                                                     <th className="border-top-0">Giá</th>
-                                                    <th className="border-top-0">Hình ảnh</th>
-                                                    <th className="border-top-0">Số lượng</th>
+                                                    <th className="border-top-0 text-nowrap">Hình ảnh</th>
+                                                    <th className="border-top-0 text-nowrap">Số lượng</th>
                                                     <th className="border-top-0">Trạng thái</th>
                                                     <th className="border-top-0">Thao tác</th>
                                                 </tr>
@@ -209,16 +225,14 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                             <tbody>
                                                 {loading ? (
                                                     <tr>
-                                                        <td colSpan="8" className="text-center">Đang tải...</td>
-                                                        <td colSpan="8" className="text-center">Đang tải...</td>
+                                                        <td colSpan="9" className="text-center">Đang tải...</td>
                                                     </tr>
                                                 ) : error ? (
                                                     <tr>
-                                                        <td colSpan="8" className="text-center text-danger">{error}</td>
-                                                        <td colSpan="8" className="text-center text-danger">{error}</td>
+                                                        <td colSpan="9" className="text-center text-danger">{error}</td>
                                                     </tr>
-                                                ) : filteredProducts.length > 0 ? (
-                                                    filteredProducts.map((product, index) => (
+                                                ) : currentProducts.length > 0 ? (
+                                                    currentProducts.map((product, index) => (
                                                         <tr key={product.id}>
                                                             <td>{index + 1}</td>
                                                             <td>{product.name}</td>
@@ -271,7 +285,7 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                                     ))
                                                 ) : (
                                                     <tr>
-                                                        <td colSpan="8" className="text-center">Không tìm thấy sản phẩm</td>
+                                                        <td colSpan="9" className="text-center">Không tìm thấy sản phẩm</td>
                                                     </tr>
                                                 )}
                                             </tbody>
@@ -279,27 +293,15 @@ console.error("Lỗi khi xóa sản phẩm:", error);
                                     </div>
 
                                     {/* Pagination */}
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center mt-3">
                                         <ul className="pagination">
-                                            <li className={`page-item ${pagination.currentPage === 1 ? "disabled" : ""}`}>
-                                                <button
-                                                    className="page-link"
-                                                    onClick={() => handlePageChange(pagination.currentPage - 1)}
-                                                >
-                                                    Trước
-                                                </button>
-                                            </li>
-                                            <li className="page-item">
-                                                <span className="page-link">Trang {pagination.currentPage} / {pagination.totalPages}</span>
-                                            </li>
-                                            <li className={`page-item ${pagination.currentPage === pagination.totalPages ? "disabled" : ""}`}>
-                                                <button
-                                                    className="page-link"
-                                                    onClick={() => handlePageChange(pagination.currentPage + 1)}
-                                                >
-                                                    Tiếp theo
-                                                </button>
-                                            </li>
+                                            {pageNumbers.map((number) => (
+                                                <li key={number} className={`page-item ${number === currentPage ? "active" : ""}`}>
+                                                    <button onClick={() => paginate(number)} className="page-link">
+                                                        {number}
+                                                    </button>
+                                                </li>
+                                            ))}
                                         </ul>
                                     </div>
                                 </div>

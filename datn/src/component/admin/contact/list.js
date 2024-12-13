@@ -11,7 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const Contacts = () => {
   // State để lưu trữ danh sách liên hệ
   const [contacts, setContacts] = useState([]);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [contactsPerPage] = useState(5);
   // State quản lý trạng thái loading và error
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -153,7 +154,19 @@ const Contacts = () => {
       </div>
     );
   }
+  // Tính toán contacts cho trang hiện tại
+  const indexOfLastContact = currentPage * contactsPerPage;
+  const indexOfFirstContact = indexOfLastContact - contactsPerPage;
+  const currentContacts = contacts.slice(indexOfFirstContact, indexOfLastContact);
 
+  // Hàm để thay đổi trang
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Tính toán số trang
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(contacts.length / contactsPerPage); i++) {
+    pageNumbers.push(i);
+  }
   return (
     <div>
       <Header />
@@ -182,7 +195,7 @@ const Contacts = () => {
                     <table className="table user-table table-bordered">
                       <thead>
                         <tr className='table-light'>
-                          <th>ID</th>
+                          <th>#</th>
                           <th>Tên</th>
                           <th>Email</th>
                           <th>Số điện thoại</th>
@@ -198,7 +211,7 @@ const Contacts = () => {
                             <td colSpan="8" className="text-center">Không có dữ liệu</td>
                           </tr>
                         ) : (
-                          contacts.map((contact, index) => (
+                          currentContacts.map((contact, index) => (
                             <tr key={contact.id}>
                               <td>{index + 1}</td>
                               <td>{contact.name}</td>
@@ -240,6 +253,21 @@ const Contacts = () => {
                         )}
                       </tbody>
                     </table>
+                    {/* Thêm phân trang */}
+    <div className="d-flex justify-content-center mt-3">
+      <ul className="pagination">
+        {pageNumbers.map((number) => (
+          <li
+            key={number}
+            className={`page-item ${number === currentPage ? "active" : ""}`}
+          >
+            <button onClick={() => paginate(number)} className="page-link">
+              {number}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
                   </div>
                 </div>
               </div>
