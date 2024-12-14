@@ -144,12 +144,7 @@ const ForgotPassword = () => {
         </div>
       </div>
 
-      {loading && (
-        <div className="skeleton-loader">
-          <div className="skeleton-text"></div>
-          <div className="skeleton-button"></div>
-        </div>
-      )}
+     
 
       <Footer />
       <style>

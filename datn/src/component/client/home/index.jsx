@@ -165,8 +165,8 @@ Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn b
               <div className="hero__search">
                 <div className="hero__search__form">
                   <form action="#">
-                    <input type="text" placeholder="What do you need?" />
-                    <button type="submit" className="site-btn">SEARCH</button>
+                    <input type="text" placeholder="Bạn đang cần gì?" />
+                    <button type="submit" className="site-btn">TÌM KIẾM</button>
                   </form>
                 </div>
                 <div className="hero__search__phone">
@@ -174,8 +174,8 @@ Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn b
                     <i className="fa fa-phone"></i>
                   </div>
                   <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
+                    <h5>+84 46 115 663</h5>
+                    <span>Hổ trợ 24/7</span>
                   </div>
                 </div>
               </div>
@@ -280,7 +280,7 @@ Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn b
         <div className="col-100 d-flex">
           <div data-aos="fade-right" className="col-40 d-flex flex-column justify-content-center">
             <span className="chungtoila">CHÚNG TÔI LÀ</span>
-            <p style={{ fontFamily: 'Brush Script MT', fontSize: '27px', color: "black" }}>BIKESCHOOL</p>
+            <p style={{ fontFamily: 'Brush Script MT', fontSize: '27px', color: "rgb(105 174 201)" }}>BIKESCHOOL</p>
             <p style={{ color: '#707070', fontSize: '19px' }}>
               Chúng tôi cung cấp cho bạn những dòng xe chất lượng cao và sức bền vượt trội, xe được thiết kế bởi các chuyên gia trong nghành bảo đảm mang đến chất lượng tốt nhất cho khách hàng và là niềm tin vững chắc của thị trường xe đạp tại Việt Nam
             </p>
@@ -686,7 +686,29 @@ Chào mừng đến với BIKESCHOOL , nơi hành trình đạp xe của bạn b
           </div>
         </div>
       </div>
+      <div className='section-intro3'>
+                <div className='container '>
+                    <div className='row justify-content-center feature-card-wrap'>
+                        <div  className='col-xl-4 col-md-4'>
+                            <img src={"https://themes.hibootstrap.com/eura/wp-content/uploads/2024/02/gps-tracking.svg"}/>
+                            <h3 className='pt-3 text-dark'>Theo dõi GPS / Chống trộm</h3>
+                            <p>Thiết bị theo dõi GPS giúp xác định vị trí của phương tiện hoặc thiết bị cá nhân theo thời gian thực. Với thiết bị GPS, bạn có thể dễ dàng theo dõi và xác định vị trí của xe, xe máy, hoặc các tài sản có giá trị</p>
+                        </div>
+                        <div  className='col-xl-4 col-md-4'>
+                        <img src={"https://themes.hibootstrap.com/eura/wp-content/uploads/2024/02/battery.svg"}/>
+                        <h3 className='pt-3 text-dark'>Độ bền của xe </h3>
+                        <p >Xe được đánh giá cao về độ bền nhờ những đặc điểm vượt trội về chất liệu và thiết kế. Đây là một mẫu xe đạp được thiết kế để phục vụ cho những người đam mê thể thao lẫn người yêu thích các chuyến phiêu lưu đường dài.</p>
+                        </div>
 
+                        <div  className='col-xl-4 col-md-4'>
+                        <img src={"https://themes.hibootstrap.com/eura/wp-content/uploads/2024/02/shield.svg"}/>
+                        <h3 className='pt-3 text-dark'>Bảo hành 5 năm</h3>
+                        <p >Chế độ bảo hành 5 năm là một cam kết đảm bảo chất lượng của nhà sản xuất dành cho người mua sản phẩm. Bạn sẽ nhận được sự hỗ trợ từ nhà sản xuất hoặc nhà phân phối trong suốt thời gian bảo hành này.</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
       {/* danh mục tự chọn */}
       <div className="from-blog spad">
         <div className="container">
