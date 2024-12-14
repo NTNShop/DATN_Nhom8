@@ -22,10 +22,10 @@
 /*----------------------------------------*/
 /* css tự thêm */
 .link-color{
-	color: #de0000;
+	color: #E9A625;
 }
 .link-color:hover{
-	color: #de0000;
+	color: #E9A625;
 }
 .image-zoom{
 	background-color: #f0f0f0;
@@ -173,6 +173,12 @@
 	padding-bottom: 50px;
 	background: url(../../../src/assets/img/hero/backgr-dn.png);
 }
+.section-intro3{
+	border-top: 1px solid rgb(132, 132, 132);
+	padding-top: 100px;
+	padding-bottom: 50px;
+	background-color: #d8f4ff;
+}
 .tieude{
 	color: #de0000;
 	text-align: center;
@@ -246,12 +252,12 @@
 .wheel-360{
 	position:absolute;
 	top:280px;
-	left: 20px;
+	left: -120px;
 }
 .wheel-3602{
 	position:absolute;
 	top:380px;
-	right: 20px;
+	right: -120px;
 }
 .wheel-3603{
 	position:absolute;
@@ -684,7 +690,8 @@ ol {
 }
 
 .edit-footer{
-	background-color: #ffffff;
+	background-color:#E4F4F3;
+	border-radius: 100px;
 	padding-top: 30px;
 }
 
@@ -2383,7 +2390,7 @@ ol {
 .product__item__pic__hover {
 	position: absolute;
 	left: 0;
-	bottom: -50px;
+	bottom: -60px;
 	width: 100%;
 	text-align: center;
 	-webkit-transition: all, 0.5s;

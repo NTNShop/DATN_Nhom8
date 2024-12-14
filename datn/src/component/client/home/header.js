@@ -57,7 +57,7 @@ const Header = () => {
         {fullName ? (
           <p>Xin chào, {fullName}</p>
         ) : (
-          <p>hiii</p>  // Show homepage link if not logged in
+          <p><i class="bi bi-person-fill text-dark"></i></p>  // Show homepage link if not logged in
         )}
       </Link>
       <ul className="menu-con">
@@ -98,11 +98,11 @@ const Header = () => {
                 <li><Link className="ten-menu" to="/blog">BÀI VIẾT</Link></li>
                 <li><Link className="ten-menu" to="/contact">LIÊN HỆ</Link></li>
                 <li>
-                      <a href="/cart">
-                        <i className="fa fa-shopping-cart"></i>
-                      </a>
-                    </li>
-                <ProfileMenu />
+                  <a href="/cart">
+                    <i className="fa fa-shopping-cart"></i>
+                  </a>
+                </li>
+              <li><ProfileMenu /></li> 
               </ul>
             </nav>
           </div>

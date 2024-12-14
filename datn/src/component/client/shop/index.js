@@ -147,10 +147,10 @@ const Product = () => {
                   <span>Tất cả danh mục</span>
                 </div>
                 <ul style={{ display: isCategoriesOpen ? "block" : "none" }}>
-                  <li><Link to="#">Janus</Link></li>
-                  <li><Link to="#">Vario</Link></li>
-                  <li><Link to="#">Vision</Link></li>
-                  <li><Link to="#">Air Black</Link></li>
+                  <li><Link to="#">Xe đạp địa hình</Link></li>
+                  <li><Link to="#">Xe đạp thể thao</Link></li>
+                  <li><Link to="#">Xe đạp trẻ em</Link></li>
+                  <li><Link to="#">xe đạp đua</Link></li>
                 </ul>
               </div>
             </div>
@@ -167,8 +167,8 @@ const Product = () => {
                     <i className="fa fa-phone"></i>
                   </div>
                   <div className="hero__search__phone__text">
-                    <h5>+65 11.188.888</h5>
-                    <span>support 24/7 time</span>
+                    <h5>+84 346 115 663</h5>
+                    <span>Hổ trợ 24/7</span>
                   </div>
                 </div>
               </div>
@@ -186,8 +186,8 @@ const Product = () => {
               <div className="breadcrumb__text">
                 <h2>SHOP</h2>
                 <div className="breadcrumb__option">
-                  <Link to="/">HOME</Link>
-                  <span>SHOP</span>
+                  <Link to="/">Trang chủ</Link>
+                  <span>Sản phẩm  </span>
                 </div>
               </div>
             </div>
@@ -200,6 +200,65 @@ const Product = () => {
             {/* Sidebar */}
             <div className="col-lg-3 col-md-5">
               <div className="sidebar">
+              <div className="sidebar__item">
+                  <h4>Loại</h4>
+                  <ul className="p-0">
+                    {categories.map(category => (
+                      <li key={category.id}>
+                        <Link to={`/category/${category.id}`}>{category.name}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="sidebar__item sidebar__item__color--option">
+                  <h4>Màu sắc</h4>
+                  <div className="sidebar__item__color sidebar__item__color--white">
+                    <label htmlFor="white">Trắng</label>
+                  </div>
+                  <div className="sidebar__item__color sidebar__item__color--gray">
+                    <label htmlFor="gray">Vàng</label>
+                  </div>
+                  <div className="sidebar__item__color sidebar__item__color--red">
+                    <label htmlFor="red">Đỏ</label>
+                  </div>
+                  <div className="sidebar__item__color sidebar__item__color--black">
+                    <label htmlFor="black">Đen</label>
+                  </div>
+                  <div className="sidebar__item__color sidebar__item__color--blue">
+                    <label htmlFor="blue">Xanh</label>
+                  </div>
+                  <div className="sidebar__item__color sidebar__item__color--green">
+                    <label htmlFor="green">Xanh lá</label>
+                  </div>
+                </div>
+                <div className="sidebar__item sidebar__item__price--option">
+                  <h4>Lọc theo giá</h4>
+                  <div className="sidebar__item__price">
+                    <label htmlFor="priceRange">Chọn khoảng giá:</label>
+                    <input type="range" id="priceRange" min="0" max="100000" step="1000" />
+                    <div className="price-range-display">
+                      <span>0 đ</span> - <span>100000 đ</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="sidebar__item">
+                  <div className="latest-product__text">
+                    <h4>SẢN PHẨM MỚI NHẤT</h4>
+                    <div className="latest-product__slider owl-carousel">
+                      <div className="latest-prdouct__slider__item">
+                        <Link to="/product-details/1" className="latest-product__item">
+                          <div className="latest-product__item__pic">
+                            <img src={sp4} alt="Product" />
+                          </div>
+                          <div className="latest-product__item__text">
+                            <h6>Xe đạp đua carbon Nesto Rhino</h6>
+                            <span>40.000.000đ</span>
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {/* Categories */}
                 <div className="menu">
                   <ul className="menu__parent">
