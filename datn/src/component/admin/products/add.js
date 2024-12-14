@@ -311,7 +311,7 @@ className="form-control-line border-input"
                                     </div>
 
                                     <div>
-                                        <label className="col-md-12 mb-0">số lượng</label>
+                                        <label className="col-md-12 mb-0">Số lượng</label>
                                         <input
                                             type="number"
                                             id="stock"
