@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Header from "../../../component/client/home/header";
 import Footer from "../../../component/client/home/footer";
 import banner from "../../../assets/img/hero/banner2.jpg";
+import '../blog/blog.css'
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);

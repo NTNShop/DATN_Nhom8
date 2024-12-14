@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Footer from "../home/footer";
 import Header from "../home/header";
 import { getPostById, getPosts } from "../../../services/admin/posts";
+import '../blog/blogdetail.css'
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -48,9 +49,16 @@ const BlogDetails = () => {
   if (loading)
     return (
       <div className="loading-container">
-        <div className="spinner"></div>
-        <p className="loading-text">Đang tải bài viết...</p>
+      <div className="spinner">
+        <div className="double-bounce1"></div>
+        <div className="double-bounce2"></div>
       </div>
+      <p className="loading-text">Đang tải bài viết...</p>
+    
+    
+    </div>
+    
+    
     );
 
   if (error) return <p className="error-message">{error}</p>;
@@ -151,184 +159,7 @@ const BlogDetails = () => {
       </div>
 
       <Footer />
-      <style jsx>{`
-      
-        .blog-details-wrapper {
-          padding: 40px 0;
-        }
-
-        .post-header {
-          margin-bottom: 20px;
-          border-bottom: 2px solid #7fad39;
-          padding-bottom: 15px;
-        }
-
-        .post-title {
-          color: #333;
-          margin-bottom: 10px;
-          font-size: 2rem;
-        }
-
-        .post-meta {
-          display: flex;
-          justify-content: space-between;
-          color: #777;
-          font-size: 0.9rem;
-        }
-
-        .post-meta span {
-          margin-right: 15px;
-        }
-
-        .post-meta i {
-          margin-right: 5px;
-          color: #7fad39;
-        }
-
-        .post-thumbnail {
-          margin-bottom: 20px;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-
-        .post-thumbnail img {
-          width: 100%;
-          height: auto;
-          transition: transform 0.3s ease;
-        }
-
-        .post-thumbnail img:hover {
-          transform: scale(1.05);
-        }
-
-        .sidebar-section {
-          background-color: #f9f9f9;
-          border-radius: 8px;
-          padding: 20px;
-          margin-bottom: 20px;
-        }
-
-        .advertisement .ad-card {
-          text-align: center;
-        }
-
-        .advertisement .ad-card h3 {
-          color: #7fad39;
-          margin-bottom: 10px;
-        }
-
-        .related-posts .related-post-item {
-          display: flex;
-          margin-bottom: 15px;
-          border-bottom: 1px solid #eee;
-          padding-bottom: 10px;
-        }
-
-        .related-posts img {
-          width: 80px;
-          height: 80px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-right: 15px;
-        }
-
-        .related-posts .related-post-details a {
-          color: #333;
-          font-weight: bold;
-          text-decoration: none;
-        }
-
-        .related-posts .related-post-details span {
-          display: block;
-          color: #777;
-          font-size: 0.8rem;
-        }
-
-        .loading-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-        }
-
-        .spinner {
-          border: 4px solid rgba(0, 0, 0, 0.1);
-          border-left-color: #7fad39;
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-          .col-lg-8, .col-lg-4 {
-            width: 100%;
-            padding-left: 0;
-            padding-right: 0;
-          }
-
-          .post-title {
-            font-size: 1.5rem;
-          }
-
-          .sidebar-section {
-            padding: 15px;
-          }
-
-          .post-meta {
-            font-size: 0.8rem;
-          }
-        }
-      .loading-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  color: #333;
-  font-size: 18px;
-  font-weight: 500;
-  opacity: 0;
-  animation: fadeIn 1s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  0% { 
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% { 
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-      `}</style>
+    
     </>
   );
 };
