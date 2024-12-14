@@ -518,6 +518,7 @@ onChange={handleInputChange}
                                 </div>
                               ))}
                             </td>
+                            {/* note */}
                             <td className="text-center">
                               {order.status === 5 ? (
                                 <button className="btn btn-danger btn-sm disabled w-100 rounded-pill mb-2">Đơn hàng đã hủy</button>

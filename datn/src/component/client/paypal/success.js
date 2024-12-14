@@ -176,7 +176,7 @@ const PaymentSuccessPage = () => {
               <p className="payment-success__description">
                 {isSuccess
                   ? 'Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn và gửi thông tin chi tiết qua email.'
-                  : 'Xin vui lòng thử lại hoặc liên hệ với chúng tôi để được hỗ trợ.'}
+                  : 'Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng của bạn và gửi thông tin chi tiết qua email.'}
               </p>
               <div className="mt-4">
                 <Link to="/" className="site-btn site-btn--primary me-2">
